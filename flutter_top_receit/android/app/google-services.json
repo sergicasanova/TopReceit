@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "71788687452",
+    "project_id": "topreceit",
+    "storage_bucket": "topreceit.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:71788687452:android:b5ae270471e0574fdb3699",
+        "android_client_info": {
+          "package_name": "com.topR.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC22SEY8c7rAZ97GYimGF0ycDXKVBElAkw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
