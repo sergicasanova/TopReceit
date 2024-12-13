@@ -7,4 +7,5 @@ List<String> bgList = [
   "assets/bg6.jpeg",
   "assets/bg7.jpeg",
   "assets/bg8.jpeg",
+  "assets/bg9.jpeg",
 ];

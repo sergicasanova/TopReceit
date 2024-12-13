@@ -75,6 +75,7 @@ flutter:
     - assets/bg6.jpeg
     - assets/bg7.jpeg
     - assets/bg8.jpeg
+    - assets/bg9.jpeg
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

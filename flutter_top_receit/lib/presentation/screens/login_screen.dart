@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_top_receit/config/utils/animation.dart';
 import 'package:flutter_top_receit/config/utils/text_utils.dart';
-import 'package:flutter_top_receit/injection.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_state.dart';
+import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
 import 'package:flutter_top_receit/presentation/widgets/data/bg_data.dart';
+import 'package:go_router/go_router.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -19,8 +20,30 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   int selectedIndex = 0;
   bool showOption = false;
+  bool _obscureText = true;
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
+  String? currentBackground;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBackgroundImage();
+  }
+
+  Future<void> _loadBackgroundImage() async {
+    final prefs = PreferencesService();
+    final bgImage = await prefs.getBackgroundImage();
+    setState(() {
+      currentBackground = bgImage ?? bgList[0];
+      selectedIndex = bgList.indexOf(currentBackground!);
+    });
+  }
+
+  Future<void> _saveBackgroundImage(String bgImage) async {
+    final prefs = PreferencesService();
+    await prefs.saveBackgroundImage(bgImage);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +67,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             onTap: () {
                               setState(() {
                                 selectedIndex = index;
+                                currentBackground = bgList[index];
                               });
+                              _saveBackgroundImage(bgList[index]);
                             },
                             child: CircleAvatar(
                               radius: 30,
@@ -105,8 +130,10 @@ class _LoginScreenState extends State<LoginScreen> {
         listener: (context, state) {
           if (state is AuthError) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+              const SnackBar(content: Text("Credenciales incorrectas")),
             );
+          } else if (state is Authenticated) {
+            context.go('/home');
           }
         },
         child: Container(
@@ -114,7 +141,7 @@ class _LoginScreenState extends State<LoginScreen> {
           width: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(bgList[selectedIndex]),
+              image: AssetImage(currentBackground ?? bgList[0]),
               fit: BoxFit.fill,
             ),
           ),
@@ -170,11 +197,24 @@ class _LoginScreenState extends State<LoginScreen> {
                         child: TextFormField(
                           controller: passwordController,
                           style: const TextStyle(color: Colors.white),
-                          decoration: const InputDecoration(
-                            suffixIcon: Icon(Icons.lock, color: Colors.white),
+                          decoration: InputDecoration(
+                            suffixIcon: IconButton(
+                              icon: Icon(
+                                _obscureText
+                                    ? Icons.visibility_off
+                                    : Icons.visibility,
+                                color: Colors.white,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _obscureText = !_obscureText;
+                                });
+                              },
+                            ),
                             fillColor: Colors.white,
                             border: InputBorder.none,
                           ),
+                          obscureText: _obscureText,
                         ),
                       ),
                       const Spacer(),
@@ -200,10 +240,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const Spacer(),
                       Center(
+                        child: GestureDetector(
+                          onTap: () {
+                            context.go('/register');
+                          },
                           child: TextUtil(
-                              text: "Don't have an account REGISTER",
+                              text: "Don't have an account? REGISTER",
                               size: 12,
-                              weight: true)),
+                              weight: true),
+                        ),
+                      ),
                       const Spacer(),
                     ],
                   ),
