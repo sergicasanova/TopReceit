@@ -56,13 +56,14 @@ class SignInRepositoryImpl implements SignInRepository {
   }
 
   @override
-  Future<Either<Failure, UserModel>> signUp(
-      String email, String password) async {
+  Future<Either<Failure, UserModel>> signUp(String email, String password,
+      String username, String avatar, List<String> preferences) async {
     try {
-      UserModel user = await dataSource.signUp(email, password);
+      UserModel user = await dataSource.signUp(
+          email, password, username, avatar, preferences);
       return Right(user);
     } catch (e) {
-      return Left(AuthFailure());
+      return Left(AuthFailure(message: 'Error al registrar al usuario.'));
     }
   }
 

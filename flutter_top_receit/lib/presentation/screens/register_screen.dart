@@ -6,8 +6,8 @@ import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_state.dart';
 import 'package:flutter_top_receit/presentation/widgets/data/bg_data.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
+import 'package:go_router/go_router.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -21,10 +21,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController confirmPasswordController =
       TextEditingController();
+  final TextEditingController usernameController = TextEditingController();
+  final TextEditingController avatarController = TextEditingController();
+  final TextEditingController preferencesController = TextEditingController();
+
   final _formKey = GlobalKey<FormState>();
   String? currentBackground;
-  bool _obscureText = true;
-  bool _obscureConfirmText = true;
+  bool _obscureText = true; // Para la visibilidad de la contraseña
+  bool _obscureConfirmText = true; // Para la confirmación de la contraseña
+  String? selectedPreference; // Para almacenar la preferencia seleccionada
+
+  final List<String> preferences = [
+    'Carne',
+    'Pescado',
+    'Verduras',
+    'Dulce',
+    'Salado',
+  ];
 
   @override
   void initState() {
@@ -62,7 +75,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
           alignment: Alignment.center,
           child: Container(
-            height: 500,
+            height: 600,
             width: double.infinity,
             margin: const EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
@@ -108,6 +121,88 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               return null;
                             },
                           ),
+                        ),
+                        const Spacer(),
+                        TextUtil(text: "Username"),
+                        Container(
+                          height: 35,
+                          decoration: const BoxDecoration(
+                            border:
+                                Border(bottom: BorderSide(color: Colors.white)),
+                          ),
+                          child: TextFormField(
+                            controller: usernameController,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: const InputDecoration(
+                              suffixIcon:
+                                  Icon(Icons.person, color: Colors.white),
+                              fillColor: Colors.white,
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter your username';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        const Spacer(),
+                        TextUtil(text: "Avatar URL"),
+                        Container(
+                          height: 35,
+                          decoration: const BoxDecoration(
+                            border:
+                                Border(bottom: BorderSide(color: Colors.white)),
+                          ),
+                          child: TextFormField(
+                            controller: avatarController,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: const InputDecoration(
+                              suffixIcon:
+                                  Icon(Icons.image, color: Colors.white),
+                              fillColor: Colors.white,
+                              border: InputBorder.none,
+                            ),
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please enter an avatar URL';
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
+                        const Spacer(),
+                        TextUtil(text: "Preferences"),
+                        // Dropdown selector
+                        DropdownButtonFormField<String>(
+                          value: selectedPreference,
+                          decoration: InputDecoration(
+                            labelStyle: TextStyle(color: Colors.white),
+                            fillColor: Colors.white,
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(5),
+                              borderSide: BorderSide(color: Colors.white),
+                            ),
+                          ),
+                          items: preferences
+                              .map((preference) => DropdownMenuItem<String>(
+                                    value: preference,
+                                    child: Text(preference),
+                                  ))
+                              .toList(),
+                          onChanged: (value) {
+                            setState(() {
+                              selectedPreference = value;
+                              preferencesController.text = value ?? '';
+                            });
+                          },
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Please select a preference';
+                            }
+                            return null;
+                          },
                         ),
                         const Spacer(),
                         TextUtil(text: "Password"),
@@ -194,6 +289,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                     SignUpEvent(
                                       email: emailController.text,
                                       password: passwordController.text,
+                                      username: usernameController.text,
+                                      avatar: avatarController.text,
+                                      preferences:
+                                          preferencesController.text.split(','),
                                     ),
                                   );
                             }

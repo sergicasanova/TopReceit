@@ -23,7 +23,7 @@ class _MainScreenState extends State<MainScreen> {
     final prefs = PreferencesService();
     final bgImage = await prefs.getBackgroundImage();
     setState(() {
-      currentBackground = bgImage ?? 'assets/bg1.jpeg';
+      currentBackground = bgImage ?? 'assets/bg9.jpeg';
     });
   }
 
@@ -42,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
             child: Container(
               decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage(currentBackground ?? 'assets/bg1.jpeg'),
+                  image: AssetImage(currentBackground ?? 'assets/bg9.jpeg'),
                   fit: BoxFit.cover,
                 ),
               ),

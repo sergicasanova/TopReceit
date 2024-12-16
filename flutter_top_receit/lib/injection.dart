@@ -1,7 +1,14 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_top_receit/data/datasources/firebase_auth_datasource.dart';
+import 'package:flutter_top_receit/data/datasources/firestore_datasource.dart';
+import 'package:flutter_top_receit/data/repositories/firestore_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/sing_in_repository_impl.dart';
+import 'package:flutter_top_receit/domain/repositories/firestore_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/sign_in_repository.dart';
+import 'package:flutter_top_receit/domain/usecases/firestore/create_user_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/firestore/get_user_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/firestore/update_user_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/get_current_user_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/logout_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/reset_password_usecase.dart';
@@ -23,20 +30,34 @@ void configureDependencies() {
       signUpUseCase: sl(),
       resetPasswordUseCase: sl(),
       logoutUseCase: sl(),
+      createUserUseCase: sl(),
+      getUserUseCase: sl(),
+      updateUserUseCase: sl(),
     ),
   );
 
   // Instancia de Firebase Auth
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
 
+  // Firestore DataSource
+  sl.registerLazySingleton<FirestoreDataSource>(
+    () => FirestoreDataSource(firestore: FirebaseFirestore.instance),
+  );
+
   // Fuentes de datos
   sl.registerLazySingleton<FirebaseAuthDataSource>(
-    () => FirebaseAuthDataSource(auth: sl<FirebaseAuth>()),
+    () => FirebaseAuthDataSource(
+      auth: sl<FirebaseAuth>(),
+    ),
   );
 
   // Repositorios
   sl.registerLazySingleton<SignInRepository>(
     () => SignInRepositoryImpl(sl<FirebaseAuthDataSource>()),
+  );
+  sl.registerLazySingleton<FirestoreRepository>(
+    () =>
+        FirestoreRepositoryImpl(firestoreDataSource: sl<FirestoreDataSource>()),
   );
 
   // Casos de uso
@@ -57,5 +78,14 @@ void configureDependencies() {
   );
   sl.registerLazySingleton<LogoutUseCase>(
     () => LogoutUseCase(sl()),
+  );
+  sl.registerLazySingleton<CreateUserUseCase>(
+    () => CreateUserUseCase(sl()),
+  );
+  sl.registerLazySingleton<GetUserUseCase>(
+    () => GetUserUseCase(sl()),
+  );
+  sl.registerLazySingleton<UpdateUserUseCase>(
+    () => UpdateUserUseCase(sl()),
   );
 }

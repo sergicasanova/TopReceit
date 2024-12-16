@@ -12,7 +12,12 @@
           "package_name": "com.topR.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "71788687452-rvlmtcdu194il528nchh2vrgo0asgpjj.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyC22SEY8c7rAZ97GYimGF0ycDXKVBElAkw"
@@ -20,7 +25,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "71788687452-rvlmtcdu194il528nchh2vrgo0asgpjj.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "71788687452-0fanrul6l5te4fkutk3muit6g3hbsp6h.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.flutterTopReceit"
+              }
+            }
+          ]
         }
       }
     }

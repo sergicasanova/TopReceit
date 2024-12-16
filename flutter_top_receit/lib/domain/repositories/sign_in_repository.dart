@@ -7,6 +7,7 @@ abstract class SignInRepository {
   Future<Either<Failure, UserModel>> signInGoogle();
   Future<Either<Failure, UserModel?>> isLoggedIn();
   Future<Either<Failure, void>> logout();
-  Future<Either<Failure, UserModel>> signUp(String email, String password);
+  Future<Either<Failure, UserModel>> signUp(String email, String password,
+      String username, String avatar, List<String> preferences);
   Future<Either<Failure, void>> resetPassword(String email);
 }

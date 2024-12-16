@@ -31,3 +31,21 @@ class AuthError extends AuthState {
   @override
   List<Object?> get props => [message];
 }
+
+class CreateUserSuccess extends AuthState {
+  final UserModel user;
+
+  CreateUserSuccess({required this.user});
+
+  @override
+  List<Object?> get props => [user];
+}
+
+class CreateUserError extends AuthState {
+  final String message;
+
+  CreateUserError({required this.message});
+
+  @override
+  List<Object?> get props => [message];
+}

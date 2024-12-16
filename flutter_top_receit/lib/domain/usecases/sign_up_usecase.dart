@@ -12,13 +12,28 @@ class SignUpUseCase
 
   @override
   Future<Either<Failure, UserModel>> call(SignUpParams params) async {
-    return repository.signUp(params.email, params.password);
+    return repository.signUp(
+      params.email,
+      params.password,
+      params.username,
+      params.avatar,
+      params.preferences,
+    );
   }
 }
 
 class SignUpParams {
   final String email;
   final String password;
+  final String username;
+  final String avatar;
+  final List<String> preferences;
 
-  SignUpParams(this.email, this.password);
+  SignUpParams({
+    required this.email,
+    required this.password,
+    required this.username,
+    required this.avatar,
+    required this.preferences,
+  });
 }

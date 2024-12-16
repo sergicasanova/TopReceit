@@ -1,5 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_top_receit/core/use_case.dart';
+import 'package:flutter_top_receit/domain/usecases/firestore/create_user_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/firestore/get_user_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/firestore/update_user_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/get_current_user_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/reset_password_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/sign_in_user_usecase.dart';
@@ -17,6 +20,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final SignUpUseCase signUpUseCase;
   final ResetPasswordUseCase resetPasswordUseCase;
   final LogoutUseCase logoutUseCase;
+  final CreateUserUseCase createUserUseCase;
+  final GetUserUseCase getUserUseCase;
+  final UpdateUserUseCase updateUserUseCase;
 
   AuthBloc({
     required this.getCurrentUserUseCase,
@@ -25,6 +31,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     required this.signUpUseCase,
     required this.resetPasswordUseCase,
     required this.logoutUseCase,
+    required this.createUserUseCase,
+    required this.getUserUseCase,
+    required this.updateUserUseCase,
   }) : super(AuthInitial()) {
     on<CheckAuthStatusEvent>(_onCheckAuthStatus);
     on<SignInEvent>(_onSignIn);
@@ -32,6 +41,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<SignUpEvent>(_onSignUp);
     on<ResetPasswordEvent>(_onResetPassword);
     on<LogoutEvent>(_onLogout);
+    // on<CreateUserEvent>(_onCreateUser);
+    on<GetUserEvent>(_onGetUser);
+    on<UpdateUserEvent>(_onUpdateUser);
   }
 
   Future<void> _onCheckAuthStatus(
@@ -78,13 +90,52 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
   Future<void> _onSignUp(SignUpEvent event, Emitter<AuthState> emit) async {
     emit(AuthLoading());
+
     final result = await signUpUseCase(SignUpParams(
-      event.email,
-      event.password,
+      email: event.email,
+      password: event.password,
+      username: event.username,
+      avatar: event.avatar,
+      preferences: event.preferences,
     ));
 
     result.fold(
       (failure) => emit(AuthError(message: 'Error al registrarse')),
+      (user) async {
+        final createUserResult = await createUserUseCase(user);
+
+        createUserResult.fold(
+          (failure) => emit(
+              AuthError(message: 'Error al guardar los datos en Firestore')),
+          (user) => emit(Authenticated(user: user)),
+        );
+      },
+    );
+  }
+
+  Future<void> _onGetUser(GetUserEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    final result = await getUserUseCase(event.userId);
+
+    result.fold(
+      (failure) => emit(AuthError(message: 'Error al obtener el usuario')),
+      (user) {
+        if (user != null) {
+          emit(Authenticated(user: user));
+        } else {
+          emit(AuthError(message: 'Usuario no encontrado'));
+        }
+      },
+    );
+  }
+
+  Future<void> _onUpdateUser(
+      UpdateUserEvent event, Emitter<AuthState> emit) async {
+    emit(AuthLoading());
+    final result = await updateUserUseCase(event.user);
+
+    result.fold(
+      (failure) => emit(AuthError(message: 'Error al actualizar el usuario')),
       (user) => emit(Authenticated(user: user)),
     );
   }
