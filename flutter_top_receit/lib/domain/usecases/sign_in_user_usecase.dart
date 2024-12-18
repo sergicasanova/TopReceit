@@ -1,17 +1,14 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_top_receit/core/failure.dart';
 import 'package:flutter_top_receit/core/use_case.dart';
-import 'package:flutter_top_receit/data/models/user_model.dart';
 import '../repositories/sign_in_repository.dart';
 
-class SignInUserUseCase
-    implements UseCase<Either<Failure, UserModel>, LoginParams> {
+class SigninUserUseCase implements UseCase<void, LoginParams> {
   final SignInRepository repository;
-
-  SignInUserUseCase(this.repository);
+  SigninUserUseCase(this.repository);
 
   @override
-  Future<Either<Failure, UserModel>> call(LoginParams params) async {
+  Future<Either<Failure, void>> call(LoginParams params) async {
     return repository.signIn(params.email, params.password);
   }
 }
@@ -19,6 +16,5 @@ class SignInUserUseCase
 class LoginParams {
   final String email;
   final String password;
-
   LoginParams({required this.email, required this.password});
 }

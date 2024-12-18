@@ -5,6 +5,7 @@ import 'package:flutter_top_receit/config/utils/text_utils.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_state.dart';
+import 'package:flutter_top_receit/presentation/functions/valodators_function.dart';
 import 'package:flutter_top_receit/presentation/widgets/data/bg_data.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
 import 'package:go_router/go_router.dart';
@@ -55,12 +56,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final authBloc = BlocProvider.of<AuthBloc>(context);
+
     return Scaffold(
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is AuthError) {
+          if (state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
+              SnackBar(content: Text(state.errorMessage!)),
             );
           }
         },
@@ -114,9 +117,16 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               fillColor: Colors.white,
                               border: InputBorder.none,
                             ),
-                            validator: (value) {
+                            validator: (String? value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your email';
+                                return 'El email es obligatorio';
+                              }
+                              if (!isEmailValid(value)) {
+                                return 'El correo electrónico no es válido';
+                              }
+                              final isEmailUsed = authBloc.state.isEmailUsed;
+                              if (isEmailUsed != null && isEmailUsed) {
+                                return 'El email ya está en uso.';
                               }
                               return null;
                             },
@@ -139,9 +149,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               fillColor: Colors.white,
                               border: InputBorder.none,
                             ),
-                            validator: (value) {
+                            validator: (String? value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter your username';
+                                return 'El nombre es obligatorio';
+                              }
+                              final isNameUsed = authBloc.state.isNameUsed;
+                              if (isNameUsed != null && isNameUsed) {
+                                return 'El nombre ya está en uso.';
                               }
                               return null;
                             },
@@ -178,11 +192,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         DropdownButtonFormField<String>(
                           value: selectedPreference,
                           decoration: InputDecoration(
-                            labelStyle: TextStyle(color: Colors.white),
+                            labelStyle: const TextStyle(color: Colors.white),
                             fillColor: Colors.white,
                             border: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(5),
-                              borderSide: BorderSide(color: Colors.white),
+                              borderSide: const BorderSide(color: Colors.white),
                             ),
                           ),
                           items: preferences
@@ -235,7 +249,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscureText: _obscureText,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please enter a password';
+                                return 'La contraseña es obligatoria';
+                              }
+                              if (value.length < 8) {
+                                return 'La contraseña debe tener al menos 8 caracteres';
+                              }
+                              if (!hasNumber(value)) {
+                                return 'La contraseña debe contener al menos un número';
+                              }
+                              if (!hasUppercaseLetter(value)) {
+                                return 'La contraseña debe contener al menos una letra mayúscula';
+                              }
+                              if (!hasLowercaseLetter(value)) {
+                                return 'La contraseña debe contener al menos una letra minúscula';
                               }
                               return null;
                             },
@@ -295,6 +321,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                           preferencesController.text.split(','),
                                     ),
                                   );
+                              context.go('/login');
                             }
                           },
                           child: Container(

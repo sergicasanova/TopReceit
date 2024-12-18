@@ -1,51 +1,55 @@
-import 'package:equatable/equatable.dart';
-import 'package:flutter_top_receit/data/models/user_model.dart';
+class AuthState {
+  final bool isLoading;
+  final String? email;
+  final String? errorMessage;
+  final bool? isEmailUsed;
+  final bool? isNameUsed;
+  final String? id;
 
-abstract class AuthState extends Equatable {
-  @override
-  List<Object?> get props => [];
-}
+  const AuthState({
+    this.isLoading = false,
+    this.email,
+    this.errorMessage,
+    this.isEmailUsed,
+    this.isNameUsed,
+    this.id,
+  });
 
-class AuthInitial extends AuthState {}
+  List<Object?> get props => [
+        isLoading,
+        email ?? "",
+        errorMessage ?? "",
+        isEmailUsed ?? false,
+        isNameUsed ?? false,
+        id ?? ""
+      ];
 
-class AuthCheckingStatus extends AuthState {}
+  AuthState copyWith({
+    bool? isLoading,
+    String? email,
+    String? errorMessage,
+    bool? isEmailUsed,
+    bool? isNameUsed,
+    String? id,
+  }) {
+    return AuthState(
+      isLoading: isLoading ?? this.isLoading,
+      email: email ?? this.email,
+      errorMessage: errorMessage ?? this.errorMessage,
+      isEmailUsed: isEmailUsed ?? this.isEmailUsed,
+      isNameUsed: isNameUsed ?? this.isNameUsed,
+      id: id ?? this.id,
+    );
+  }
 
-class Authenticated extends AuthState {
-  final UserModel user;
+  factory AuthState.initial() => const AuthState();
 
-  Authenticated({required this.user});
+  factory AuthState.loading() => const AuthState(isLoading: true);
 
-  @override
-  List<Object?> get props => [user];
-}
+  factory AuthState.success(String email) => AuthState(email: email);
 
-class Unauthenticated extends AuthState {}
+  factory AuthState.isLoggedIn(String id) => AuthState(id: id);
 
-class AuthLoading extends AuthState {}
-
-class AuthError extends AuthState {
-  final String message;
-
-  AuthError({required this.message});
-
-  @override
-  List<Object?> get props => [message];
-}
-
-class CreateUserSuccess extends AuthState {
-  final UserModel user;
-
-  CreateUserSuccess({required this.user});
-
-  @override
-  List<Object?> get props => [user];
-}
-
-class CreateUserError extends AuthState {
-  final String message;
-
-  CreateUserError({required this.message});
-
-  @override
-  List<Object?> get props => [message];
+  factory AuthState.failure(String errorMessage) =>
+      AuthState(errorMessage: errorMessage);
 }

@@ -126,138 +126,146 @@ class _LoginScreenState extends State<LoginScreen> {
           ],
         ),
       ),
-      body: BlocListener<AuthBloc, AuthState>(
+      body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is AuthError) {
+          if (state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text("Credenciales incorrectas")),
+              SnackBar(content: Text(state.errorMessage!)),
             );
-          } else if (state is Authenticated) {
-            context.go('/home');
+          } else if (state.email != null && state.email != "NO_USER") {
+            context.go('/home', extra: state.email);
           }
         },
-        child: Container(
-          height: double.infinity,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage(currentBackground ?? bgList[0]),
-              fit: BoxFit.fill,
-            ),
-          ),
-          alignment: Alignment.center,
-          child: Container(
-            height: 400,
+        builder: (context, state) {
+          if (state.isLoading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return Container(
+            height: double.infinity,
             width: double.infinity,
-            margin: const EdgeInsets.symmetric(horizontal: 30),
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.white),
-              borderRadius: BorderRadius.circular(15),
-              color: Colors.black.withOpacity(0.1),
+              image: DecorationImage(
+                image: AssetImage(currentBackground ?? bgList[0]),
+                fit: BoxFit.fill,
+              ),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: BackdropFilter(
-                filter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),
-                child: Padding(
-                  padding: const EdgeInsets.all(25),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Spacer(),
-                      Center(
-                          child:
-                              TextUtil(text: "Login", weight: true, size: 30)),
-                      const Spacer(),
-                      TextUtil(text: "Email"),
-                      Container(
-                        height: 35,
-                        decoration: const BoxDecoration(
-                          border:
-                              Border(bottom: BorderSide(color: Colors.white)),
-                        ),
-                        child: TextFormField(
-                          controller: emailController,
-                          style: const TextStyle(color: Colors.white),
-                          decoration: const InputDecoration(
-                            suffixIcon: Icon(Icons.mail, color: Colors.white),
-                            fillColor: Colors.white,
-                            border: InputBorder.none,
+            alignment: Alignment.center,
+            child: Container(
+              height: 400,
+              width: double.infinity,
+              margin: const EdgeInsets.symmetric(horizontal: 30),
+              decoration: BoxDecoration(
+                border: Border.all(color: Colors.white),
+                borderRadius: BorderRadius.circular(15),
+                color: Colors.black.withOpacity(0.1),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaY: 5, sigmaX: 5),
+                  child: Padding(
+                    padding: const EdgeInsets.all(25),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Spacer(),
+                        Center(
+                            child: TextUtil(
+                                text: "Login", weight: true, size: 30)),
+                        const Spacer(),
+                        TextUtil(text: "Email"),
+                        Container(
+                          height: 35,
+                          decoration: const BoxDecoration(
+                            border:
+                                Border(bottom: BorderSide(color: Colors.white)),
                           ),
-                        ),
-                      ),
-                      const Spacer(),
-                      TextUtil(text: "Password"),
-                      Container(
-                        height: 35,
-                        decoration: const BoxDecoration(
-                          border:
-                              Border(bottom: BorderSide(color: Colors.white)),
-                        ),
-                        child: TextFormField(
-                          controller: passwordController,
-                          style: const TextStyle(color: Colors.white),
-                          decoration: InputDecoration(
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _obscureText
-                                    ? Icons.visibility_off
-                                    : Icons.visibility,
-                                color: Colors.white,
-                              ),
-                              onPressed: () {
-                                setState(() {
-                                  _obscureText = !_obscureText;
-                                });
-                              },
+                          child: TextFormField(
+                            controller: emailController,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: const InputDecoration(
+                              suffixIcon: Icon(Icons.mail, color: Colors.white),
+                              fillColor: Colors.white,
+                              border: InputBorder.none,
                             ),
-                            fillColor: Colors.white,
-                            border: InputBorder.none,
                           ),
-                          obscureText: _obscureText,
                         ),
-                      ),
-                      const Spacer(),
-                      GestureDetector(
-                        onTap: () {
-                          context.read<AuthBloc>().add(
-                                SignInEvent(
-                                  email: emailController.text,
-                                  password: passwordController.text,
+                        const Spacer(),
+                        TextUtil(text: "Password"),
+                        Container(
+                          height: 35,
+                          decoration: const BoxDecoration(
+                            border:
+                                Border(bottom: BorderSide(color: Colors.white)),
+                          ),
+                          child: TextFormField(
+                            controller: passwordController,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: InputDecoration(
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscureText
+                                      ? Icons.visibility_off
+                                      : Icons.visibility,
+                                  color: Colors.white,
                                 ),
-                              );
-                        },
-                        child: Container(
-                          height: 40,
-                          width: double.infinity,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(30),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscureText = !_obscureText;
+                                  });
+                                },
+                              ),
+                              fillColor: Colors.white,
+                              border: InputBorder.none,
+                            ),
+                            obscureText: _obscureText,
                           ),
-                          alignment: Alignment.center,
-                          child: TextUtil(text: "Log In", color: Colors.black),
                         ),
-                      ),
-                      const Spacer(),
-                      Center(
-                        child: GestureDetector(
+                        const Spacer(),
+                        GestureDetector(
                           onTap: () {
-                            context.go('/register');
+                            context.read<AuthBloc>().add(
+                                  SignInEvent(
+                                    email: emailController.text,
+                                    password: passwordController.text,
+                                  ),
+                                );
                           },
-                          child: TextUtil(
-                              text: "Don't have an account? REGISTER",
-                              size: 12,
-                              weight: true),
+                          child: Container(
+                            height: 40,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(30),
+                            ),
+                            alignment: Alignment.center,
+                            child:
+                                TextUtil(text: "Log In", color: Colors.black),
+                          ),
                         ),
-                      ),
-                      const Spacer(),
-                    ],
+                        const Spacer(),
+                        Center(
+                          child: GestureDetector(
+                            onTap: () {
+                              print("REGISTER");
+                              context.go('/login/register');
+                            },
+                            child: TextUtil(
+                                text: "Don't have an account? REGISTER",
+                                size: 12,
+                                weight: true),
+                          ),
+                        ),
+                        const Spacer(),
+                      ],
+                    ),
                   ),
                 ),
               ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }

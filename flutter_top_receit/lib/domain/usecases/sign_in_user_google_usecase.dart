@@ -1,17 +1,18 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_top_receit/core/failure.dart';
 import 'package:flutter_top_receit/core/use_case.dart';
-import 'package:flutter_top_receit/data/models/user_model.dart';
 import '../repositories/sign_in_repository.dart';
 
-class SignInUserGoogleUseCase
-    implements UseCase<Either<Failure, UserModel>, NoParams> {
+class SigninUserGoogleUseCase implements UseCase<void, LoginParamsGoogle> {
   final SignInRepository repository;
-
-  SignInUserGoogleUseCase(this.repository);
+  SigninUserGoogleUseCase(this.repository);
 
   @override
-  Future<Either<Failure, UserModel>> call(NoParams params) async {
+  Future<Either<Failure, void>> call(LoginParamsGoogle params) async {
     return repository.signInGoogle();
   }
+}
+
+class LoginParamsGoogle {
+  LoginParamsGoogle();
 }

@@ -1,164 +1,108 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_top_receit/core/use_case.dart';
-import 'package:flutter_top_receit/domain/usecases/firestore/create_user_usecase.dart';
-import 'package:flutter_top_receit/domain/usecases/firestore/get_user_usecase.dart';
-import 'package:flutter_top_receit/domain/usecases/firestore/update_user_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/get_current_user_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/is_email_used_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/is_name_used_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/reset_password_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/sign_in_user_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/sign_out_user_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/sign_up_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/sign_in_user_google_usecase.dart';
-import 'package:flutter_top_receit/domain/usecases/logout_usecase.dart';
 
 import 'auth_event.dart';
 import 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final GetCurrentUserUseCase getCurrentUserUseCase;
-  final SignInUserUseCase signInUseCase;
-  final SignInUserGoogleUseCase signInGoogleUseCase;
+  final SigninUserUseCase signInUseCase;
+  final SignOutUserUseCase signOutUserUseCase;
+  final SigninUserGoogleUseCase signInGoogleUseCase;
   final SignUpUseCase signUpUseCase;
   final ResetPasswordUseCase resetPasswordUseCase;
-  final LogoutUseCase logoutUseCase;
-  final CreateUserUseCase createUserUseCase;
-  final GetUserUseCase getUserUseCase;
-  final UpdateUserUseCase updateUserUseCase;
+  final IsEmailUsedUsecase isEmailUsedUseCase;
+  final IsNameUsedUsecase isNameUsedUseCase;
 
-  AuthBloc({
-    required this.getCurrentUserUseCase,
-    required this.signInUseCase,
-    required this.signInGoogleUseCase,
-    required this.signUpUseCase,
-    required this.resetPasswordUseCase,
-    required this.logoutUseCase,
-    required this.createUserUseCase,
-    required this.getUserUseCase,
-    required this.updateUserUseCase,
-  }) : super(AuthInitial()) {
-    on<CheckAuthStatusEvent>(_onCheckAuthStatus);
-    on<SignInEvent>(_onSignIn);
-    on<SignInWithGoogleEvent>(_onSignInWithGoogle);
-    on<SignUpEvent>(_onSignUp);
-    on<ResetPasswordEvent>(_onResetPassword);
-    on<LogoutEvent>(_onLogout);
-    // on<CreateUserEvent>(_onCreateUser);
-    on<GetUserEvent>(_onGetUser);
-    on<UpdateUserEvent>(_onUpdateUser);
-  }
+  AuthBloc(
+      this.getCurrentUserUseCase,
+      this.signInUseCase,
+      this.signOutUserUseCase,
+      this.signInGoogleUseCase,
+      this.signUpUseCase,
+      this.resetPasswordUseCase,
+      this.isEmailUsedUseCase,
+      this.isNameUsedUseCase)
+      : super(AuthState.initial()) {
+    on<IsEmailUserUsed>((event, emit) async {
+      emit(AuthState(isLoading: true));
+      final emailResult = await isEmailUsedUseCase(event.email);
+      final nameResult = await isNameUsedUseCase(event.username);
+      emit(AuthState(
+        isLoading: false,
+        isEmailUsed: emailResult.fold((_) => null, (isUsed) => isUsed),
+        isNameUsed: nameResult.fold((_) => null, (isUsed) => isUsed),
+      ));
+    });
 
-  Future<void> _onCheckAuthStatus(
-      CheckAuthStatusEvent event, Emitter<AuthState> emit) async {
-    emit(AuthCheckingStatus());
-    final result = await getCurrentUserUseCase(NoParams());
+    on<SignInEvent>((event, emit) async {
+      emit(AuthState.loading());
+      final result = await signInUseCase(LoginParams(
+        email: event.email,
+        password: event.password,
+      ));
+      result.fold(
+        (failure) => emit(AuthState.failure("Fallo al realizar el login")),
+        (_) => emit(AuthState.success(event.email)),
+      );
+    });
 
-    result.fold(
-      (failure) => emit(Unauthenticated()),
-      (user) {
-        if (user != null) {
-          emit(Authenticated(user: user));
-        } else {
-          emit(Unauthenticated());
-        }
-      },
-    );
-  }
+    on<SignUpEvent>((event, emit) async {
+      emit(AuthState.loading());
+      final result = await signUpUseCase(SignUpParams(
+        email: event.email,
+        password: event.password,
+        username: event.username,
+        avatar: event.avatar,
+        preferences: event.preferences,
+      ));
+      result.fold(
+        (failure) => emit(AuthState.failure("Fallo al realizar el registro")),
+        (_) => emit(AuthState.success(event.email)),
+      );
+    });
 
-  Future<void> _onSignIn(SignInEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoading());
-    final result = await signInUseCase(LoginParams(
-      email: event.email,
-      password: event.password,
-    ));
+    on<CheckAuthStatusEvent>((event, emit) async {
+      final result = await getCurrentUserUseCase(NoParams());
+      result.fold(
+        (failure) =>
+            emit(AuthState.failure("Fallo al verificar la autenticación")),
+        (id) => emit(AuthState.isLoggedIn(id)),
+      );
+    });
 
-    result.fold(
-      (failure) => emit(AuthError(message: 'Error al iniciar sesión')),
-      (user) => emit(Authenticated(user: user)),
-    );
-  }
+    on<LogoutEvent>((event, emit) async {
+      final result = await signOutUserUseCase(NoParams());
+      result.fold(
+          (failure) => emit(AuthState.failure("Fallo al realizar el logout")),
+          (_) => emit(AuthState.initial()));
+    });
 
-  Future<void> _onSignInWithGoogle(
-      SignInWithGoogleEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoading());
-    final result = await signInGoogleUseCase(NoParams());
+    on<SignInWithGoogleEvent>((event, emit) async {
+      emit(AuthState.loading());
+      final result = await signInGoogleUseCase(LoginParamsGoogle());
+      result.fold(
+        (failure) => emit(AuthState.failure("Fallo al realizar el login")),
+        (_) => emit(AuthState.success('')),
+      );
+    });
 
-    result.fold(
-      (failure) =>
-          emit(AuthError(message: 'Error al iniciar sesión con Google')),
-      (user) => emit(Authenticated(user: user)),
-    );
-  }
-
-  Future<void> _onSignUp(SignUpEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoading());
-
-    final result = await signUpUseCase(SignUpParams(
-      email: event.email,
-      password: event.password,
-      username: event.username,
-      avatar: event.avatar,
-      preferences: event.preferences,
-    ));
-
-    result.fold(
-      (failure) => emit(AuthError(message: 'Error al registrarse')),
-      (user) async {
-        final createUserResult = await createUserUseCase(user);
-
-        createUserResult.fold(
-          (failure) => emit(
-              AuthError(message: 'Error al guardar los datos en Firestore')),
-          (user) => emit(Authenticated(user: user)),
-        );
-      },
-    );
-  }
-
-  Future<void> _onGetUser(GetUserEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoading());
-    final result = await getUserUseCase(event.userId);
-
-    result.fold(
-      (failure) => emit(AuthError(message: 'Error al obtener el usuario')),
-      (user) {
-        if (user != null) {
-          emit(Authenticated(user: user));
-        } else {
-          emit(AuthError(message: 'Usuario no encontrado'));
-        }
-      },
-    );
-  }
-
-  Future<void> _onUpdateUser(
-      UpdateUserEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoading());
-    final result = await updateUserUseCase(event.user);
-
-    result.fold(
-      (failure) => emit(AuthError(message: 'Error al actualizar el usuario')),
-      (user) => emit(Authenticated(user: user)),
-    );
-  }
-
-  Future<void> _onResetPassword(
-      ResetPasswordEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoading());
-    final result = await resetPasswordUseCase(ResetPasswordParams(event.email));
-
-    result.fold(
-      (failure) => emit(
-          AuthError(message: 'Error al enviar correo de restablecimiento')),
-      (_) => emit(AuthInitial()),
-    );
-  }
-
-  Future<void> _onLogout(LogoutEvent event, Emitter<AuthState> emit) async {
-    emit(AuthLoading());
-    final result = await logoutUseCase(NoParams());
-
-    result.fold(
-      (failure) => emit(AuthError(message: 'Error al cerrar sesión')),
-      (_) => emit(Unauthenticated()),
-    );
+    on<ResetPasswordEvent>((event, emit) async {
+      emit(AuthState.loading());
+      final result = await resetPasswordUseCase(event.email);
+      result.fold(
+        (failure) =>
+            emit(AuthState.failure("Fallo al realizar la recuperacion")),
+        (_) => emit(AuthState.success('')),
+      );
+    });
   }
 }

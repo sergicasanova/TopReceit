@@ -6,8 +6,6 @@ abstract class AuthEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class CheckAuthStatusEvent extends AuthEvent {}
-
 class SignInEvent extends AuthEvent {
   final String email;
   final String password;
@@ -17,8 +15,6 @@ class SignInEvent extends AuthEvent {
   @override
   List<Object?> get props => [email, password];
 }
-
-class SignInWithGoogleEvent extends AuthEvent {}
 
 class SignUpEvent extends AuthEvent {
   final String email;
@@ -38,8 +34,6 @@ class SignUpEvent extends AuthEvent {
   @override
   List<Object?> get props => [email, password, username, avatar, preferences];
 }
-
-class LogoutEvent extends AuthEvent {}
 
 class ResetPasswordEvent extends AuthEvent {
   final String email;
@@ -68,6 +62,16 @@ class CreateUserEvent extends AuthEvent {
   List<Object?> get props => [user];
 }
 
+class IsEmailUserUsed extends AuthEvent {
+  final String email;
+  final String username;
+
+  IsEmailUserUsed({required this.email, required this.username});
+
+  @override
+  List<Object?> get props => [email, username];
+}
+
 class UpdateUserEvent extends AuthEvent {
   final UserModel user;
 
@@ -76,3 +80,9 @@ class UpdateUserEvent extends AuthEvent {
   @override
   List<Object?> get props => [user];
 }
+
+class SignInWithGoogleEvent extends AuthEvent {}
+
+class CheckAuthStatusEvent extends AuthEvent {}
+
+class LogoutEvent extends AuthEvent {}

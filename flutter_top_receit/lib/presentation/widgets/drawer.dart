@@ -11,7 +11,7 @@ class DrawerWidget extends StatelessWidget {
 
   Future<String?> _getUserEmailFromPreferences() async {
     final prefs = await SharedPreferences.getInstance();
-    return prefs.getString('userEmail');
+    return prefs.getString('email');
   }
 
   @override

@@ -113,3 +113,10 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+flutter_native_splash:
+  image: splashTopReceit.jpg
+  android: true
+  ios: true
+  web: true
+  color: "#ffffff"
+  android_gravity: center
