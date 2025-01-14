@@ -1,13 +1,16 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter_top_receit/core/use_case.dart';
-import 'package:flutter_top_receit/domain/usecases/get_current_user_usecase.dart';
-import 'package:flutter_top_receit/domain/usecases/is_email_used_usecase.dart';
-import 'package:flutter_top_receit/domain/usecases/is_name_used_usecase.dart';
-import 'package:flutter_top_receit/domain/usecases/reset_password_usecase.dart';
-import 'package:flutter_top_receit/domain/usecases/sign_in_user_usecase.dart';
-import 'package:flutter_top_receit/domain/usecases/sign_out_user_usecase.dart';
-import 'package:flutter_top_receit/domain/usecases/sign_up_usecase.dart';
-import 'package:flutter_top_receit/domain/usecases/sign_in_user_google_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/user/get_current_user_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/user/get_user_api_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/user/is_email_used_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/user/is_name_used_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/user/reset_password_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/user/sign_in_user_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/user/sign_out_user_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/user/sign_up_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/user/sign_in_user_google_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/user/update_password_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/user/update_user_usecase.dart';
 
 import 'auth_event.dart';
 import 'auth_state.dart';
@@ -21,6 +24,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final ResetPasswordUseCase resetPasswordUseCase;
   final IsEmailUsedUsecase isEmailUsedUseCase;
   final IsNameUsedUsecase isNameUsedUseCase;
+  final UpdateUserUseCase updateUserUseCase;
+  final UpdatePasswordUseCase updatePasswordUseCase;
+  final GetUserUseCase getUserUseCase;
 
   AuthBloc(
       this.getCurrentUserUseCase,
@@ -30,10 +36,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       this.signUpUseCase,
       this.resetPasswordUseCase,
       this.isEmailUsedUseCase,
-      this.isNameUsedUseCase)
+      this.isNameUsedUseCase,
+      this.updateUserUseCase,
+      this.updatePasswordUseCase,
+      this.getUserUseCase)
       : super(AuthState.initial()) {
     on<IsEmailUserUsed>((event, emit) async {
-      emit(AuthState(isLoading: true));
+      emit(const AuthState(isLoading: true));
       final emailResult = await isEmailUsedUseCase(event.email);
       final nameResult = await isNameUsedUseCase(event.username);
       emit(AuthState(
@@ -75,7 +84,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       result.fold(
         (failure) =>
             emit(AuthState.failure("Fallo al verificar la autenticación")),
-        (id) => emit(AuthState.isLoggedIn(id)),
+        (user) => emit(AuthState.isLoggedIn(user)),
       );
     });
 
@@ -102,6 +111,53 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         (failure) =>
             emit(AuthState.failure("Fallo al realizar la recuperacion")),
         (_) => emit(AuthState.success('')),
+      );
+    });
+
+    on<UpdatePasswordEvent>((event, emit) async {
+      emit(AuthState.loading());
+      final result = await updatePasswordUseCase(
+          UpdatePasswordParams(password: event.password));
+
+      if (result == true) {
+        emit(AuthState.success("Contraseña actualizada"));
+      } else {
+        emit(AuthState.failure("Fallo al actualizar la contraseña"));
+      }
+    });
+
+    on<GetUserEvent>((event, emit) async {
+      emit(AuthState.loading());
+      final result = await getUserUseCase.call(event.id);
+
+      result.fold(
+        (failure) =>
+            emit(AuthState.failure("Fallo al realizar la recuperación")),
+        (user) {
+          emit(AuthState.isLoggedIn(user));
+        },
+      );
+    });
+
+    on<UpdateUserEvent>((event, emit) async {
+      emit(AuthState.loading());
+      final result =
+          await updateUserUseCase(UpdateUserParams(user: event.user));
+
+      result.fold(
+        (failure) =>
+            emit(AuthState.failure("Fallo al realizar la actualización")),
+        (_) async {
+          final result = await getUserUseCase.call(event.user.id);
+
+          result.fold(
+            (failure) => emit(
+                AuthState.failure("Fallo al obtener los datos del usuario")),
+            (user) {
+              emit(AuthState.isLoggedIn(user));
+            },
+          );
+        },
       );
     });
   }

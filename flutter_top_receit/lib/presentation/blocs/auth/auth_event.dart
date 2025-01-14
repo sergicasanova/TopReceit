@@ -45,12 +45,12 @@ class ResetPasswordEvent extends AuthEvent {
 }
 
 class GetUserEvent extends AuthEvent {
-  final String userId;
+  final String id;
 
-  GetUserEvent({required this.userId});
+  GetUserEvent({required this.id});
 
   @override
-  List<Object?> get props => [userId];
+  List<Object?> get props => [id];
 }
 
 class CreateUserEvent extends AuthEvent {
@@ -79,6 +79,15 @@ class UpdateUserEvent extends AuthEvent {
 
   @override
   List<Object?> get props => [user];
+}
+
+class UpdatePasswordEvent extends AuthEvent {
+  final String password;
+
+  UpdatePasswordEvent({required this.password});
+
+  @override
+  List<Object?> get props => [password];
 }
 
 class SignInWithGoogleEvent extends AuthEvent {}

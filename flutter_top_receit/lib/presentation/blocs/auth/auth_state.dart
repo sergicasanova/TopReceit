@@ -1,3 +1,5 @@
+import 'package:flutter_top_receit/domain/entities/user_entity.dart';
+
 class AuthState {
   final bool isLoading;
   final String? email;
@@ -5,6 +7,7 @@ class AuthState {
   final bool? isEmailUsed;
   final bool? isNameUsed;
   final String? id;
+  final UserEntity? user;
 
   const AuthState({
     this.isLoading = false,
@@ -13,6 +16,7 @@ class AuthState {
     this.isEmailUsed,
     this.isNameUsed,
     this.id,
+    this.user,
   });
 
   List<Object?> get props => [
@@ -31,6 +35,7 @@ class AuthState {
     bool? isEmailUsed,
     bool? isNameUsed,
     String? id,
+    UserEntity? user,
   }) {
     return AuthState(
       isLoading: isLoading ?? this.isLoading,
@@ -39,6 +44,7 @@ class AuthState {
       isEmailUsed: isEmailUsed ?? this.isEmailUsed,
       isNameUsed: isNameUsed ?? this.isNameUsed,
       id: id ?? this.id,
+      user: user ?? this.user,
     );
   }
 
@@ -48,7 +54,9 @@ class AuthState {
 
   factory AuthState.success(String email) => AuthState(email: email);
 
-  factory AuthState.isLoggedIn(String id) => AuthState(id: id);
+  // factory AuthState.isLoggedIn(String id) => AuthState(id: id);
+
+  factory AuthState.isLoggedIn(UserEntity user) => AuthState(user: user);
 
   factory AuthState.failure(String errorMessage) =>
       AuthState(errorMessage: errorMessage);

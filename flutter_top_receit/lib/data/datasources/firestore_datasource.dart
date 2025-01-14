@@ -41,21 +41,21 @@ class FirestoreDataSource {
     }
   }
 
-  Future<UserModel?> getUser(String userId) async {
-    try {
-      final userDoc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(userId)
-          .get();
-      if (userDoc.exists) {
-        final userData = userDoc.data()!;
-        return UserModel.fromFirestore(userData);
-      }
-      return null;
-    } catch (e) {
-      throw Exception('Error al obtener el usuario desde Firestore: $e');
-    }
-  }
+  // Future<UserModel?> getUser(String userId) async {
+  //   try {
+  //     final userDoc = await FirebaseFirestore.instance
+  //         .collection('users')
+  //         .doc(userId)
+  //         .get();
+  //     if (userDoc.exists) {
+  //       final userData = userDoc.data()!;
+  //       return UserModel.fromFirestore(userData);
+  //     }
+  //     return null;
+  //   } catch (e) {
+  //     throw Exception('Error al obtener el usuario desde Firestore: $e');
+  //   }
+  // }
 
   Future<void> updateUser(UserModel user) async {
     try {

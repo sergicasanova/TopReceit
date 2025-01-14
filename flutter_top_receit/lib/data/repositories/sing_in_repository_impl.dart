@@ -3,7 +3,9 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_top_receit/core/failure.dart';
 import 'package:flutter_top_receit/data/datasources/firebase_auth_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/firestore_datasource.dart';
+import 'package:flutter_top_receit/data/datasources/user_api_datasource.dart';
 import 'package:flutter_top_receit/data/models/user_model.dart';
+import 'package:flutter_top_receit/domain/entities/user_entity.dart';
 import 'package:flutter_top_receit/domain/repositories/sign_in_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -11,9 +13,14 @@ class SignInRepositoryImpl implements SignInRepository {
   final FirebaseAuthDataSource dataSource;
   final SharedPreferences sharedPreferences;
   final FirestoreDataSource firebaseAuthDataSource;
+  final UserApiDataSource userApiDataSource;
 
   SignInRepositoryImpl(
-      this.dataSource, this.sharedPreferences, this.firebaseAuthDataSource);
+    this.dataSource,
+    this.sharedPreferences,
+    this.firebaseAuthDataSource,
+    this.userApiDataSource,
+  );
 
   @override
   Future<Either<Failure, UserModel>> signIn(
@@ -33,16 +40,26 @@ class SignInRepositoryImpl implements SignInRepository {
   }
 
   @override
-  Future<Either<Failure, String>> isLoggedIn() async {
+  Future<Either<Failure, UserEntity>> isLoggedIn() async {
     try {
       final id = sharedPreferences.getString('id');
+
       if (id == null) {
-        return Right("NO_USER");
-      } else {
-        return Right(id);
+        return Left(AuthFailure(message: "No hay usuario logueado"));
       }
+
+      UserEntity user = UserEntity(
+        id: id,
+        email: sharedPreferences.getString('email') ?? '',
+        username: sharedPreferences.getString('username') ?? '',
+        avatar: sharedPreferences.getString('avatar') ?? '',
+        preferences: sharedPreferences.getStringList('preferences') ?? [],
+      );
+
+      return Right(user);
     } catch (e) {
-      return Left(AuthFailure());
+      return Left(
+          AuthFailure(message: "Error al obtener los datos del usuario"));
     }
   }
 
@@ -71,10 +88,16 @@ class SignInRepositoryImpl implements SignInRepository {
       String username, String avatar, List<String> preferences) async {
     try {
       UserModel user = await dataSource.signUp(email, password);
-      firebaseAuthDataSource.createUser(
+
+      // firebaseAuthDataSource.createUser(
+      //     user.email, username, avatar, preferences, user.id);
+
+      await userApiDataSource.createUser(
           user.email, username, avatar, preferences, user.id);
+
       await sharedPreferences.setString('email', user.email);
       await sharedPreferences.setString('id', user.id);
+
       return Right(user);
     } catch (e) {
       return Left(AuthFailure());
@@ -108,6 +131,44 @@ class SignInRepositoryImpl implements SignInRepository {
       return Right(isUsed);
     } catch (e) {
       return Left(AuthFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, bool>> updatePassword(String password) async {
+    try {
+      await dataSource.updatePassword(password);
+      return const Right(true);
+    } catch (e) {
+      return Left(AuthFailure());
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserModel>> updateUser(UserModel user) async {
+    try {
+      await userApiDataSource.updateUser(user);
+
+      return Right(user);
+    } catch (e) {
+      return Left(AuthFailure(message: 'Error al actualizar el usuario.'));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> getUser(String idUser) async {
+    try {
+      final userId = sharedPreferences.getString('id');
+      if (userId == null) {
+        return Left(AuthFailure(message: 'Usuario no encontrado.'));
+      }
+
+      final userModel = await userApiDataSource.getUser(userId);
+      final userEntity = userModel.toEntity();
+      return Right(userEntity);
+    } catch (e) {
+      return Left(
+          ServerFailure(message: 'Error al obtener los datos del usuario.'));
     }
   }
 }

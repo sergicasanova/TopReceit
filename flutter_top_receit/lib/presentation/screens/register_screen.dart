@@ -28,9 +28,9 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   final _formKey = GlobalKey<FormState>();
   String? currentBackground;
-  bool _obscureText = true; // Para la visibilidad de la contraseña
-  bool _obscureConfirmText = true; // Para la confirmación de la contraseña
-  String? selectedPreference; // Para almacenar la preferencia seleccionada
+  bool _obscureText = true;
+  bool _obscureConfirmText = true;
+  String? selectedPreference;
 
   final List<String> preferences = [
     'Carne',
@@ -156,31 +156,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               final isNameUsed = authBloc.state.isNameUsed;
                               if (isNameUsed != null && isNameUsed) {
                                 return 'El nombre ya está en uso.';
-                              }
-                              return null;
-                            },
-                          ),
-                        ),
-                        const Spacer(),
-                        TextUtil(text: "Avatar URL"),
-                        Container(
-                          height: 35,
-                          decoration: const BoxDecoration(
-                            border:
-                                Border(bottom: BorderSide(color: Colors.white)),
-                          ),
-                          child: TextFormField(
-                            controller: avatarController,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
-                              suffixIcon:
-                                  Icon(Icons.image, color: Colors.white),
-                              fillColor: Colors.white,
-                              border: InputBorder.none,
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter an avatar URL';
                               }
                               return null;
                             },

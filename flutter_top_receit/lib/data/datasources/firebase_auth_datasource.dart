@@ -1,5 +1,4 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter_top_receit/core/failure.dart';
 import 'package:flutter_top_receit/data/models/user_model.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:flutter/foundation.dart';
@@ -56,17 +55,11 @@ class FirebaseAuthDataSource {
   }
 
   Future<void> resetPassword(String email) async {
-    try {
-      await auth.sendPasswordResetEmail(email: email);
-    } catch (e) {
-      if (e is FirebaseAuthException) {
-        if (e.code == 'user-not-found') {
-          throw AuthFailure(
-              message: 'No se encontró un usuario con ese correo.');
-        }
-      }
-      throw AuthFailure(
-          message: 'Error al enviar el correo de restablecimiento.');
-    }
+    await auth.sendPasswordResetEmail(email: email);
+  }
+
+  Future<void> updatePassword(String password) async {
+    var firebaseUser = auth.currentUser;
+    firebaseUser?.updatePassword(password);
   }
 }
