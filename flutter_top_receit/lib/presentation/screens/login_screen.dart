@@ -34,10 +34,18 @@ class _LoginScreenState extends State<LoginScreen> {
   Future<void> _loadBackgroundImage() async {
     final prefs = PreferencesService();
     final bgImage = await prefs.getBackgroundImage();
-    setState(() {
-      currentBackground = bgImage ?? bgList[0];
-      selectedIndex = bgList.indexOf(currentBackground!);
-    });
+    if (bgImage == null) {
+      _saveBackgroundImage(bgList[0]);
+      setState(() {
+        currentBackground = bgList[0];
+        selectedIndex = 0;
+      });
+    } else {
+      setState(() {
+        currentBackground = bgImage;
+        selectedIndex = bgList.indexOf(bgImage);
+      });
+    }
   }
 
   Future<void> _saveBackgroundImage(String bgImage) async {

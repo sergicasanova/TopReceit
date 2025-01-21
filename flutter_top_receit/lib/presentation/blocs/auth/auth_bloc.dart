@@ -147,14 +147,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       result.fold(
         (failure) =>
             emit(AuthState.failure("Fallo al realizar la actualización")),
-        (_) async {
-          final result = await getUserUseCase.call(event.user.id);
-
+        (_) {
           result.fold(
             (failure) => emit(
                 AuthState.failure("Fallo al obtener los datos del usuario")),
             (user) {
-              emit(AuthState.isLoggedIn(user));
+              add(GetUserEvent(id: user.id));
             },
           );
         },

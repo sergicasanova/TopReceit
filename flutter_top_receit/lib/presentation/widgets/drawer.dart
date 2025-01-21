@@ -100,7 +100,7 @@ class DrawerWidget extends StatelessWidget {
               ],
             ),
           ),
-          Divider(),
+          const Divider(),
           ListTile(
             leading: const Icon(Icons.exit_to_app, color: Colors.red),
             title: const Text(
