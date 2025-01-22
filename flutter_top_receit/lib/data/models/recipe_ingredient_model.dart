@@ -1,14 +1,14 @@
 import 'package:flutter_top_receit/data/models/ingredient_model.dart';
 
 class RecipeIngredientModel {
-  final int idRecipeIngredient;
+  int? idRecipeIngredient;
   int? idRecipe;
   final int quantity;
   final String unit;
   final IngredientModel ingredient;
 
   RecipeIngredientModel({
-    required this.idRecipeIngredient,
+    this.idRecipeIngredient,
     this.idRecipe,
     required this.quantity,
     required this.unit,
@@ -26,7 +26,6 @@ class RecipeIngredientModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id_recipe_ingredient': idRecipeIngredient,
       'recipe_id': idRecipe,
       'quantity': quantity,
       'unit': unit,

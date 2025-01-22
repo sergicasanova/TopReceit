@@ -28,7 +28,7 @@ class RecipeIngredientApiDataSource implements RecipeIngredientDataSource {
 
     final recipeIngredientMap = {
       'recipe_id': recipeIngredient.idRecipe,
-      'ingredient_id': recipeIngredient.ingredient,
+      'ingredient_id': recipeIngredient.ingredient.idIngredient,
       'quantity': recipeIngredient.quantity,
       'unit': recipeIngredient.unit,
     };

@@ -13,6 +13,13 @@ class IngredientModel {
     );
   }
 
+  factory IngredientModel.fromEntity(IngredientEntity entity) {
+    return IngredientModel(
+      idIngredient: entity.idIngredient,
+      name: entity.name,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id_ingredient': idIngredient,

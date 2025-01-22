@@ -51,11 +51,16 @@ class RecipeIngredientBloc
       emit(RecipeIngredientState.loading());
       final result =
           await createRecipeIngredientUseCase.call(event.recipeIngredient);
+
+      print("Resultado del use case: $result");
+
       result.fold(
-        (failure) => emit(
-            RecipeIngredientState.failure('Error al crear el ingrediente')),
-        (createdRecipeIngredient) =>
-            emit(RecipeIngredientState.created(createdRecipeIngredient)),
+        (failure) {
+          emit(RecipeIngredientState.failure('Error al crear el ingrediente'));
+        },
+        (createdRecipeIngredient) {
+          emit(RecipeIngredientState.created(createdRecipeIngredient));
+        },
       );
     });
 
@@ -78,7 +83,7 @@ class RecipeIngredientBloc
       emit(RecipeIngredientState.loading());
       final result = await deleteRecipeIngredientUseCase.call(
         event.recipeId,
-        event.idRecipeIngredient,
+        event.idRecipeIngredient!,
       );
       result.fold(
         (failure) => emit(

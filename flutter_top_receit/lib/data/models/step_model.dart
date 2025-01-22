@@ -1,11 +1,11 @@
 class StepModel {
-  final int idStep;
+  int? idStep;
   int? idRecipe;
   final String description;
   final int order;
 
   StepModel({
-    required this.idStep,
+    this.idStep,
     this.idRecipe,
     required this.description,
     required this.order,
@@ -21,7 +21,6 @@ class StepModel {
 
   Map<String, dynamic> toJson() {
     return {
-      'id_steps': idStep,
       'recipe_id': idRecipe,
       'description': description,
       'order': order,

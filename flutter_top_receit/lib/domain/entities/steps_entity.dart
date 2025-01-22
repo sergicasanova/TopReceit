@@ -13,7 +13,7 @@ class StepEntity {
 
   factory StepEntity.fromModel(StepModel model) {
     return StepEntity(
-      idStep: model.idStep,
+      idStep: model.idStep!,
       description: model.description,
       order: model.order,
     );

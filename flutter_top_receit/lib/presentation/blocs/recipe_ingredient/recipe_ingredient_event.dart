@@ -51,10 +51,10 @@ class UpdateRecipeIngredientEvent extends RecipeIngredientEvent {
 
 class DeleteRecipeIngredientEvent extends RecipeIngredientEvent {
   final int recipeId;
-  final int idRecipeIngredient;
+  int? idRecipeIngredient;
 
   DeleteRecipeIngredientEvent(
-      {required this.recipeId, required this.idRecipeIngredient});
+      {required this.recipeId, this.idRecipeIngredient});
 
   @override
   List<Object?> get props => [recipeId, idRecipeIngredient];

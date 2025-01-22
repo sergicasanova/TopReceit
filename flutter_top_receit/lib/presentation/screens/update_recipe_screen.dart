@@ -10,7 +10,7 @@ import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_state.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
-import 'package:flutter_top_receit/presentation/widgets/update%20fields/recipe_form.dart'; // Importamos el nuevo widget
+import 'package:flutter_top_receit/presentation/widgets/update%20fields/recipe_form.dart';
 import 'package:flutter_top_receit/presentation/widgets/update%20fields/recipe_ingredients.dart';
 import 'package:flutter_top_receit/presentation/widgets/update%20fields/steps.dart';
 import 'package:flutter_top_receit/presentation/widgets/update%20fields/buttons.dart';
@@ -38,7 +38,7 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
     final prefs = PreferencesService();
     final bgImage = await prefs.getBackgroundImage();
     setState(() {
-      currentBackground = bgImage ?? 'assets/default_background.jpg';
+      currentBackground = bgImage ?? 'assets/bg9.jpeg';
     });
   }
 
@@ -104,8 +104,7 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
         body: Container(
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage(
-                  currentBackground ?? 'assets/default_background.jpg'),
+              image: AssetImage(currentBackground ?? '.assets/bg9.jpeg'),
               fit: BoxFit.cover,
             ),
           ),

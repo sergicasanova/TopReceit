@@ -5,6 +5,10 @@ import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe_ingredient/recipe_ingredient_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe_ingredient/recipe_ingredient_event.dart';
+import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_event.dart';
+import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_state.dart';
+import 'package:flutter_top_receit/presentation/dialogs/add_recipe_ingredient_dialog.dart';
 
 class RecipeIngredients extends StatelessWidget {
   final List<RecipeIngredientModel> ingredients;
@@ -38,44 +42,89 @@ class RecipeIngredients extends StatelessWidget {
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: ingredients.map((ingredient) {
-              return Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
+            children: [
+              Column(
+                children: ingredients.map((ingredient) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        const Icon(Icons.fastfood, size: 20),
-                        const SizedBox(width: 5),
-                        Text(
-                          '${ingredient.ingredient.name} - ${ingredient.quantity} ${ingredient.unit}',
-                          style: const TextStyle(fontSize: 16),
+                        Row(
+                          children: [
+                            const Icon(Icons.fastfood, size: 20),
+                            const SizedBox(width: 5),
+                            Text(
+                              '${ingredient.ingredient.name} - ${ingredient.quantity} ${ingredient.unit}',
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () async {
+                            context.read<RecipeIngredientBloc>().add(
+                                  DeleteRecipeIngredientEvent(
+                                    recipeId: recipeId,
+                                    idRecipeIngredient:
+                                        ingredient.idRecipeIngredient,
+                                  ),
+                                );
+
+                            await Future.delayed(const Duration(seconds: 1));
+
+                            context
+                                .read<RecipeBloc>()
+                                .add(GetRecipeByIdEvent(id: recipeId));
+                          },
                         ),
                       ],
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.delete, color: Colors.red),
-                      onPressed: () async {
-                        context.read<RecipeIngredientBloc>().add(
-                              DeleteRecipeIngredientEvent(
+                  );
+                }).toList(),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: const Icon(Icons.add_circle,
+                      color: Colors.green, size: 30),
+                  onPressed: () {
+                    context
+                        .read<IngredientBloc>()
+                        .add(GetAllIngredientsEvent());
+                    showDialog(
+                      context: context,
+                      builder: (context) {
+                        return BlocBuilder<IngredientBloc, IngredientState>(
+                          builder: (context, state) {
+                            if (state.isLoading) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            }
+
+                            if (state.errorMessage != null) {
+                              return Center(child: Text(state.errorMessage!));
+                            }
+
+                            if (state.ingredients != null &&
+                                state.ingredients!.isNotEmpty) {
+                              return AddIngredientDialog(
                                 recipeId: recipeId,
-                                idRecipeIngredient:
-                                    ingredient.idRecipeIngredient,
-                              ),
-                            );
-
-                        await Future.delayed(const Duration(seconds: 1));
-
-                        context
-                            .read<RecipeBloc>()
-                            .add(GetRecipeByIdEvent(id: recipeId));
+                                ingredients: state.ingredients!,
+                              );
+                            } else {
+                              return const Center(
+                                  child:
+                                      Text('No hay ingredientes disponibles.'));
+                            }
+                          },
+                        );
                       },
-                    )
-                  ],
+                    );
+                  },
                 ),
-              );
-            }).toList(),
+              )
+            ],
           ),
         ),
       ],
