@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_top_receit/config/router/routes.dart';
 import 'package:flutter_top_receit/firebase_options.dart';
@@ -11,6 +12,10 @@ import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_bloc
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe_ingredient/recipe_ingredient_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/steps/steps_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_event.dart';
+import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguaje_state.dart';
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -48,11 +53,31 @@ class MyApp extends StatelessWidget {
         BlocProvider(
           create: (_) => sl<StepBloc>(),
         ),
+        BlocProvider(
+          create: (_) => sl<LanguageBloc>(),
+        ),
       ],
-      child: MaterialApp.router(
-        routerConfig: router,
-        debugShowCheckedModeBanner: false,
-        title: 'TopRecipe',
+      child: BlocBuilder<LanguageBloc, LanguageState>(
+        builder: (context, state) {
+          context.read<LanguageBloc>().add(GetLocaleEvent());
+          return MaterialApp.router(
+            routerConfig: router,
+            debugShowCheckedModeBanner: false,
+            title: 'TopRecipe',
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'),
+              Locale('es'),
+              Locale('fr'),
+            ],
+            locale: state.locale,
+          );
+        },
       ),
     );
   }

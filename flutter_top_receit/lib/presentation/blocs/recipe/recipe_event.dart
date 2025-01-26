@@ -67,3 +67,35 @@ class DeleteRecipeEvent extends RecipeEvent {
   @override
   List<Object?> get props => [id];
 }
+
+class ApplyFilterEvent extends RecipeEvent {
+  final String? title;
+  final int? steps;
+  final int? ingredients;
+  final String userId;
+
+  ApplyFilterEvent({
+    this.title,
+    this.steps,
+    this.ingredients,
+    required this.userId,
+  });
+
+  @override
+  List<Object?> get props => [title, steps, ingredients, userId];
+}
+
+class OrderRecipesEvent extends RecipeEvent {
+  final String orderBy;
+  final bool ascending;
+  final String userId;
+
+  OrderRecipesEvent({
+    required this.orderBy,
+    required this.ascending,
+    required this.userId,
+  });
+
+  @override
+  List<Object?> get props => [orderBy, ascending, userId];
+}

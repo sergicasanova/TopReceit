@@ -11,6 +11,7 @@ import 'package:flutter_top_receit/domain/usecases/user/sign_up_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/user/sign_in_user_google_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/user/update_password_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/user/update_user_usecase.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'auth_event.dart';
 import 'auth_state.dart';
@@ -116,11 +117,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     on<UpdatePasswordEvent>((event, emit) async {
       emit(AuthState.loading());
+
+      final prefs = await SharedPreferences.getInstance();
+      final userId = prefs.getString('id');
+
+      if (userId == null) {
+        emit(AuthState.failure("Usuario no encontrado"));
+        return;
+      }
+
       final result = await updatePasswordUseCase(
           UpdatePasswordParams(password: event.password));
 
       if (result == true) {
         emit(AuthState.success("Contraseña actualizada"));
+
+        final resultUser = await getUserUseCase.call(userId);
+        resultUser.fold(
+          (failure) =>
+              emit(AuthState.failure("Fallo al obtener los datos del usuario")),
+          (user) => emit(AuthState.isLoggedIn(user)),
+        );
       } else {
         emit(AuthState.failure("Fallo al actualizar la contraseña"));
       }

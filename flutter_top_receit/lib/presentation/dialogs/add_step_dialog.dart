@@ -6,6 +6,7 @@ import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/steps/steps_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/steps/steps_event.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddStepDialog extends StatefulWidget {
   final int recipeId;
@@ -29,33 +30,30 @@ class _AddStepDialogState extends State<AddStepDialog> {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
-              'Agregar Paso',
+            Text(
+              AppLocalizations.of(context)!.add_step_title,
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
-
             TextField(
               controller: _orderController,
-              decoration: const InputDecoration(
-                labelText: 'Número del paso (orden)',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.step_number_label,
+                border: const OutlineInputBorder(),
               ),
               keyboardType: TextInputType.number,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
             ),
             const SizedBox(height: 16),
-
             TextField(
               controller: _stepController,
-              decoration: const InputDecoration(
-                labelText: 'Descripción del paso',
-                border: OutlineInputBorder(),
+              decoration: InputDecoration(
+                labelText: AppLocalizations.of(context)!.step_description_label,
+                border: const OutlineInputBorder(),
               ),
               maxLines: 3,
             ),
             const SizedBox(height: 16),
-
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
               children: [
@@ -63,7 +61,7 @@ class _AddStepDialogState extends State<AddStepDialog> {
                   onPressed: () {
                     Navigator.of(context).pop();
                   },
-                  child: const Text('Cancelar'),
+                  child: Text(AppLocalizations.of(context)!.cancel_button),
                 ),
                 ElevatedButton(
                   onPressed: () async {
@@ -89,20 +87,20 @@ class _AddStepDialogState extends State<AddStepDialog> {
                         Navigator.of(context).pop();
                       } else {
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                              content: Text(
-                                  'Por favor, ingresa un número válido para el paso')),
+                          SnackBar(
+                              content: Text(AppLocalizations.of(context)!
+                                  .step_number_invalid)),
                         );
                       }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                            content: Text(
-                                'Por favor, ingresa la descripción y el número del paso')),
+                        SnackBar(
+                            content: Text(AppLocalizations.of(context)!
+                                .step_description_and_number_required)),
                       );
                     }
                   },
-                  child: const Text('Agregar'),
+                  child: Text(AppLocalizations.of(context)!.add_button),
                 ),
               ],
             ),

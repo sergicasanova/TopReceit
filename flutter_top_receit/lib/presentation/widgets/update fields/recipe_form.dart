@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecipeForm extends StatelessWidget {
   final TextEditingController titleController;
@@ -16,9 +17,9 @@ class RecipeForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        const Text(
-          'Título',
-          style: TextStyle(
+        Text(
+          AppLocalizations.of(context)!.title_label,
+          style: const TextStyle(
               color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold),
         ),
         Container(
@@ -27,7 +28,7 @@ class RecipeForm extends StatelessWidget {
             controller: titleController,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              hintText: 'Ingresa el nuevo título de la receta',
+              hintText: AppLocalizations.of(context)!.title_hint,
               hintStyle: const TextStyle(color: Colors.white),
               filled: true,
               fillColor: Colors.black.withOpacity(0.5),
@@ -36,9 +37,9 @@ class RecipeForm extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        const Text(
-          'Descripción',
-          style: TextStyle(color: Colors.white, fontSize: 18),
+        Text(
+          AppLocalizations.of(context)!.description_label,
+          style: const TextStyle(color: Colors.white, fontSize: 18),
         ),
         Container(
           margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -47,18 +48,18 @@ class RecipeForm extends StatelessWidget {
             maxLines: 5,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              hintText: 'Ingresa la descripción de la receta',
+              hintText: AppLocalizations.of(context)!.description_hint,
               hintStyle: const TextStyle(color: Colors.white),
               filled: true,
               fillColor: Colors.black.withOpacity(0.5),
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
             ),
           ),
         ),
         const SizedBox(height: 16),
-        const Text(
-          'URL de la Imagen',
-          style: TextStyle(color: Colors.white, fontSize: 18),
+        Text(
+          AppLocalizations.of(context)!.image_url_label,
+          style: const TextStyle(color: Colors.white, fontSize: 18),
         ),
         Container(
           margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -66,7 +67,7 @@ class RecipeForm extends StatelessWidget {
             controller: imageUrlController,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
-              hintText: 'Ingresa la nueva URL de la imagen',
+              hintText: AppLocalizations.of(context)!.image_url_hint,
               hintStyle: const TextStyle(color: Colors.white),
               filled: true,
               fillColor: Colors.black.withOpacity(0.5),

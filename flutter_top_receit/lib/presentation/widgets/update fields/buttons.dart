@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecipeButtons extends StatelessWidget {
   final VoidCallback onAccept;
@@ -16,7 +17,7 @@ class RecipeButtons extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: onAccept,
-          child: const Text('Aceptar'),
+          child: Text(AppLocalizations.of(context)!.accept_button),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green,
             foregroundColor: Colors.white,
@@ -25,7 +26,7 @@ class RecipeButtons extends StatelessWidget {
         const SizedBox(width: 10),
         ElevatedButton(
           onPressed: onCancel,
-          child: const Text('Cancelar'),
+          child: Text(AppLocalizations.of(context)!.cancel_button),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,
             foregroundColor: Colors.white,

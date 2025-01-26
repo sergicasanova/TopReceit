@@ -8,6 +8,7 @@ import 'package:flutter_top_receit/presentation/dialogs/logout_dialog.dart';
 import 'package:flutter_top_receit/presentation/dialogs/UserConfigurationDialog.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class DrawerWidget extends StatelessWidget {
   final Function(String) onBackgroundChanged;
@@ -34,10 +35,12 @@ class DrawerWidget extends StatelessWidget {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return const Text("Cargando...");
                 } else if (snapshot.hasError) {
-                  return const Text("Error al cargar el email");
+                  return Text(
+                      AppLocalizations.of(context)!.error_loading_email);
                 } else {
                   return Text(
-                    snapshot.data ?? "Usuario no registrado",
+                    snapshot.data ??
+                        AppLocalizations.of(context)!.drawer_user_not_found,
                     style: const TextStyle(fontSize: 20, color: Colors.white),
                   );
                 }
@@ -47,8 +50,11 @@ class DrawerWidget extends StatelessWidget {
               userBloc.state.user?.username ?? 'Usuario',
               style: const TextStyle(color: Colors.white),
             ),
-            currentAccountPicture: const CircleAvatar(
-              backgroundImage: AssetImage('assets/bg9.jpeg'),
+            currentAccountPicture: CircleAvatar(
+              backgroundImage: userBloc.state.user?.avatar != null &&
+                      userBloc.state.user!.avatar.isNotEmpty
+                  ? NetworkImage(userBloc.state.user!.avatar)
+                  : const AssetImage('assets/bg9.jpeg') as ImageProvider,
             ),
           ),
 
@@ -58,7 +64,7 @@ class DrawerWidget extends StatelessWidget {
               children: [
                 ListTile(
                   leading: const Icon(Icons.settings, color: Colors.lightBlue),
-                  title: const Text('Configuración'),
+                  title: Text(AppLocalizations.of(context)!.drawer_config),
                   onTap: () {
                     final user = userBloc.state.user;
 
@@ -69,13 +75,15 @@ class DrawerWidget extends StatelessWidget {
                             UserConfigurationDialog(user: user),
                       );
                     } else {
-                      print('User not found!');
+                      print(
+                          AppLocalizations.of(context)!.drawer_user_not_found);
                     }
                   },
                 ),
                 ListTile(
                   leading: const Icon(Icons.lock, color: Colors.lightBlue),
-                  title: const Text('Cambiar Contraseña'),
+                  title: Text(
+                      AppLocalizations.of(context)!.drawer_change_password),
                   onTap: () {
                     showDialog(
                       context: context,
@@ -85,7 +93,8 @@ class DrawerWidget extends StatelessWidget {
                 ),
                 ListTile(
                   leading: const Icon(Icons.wallpaper, color: Colors.lightBlue),
-                  title: const Text('Cambiar fondo de pantalla'),
+                  title: Text(
+                      AppLocalizations.of(context)!.drawer_change_background),
                   onTap: () {
                     showDialog(
                       context: context,
@@ -103,9 +112,9 @@ class DrawerWidget extends StatelessWidget {
           const Divider(),
           ListTile(
             leading: const Icon(Icons.exit_to_app, color: Colors.red),
-            title: const Text(
-              'Cerrar Sesión',
-              style: TextStyle(color: Colors.red),
+            title: Text(
+              AppLocalizations.of(context)!.drawer_logout,
+              style: const TextStyle(color: Colors.red),
             ),
             onTap: () async {
               final resultado = await showDialog<String>(

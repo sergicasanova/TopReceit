@@ -6,6 +6,7 @@ import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/steps/steps_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/steps/steps_event.dart';
 import 'package:flutter_top_receit/presentation/dialogs/add_step_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecipeSteps extends StatelessWidget {
   final List<StepModel> steps;
@@ -18,9 +19,9 @@ class RecipeSteps extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Pasos:',
-          style: TextStyle(color: Colors.white, fontSize: 18),
+        Text(
+          AppLocalizations.of(context)!.steps_title,
+          style: const TextStyle(color: Colors.white, fontSize: 18),
         ),
         Container(
           padding: const EdgeInsets.all(16),
@@ -54,7 +55,7 @@ class RecipeSteps extends StatelessWidget {
                             SizedBox(
                                 width: 300,
                                 child: Text(
-                                  'Paso ${step.order}: ${step.description}',
+                                  '${AppLocalizations.of(context)!.steps_title_card} ${step.order}: ${step.description}',
                                   style: const TextStyle(fontSize: 16),
                                   softWrap: true,
                                 )),

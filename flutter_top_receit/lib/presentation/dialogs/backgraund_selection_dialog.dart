@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class BackgroundSelectionDialog extends StatefulWidget {
   final Function(String) onBackgroundChanged;
@@ -49,7 +50,7 @@ class _BackgroundSelectionDialogState extends State<BackgroundSelectionDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Seleccionar fondo de pantalla'),
+      title: Text(AppLocalizations.of(context)!.select_background_title),
       content: SingleChildScrollView(
         child: Column(
           children: bgImages.map((bgImage) {

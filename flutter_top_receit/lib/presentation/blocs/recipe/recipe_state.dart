@@ -54,4 +54,7 @@ class RecipeState extends Equatable {
       RecipeState(recipe: recipe);
 
   factory RecipeState.deleted() => const RecipeState();
+
+  factory RecipeState.filtered(List<RecipeEntity> filteredRecipes) =>
+      RecipeState(recipes: filteredRecipes);
 }

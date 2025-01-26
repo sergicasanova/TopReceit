@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_event.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ChangePasswordDialog extends StatefulWidget {
   const ChangePasswordDialog({super.key});
@@ -18,7 +19,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Cambiar contraseña'),
+      title: Text(AppLocalizations.of(context)!.drawer_change_password),
       content: Form(
         key: _formKey,
         child: Column(
@@ -27,10 +28,11 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
             TextFormField(
               controller: _passwordController,
               obscureText: true,
-              decoration: const InputDecoration(labelText: 'Nueva Contraseña'),
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!.new_password_label),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Por favor ingresa una contraseña';
+                  return AppLocalizations.of(context)!.password_required;
                 }
                 return null;
               },
@@ -38,13 +40,16 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
             TextFormField(
               controller: _confirmPasswordController,
               obscureText: true,
-              decoration:
-                  const InputDecoration(labelText: 'Confirmar Contraseña'),
+              decoration: InputDecoration(
+                  labelText: AppLocalizations.of(context)!
+                      .register_confirm_password_label),
               validator: (value) {
                 if (value == null || value.isEmpty) {
-                  return 'Por favor confirma tu contraseña';
+                  return AppLocalizations.of(context)!
+                      .register_confirm_password_required;
                 } else if (value != _passwordController.text) {
-                  return 'Las contraseñas no coinciden';
+                  return AppLocalizations.of(context)!
+                      .register_passwords_do_not_match;
                 }
                 return null;
               },
@@ -57,7 +62,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: const Text('Cancelar'),
+          child: Text(AppLocalizations.of(context)!.cancel_button),
         ),
         TextButton(
           onPressed: () {
@@ -70,7 +75,7 @@ class _ChangePasswordDialogState extends State<ChangePasswordDialog> {
               Navigator.of(context).pop();
             }
           },
-          child: const Text('Aceptar'),
+          child: Text(AppLocalizations.of(context)!.accept_button),
         ),
       ],
     );

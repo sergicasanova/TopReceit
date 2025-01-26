@@ -48,6 +48,7 @@ import 'package:flutter_top_receit/domain/usecases/user/update_password_usecase.
 import 'package:flutter_top_receit/domain/usecases/user/update_user_usecase.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe_ingredient/recipe_ingredient_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/steps/steps_bloc.dart';
@@ -69,6 +70,7 @@ void configureDependencies() async {
   sl.registerFactory<RecipeIngredientBloc>(
       () => RecipeIngredientBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory<StepBloc>(() => StepBloc(sl(), sl(), sl(), sl(), sl()));
+  sl.registerFactory<LanguageBloc>(() => LanguageBloc(sl()));
 
   // Instancia de Firebase Auth
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);

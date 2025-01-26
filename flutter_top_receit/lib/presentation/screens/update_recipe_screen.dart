@@ -15,6 +15,7 @@ import 'package:flutter_top_receit/presentation/widgets/update%20fields/recipe_i
 import 'package:flutter_top_receit/presentation/widgets/update%20fields/steps.dart';
 import 'package:flutter_top_receit/presentation/widgets/update%20fields/buttons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UpdateRecipeScreen extends StatefulWidget {
   final int recipeId;
@@ -81,6 +82,38 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
     context.read<RecipeBloc>().add(GetRecipeByIdEvent(id: widget.recipeId));
   }
 
+  void _showDeleteConfirmationDialog() {
+    showDialog<String>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(
+              AppLocalizations.of(context)!.delete_recipe_confirmation_title),
+          content: Text(
+              AppLocalizations.of(context)!.delete_recipe_confirmation_content),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text(AppLocalizations.of(context)!.cancel_button),
+            ),
+            TextButton(
+              onPressed: () {
+                context
+                    .read<RecipeBloc>()
+                    .add(DeleteRecipeEvent(id: widget.recipeId));
+                Navigator.of(context).pop();
+                router.go('/home');
+              },
+              child: Text(AppLocalizations.of(context)!.delete_button),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<RecipeBloc, RecipeState>(
@@ -123,6 +156,7 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                     const SizedBox(height: 32),
                     BlocBuilder<RecipeBloc, RecipeState>(
                       builder: (context, state) {
+                        // Ingredientes
                         final ingredients = _convertIngredients(
                             state.recipe?.recipeIngredients ?? []);
                         return RecipeIngredients(
@@ -134,6 +168,7 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                     const SizedBox(height: 32),
                     BlocBuilder<RecipeBloc, RecipeState>(
                       builder: (context, state) {
+                        // Pasos
                         List<StepModel> steps =
                             _convertSteps(state.recipe?.steps ?? []);
                         return RecipeSteps(
@@ -142,9 +177,23 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                         );
                       },
                     ),
+                    const SizedBox(height: 20),
+                    // Botón para eliminar la receta
+                    ElevatedButton.icon(
+                      onPressed: _showDeleteConfirmationDialog,
+                      icon: const Icon(Icons.delete, color: Colors.white),
+                      label: Text(AppLocalizations.of(context)!.delete_button),
+                      style: ElevatedButton.styleFrom(
+                        foregroundColor: Colors.white,
+                        backgroundColor: Colors.red,
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 20, horizontal: 30),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 32),
-
-                    // Botones
                     RecipeButtons(
                       onAccept: () {
                         if (_titleController.text.isNotEmpty &&
@@ -162,8 +211,9 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                           router.go('/home');
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                                content: Text('Completa todos los campos')),
+                            SnackBar(
+                                content: Text(AppLocalizations.of(context)!
+                                    .recipe_fields_required)),
                           );
                         }
                       },

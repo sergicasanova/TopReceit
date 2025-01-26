@@ -9,6 +9,7 @@ import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_bloc
 import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_state.dart';
 import 'package:flutter_top_receit/presentation/dialogs/add_recipe_ingredient_dialog.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RecipeIngredients extends StatelessWidget {
   final List<RecipeIngredientModel> ingredients;
@@ -22,9 +23,9 @@ class RecipeIngredients extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
-          'Lista de Ingredientes:',
-          style: TextStyle(color: Colors.white, fontSize: 18),
+        Text(
+          AppLocalizations.of(context)!.ingredient_list_title,
+          style: const TextStyle(color: Colors.white, fontSize: 18),
         ),
         Container(
           padding: const EdgeInsets.all(16),

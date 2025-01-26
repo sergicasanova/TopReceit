@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LogOutUser extends StatelessWidget {
   const LogOutUser({super.key});
@@ -6,19 +7,19 @@ class LogOutUser extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-        title: const Text('Cerrar sesión'),
-        content: const Text('¿Estas seguro de que desea cerrar sesion?'),
+        title: Text(AppLocalizations.of(context)!.logout_title),
+        content: Text(AppLocalizations.of(context)!.logout_confirmation),
         actions: <Widget>[
           TextButton(
               onPressed: () {
                 Navigator.pop(context, 'Cancelar');
               },
-              child: const Text('Cancelar')),
+              child: Text(AppLocalizations.of(context)!.cancel_button)),
           TextButton(
               onPressed: () {
                 Navigator.pop(context, 'Aceptar');
               },
-              child: const Text('Aceptar'))
+              child: Text(AppLocalizations.of(context)!.accept_button))
         ]);
   }
 }

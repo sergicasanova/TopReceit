@@ -9,6 +9,7 @@ import 'package:flutter_top_receit/presentation/functions/valodators_function.da
 import 'package:flutter_top_receit/presentation/widgets/data/bg_data.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -100,9 +101,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const Spacer(),
                         Center(
                             child: TextUtil(
-                                text: "Register", weight: true, size: 30)),
+                                text: AppLocalizations.of(context)!
+                                    .register_title,
+                                weight: true,
+                                size: 30)),
                         const Spacer(),
-                        TextUtil(text: "Email"),
+                        TextUtil(
+                            text: AppLocalizations.of(context)!.email_label),
                         Container(
                           height: 35,
                           decoration: const BoxDecoration(
@@ -119,21 +124,26 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             validator: (String? value) {
                               if (value == null || value.isEmpty) {
-                                return 'El email es obligatorio';
+                                return AppLocalizations.of(context)!
+                                    .register_email_required;
                               }
                               if (!isEmailValid(value)) {
-                                return 'El correo electrónico no es válido';
+                                return AppLocalizations.of(context)!
+                                    .register_invalid_email;
                               }
                               final isEmailUsed = authBloc.state.isEmailUsed;
                               if (isEmailUsed != null && isEmailUsed) {
-                                return 'El email ya está en uso.';
+                                return AppLocalizations.of(context)!
+                                    .register_email_taken;
                               }
                               return null;
                             },
                           ),
                         ),
                         const Spacer(),
-                        TextUtil(text: "Username"),
+                        TextUtil(
+                            text: AppLocalizations.of(context)!
+                                .register_username_label),
                         Container(
                           height: 35,
                           decoration: const BoxDecoration(
@@ -151,18 +161,22 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             validator: (String? value) {
                               if (value == null || value.isEmpty) {
-                                return 'El nombre es obligatorio';
+                                return AppLocalizations.of(context)!
+                                    .register_username_required;
                               }
                               final isNameUsed = authBloc.state.isNameUsed;
                               if (isNameUsed != null && isNameUsed) {
-                                return 'El nombre ya está en uso.';
+                                return AppLocalizations.of(context)!
+                                    .register_username_taken;
                               }
                               return null;
                             },
                           ),
                         ),
                         const Spacer(),
-                        TextUtil(text: "Preferences"),
+                        TextUtil(
+                            text: AppLocalizations.of(context)!
+                                .register_preferences_label),
                         // Dropdown selector
                         DropdownButtonFormField<String>(
                           value: selectedPreference,
@@ -188,13 +202,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           },
                           validator: (value) {
                             if (value == null || value.isEmpty) {
-                              return 'Please select a preference';
+                              return AppLocalizations.of(context)!
+                                  .register_preference_required;
                             }
                             return null;
                           },
                         ),
                         const Spacer(),
-                        TextUtil(text: "Password"),
+                        TextUtil(
+                            text: AppLocalizations.of(context)!.password_label),
                         Container(
                           height: 35,
                           decoration: const BoxDecoration(
@@ -224,26 +240,33 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscureText: _obscureText,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'La contraseña es obligatoria';
+                                return AppLocalizations.of(context)!
+                                    .register_password_required;
                               }
                               if (value.length < 8) {
-                                return 'La contraseña debe tener al menos 8 caracteres';
+                                return AppLocalizations.of(context)!
+                                    .register_password_length;
                               }
                               if (!hasNumber(value)) {
-                                return 'La contraseña debe contener al menos un número';
+                                return AppLocalizations.of(context)!
+                                    .register_password_number;
                               }
                               if (!hasUppercaseLetter(value)) {
-                                return 'La contraseña debe contener al menos una letra mayúscula';
+                                return AppLocalizations.of(context)!
+                                    .register_password_uppercase;
                               }
                               if (!hasLowercaseLetter(value)) {
-                                return 'La contraseña debe contener al menos una letra minúscula';
+                                return AppLocalizations.of(context)!
+                                    .register_password_lowercase;
                               }
                               return null;
                             },
                           ),
                         ),
                         const Spacer(),
-                        TextUtil(text: "Confirm Password"),
+                        TextUtil(
+                            text: AppLocalizations.of(context)!
+                                .register_confirm_password_label),
                         Container(
                           height: 35,
                           decoration: const BoxDecoration(
@@ -273,10 +296,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             obscureText: _obscureConfirmText,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Please confirm your password';
+                                return AppLocalizations.of(context)!
+                                    .register_confirm_password_required;
                               }
                               if (value != passwordController.text) {
-                                return 'Passwords do not match';
+                                return AppLocalizations.of(context)!
+                                    .register_passwords_do_not_match;
                               }
                               return null;
                             },
@@ -307,8 +332,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               borderRadius: BorderRadius.circular(30),
                             ),
                             alignment: Alignment.center,
-                            child:
-                                TextUtil(text: "Register", color: Colors.black),
+                            child: TextUtil(
+                                text: AppLocalizations.of(context)!
+                                    .register_button_text,
+                                color: Colors.black),
                           ),
                         ),
                         const Spacer(),
@@ -318,7 +345,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               context.go('/login');
                             },
                             child: TextUtil(
-                                text: "Already have an account? Login",
+                                text: AppLocalizations.of(context)!
+                                    .register_login_button,
                                 size: 12,
                                 weight: true),
                           ),

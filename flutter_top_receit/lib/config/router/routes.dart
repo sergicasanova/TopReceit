@@ -13,10 +13,13 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/login',
       builder: (context, state) => const LoginScreen(),
-    ),
-    GoRoute(
-      path: '/login/register',
-      builder: (context, state) => const RegisterScreen(),
+      routes: [
+        GoRoute(
+          name: 'register',
+          path: 'register',
+          builder: (context, state) => const RegisterScreen(),
+        ),
+      ],
     ),
     GoRoute(path: '/home', builder: (context, state) => const MainScreen()),
     GoRoute(
@@ -33,6 +36,9 @@ final GoRouter router = GoRouter(
   ],
   redirect: (context, state) async {
     final isLoggedIn = await sl<SignInRepository>().isLoggedIn();
+    if (state.matchedLocation.contains('/register')) {
+      return null;
+    }
     return isLoggedIn.fold((_) => '/login', (loggedIn) {
       if (loggedIn == "NO_USER" && !state.matchedLocation.contains("/login")) {
         return "/login";

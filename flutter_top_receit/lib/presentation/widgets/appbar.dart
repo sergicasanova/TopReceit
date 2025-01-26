@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_top_receit/config/utils/text_utils.dart';
+import 'package:flutter_top_receit/presentation/widgets/lenguage_buttons.dart'; // Importamos el widget LanguageSelector
 
 class AppBarDefault extends StatelessWidget implements PreferredSizeWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
+  final Function(String) onLanguageChanged; // Función para cambiar el idioma
 
   const AppBarDefault({
     super.key,
     required this.scaffoldKey,
+    required this.onLanguageChanged, // Recibimos la función en el constructor
   });
 
   @override
@@ -19,6 +22,7 @@ class AppBarDefault extends StatelessWidget implements PreferredSizeWidget {
       elevation: 0, // Sin sombra
       title: Row(
         children: [
+          LanguageSelector(onLanguageChanged: onLanguageChanged),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,

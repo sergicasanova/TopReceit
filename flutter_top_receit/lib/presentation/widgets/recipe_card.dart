@@ -33,7 +33,6 @@ class RecipeCard extends StatelessWidget {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Imagen de la receta
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
                 child: Image.network(
@@ -78,7 +77,6 @@ class RecipeCard extends StatelessWidget {
                           ],
                         ),
                         const SizedBox(width: 20),
-                        // Icono de pasos
                         Row(
                           children: [
                             const Icon(

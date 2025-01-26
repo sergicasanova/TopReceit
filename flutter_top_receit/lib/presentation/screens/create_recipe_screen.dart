@@ -5,6 +5,7 @@ import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_top_receit/config/router/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class CreateRecipeScreen extends StatefulWidget {
   const CreateRecipeScreen({super.key});
@@ -51,7 +52,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Crear Receta'),
+        title: Text(AppLocalizations.of(context)!.create_recipe_title),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -76,15 +77,16 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Título',
+                      Text(
+                        AppLocalizations.of(context)!.title_label,
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       TextField(
                         controller: _titleController,
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
-                          hintText: 'Ingresa el título de la receta',
+                          hintText: AppLocalizations.of(context)!
+                              .create_recipe_hint_title,
                           hintStyle: const TextStyle(color: Colors.white),
                           filled: true,
                           fillColor: Colors.black.withOpacity(0.5),
@@ -92,15 +94,16 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'Descripción',
+                      Text(
+                        AppLocalizations.of(context)!.description_label,
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       TextField(
                         controller: _descriptionController,
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
-                          hintText: 'Ingresa una breve descripción',
+                          hintText: AppLocalizations.of(context)!
+                              .create_recipe_hint_description,
                           hintStyle: const TextStyle(color: Colors.white),
                           filled: true,
                           fillColor: Colors.black.withOpacity(0.5),
@@ -108,15 +111,16 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                         ),
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'URL de la Imagen',
+                      Text(
+                        AppLocalizations.of(context)!.image_url_label,
                         style: TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       TextField(
                         controller: _imageUrlController,
                         style: const TextStyle(color: Colors.white),
                         decoration: InputDecoration(
-                          hintText: 'Ingresa la URL de la imagen',
+                          hintText: AppLocalizations.of(context)!
+                              .create_recipe_hint_image_url,
                           hintStyle: const TextStyle(color: Colors.white),
                           filled: true,
                           fillColor: Colors.black.withOpacity(0.5),
@@ -145,13 +149,15 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                                 router.go('/home');
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                      content:
-                                          Text('Completa todos los campos')),
+                                  SnackBar(
+                                      content: Text(
+                                          AppLocalizations.of(context)!
+                                              .recipe_fields_required)),
                                 );
                               }
                             },
-                            child: const Text('Crear Receta'),
+                            child: Text(AppLocalizations.of(context)!
+                                .create_recipe_title),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.transparent,
                               foregroundColor: Colors.green,
@@ -164,7 +170,8 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                             onPressed: () {
                               router.go('/home');
                             },
-                            child: const Text('Cancelar'),
+                            child: Text(
+                                AppLocalizations.of(context)!.cancel_button),
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.transparent,
                               foregroundColor: Colors.red,

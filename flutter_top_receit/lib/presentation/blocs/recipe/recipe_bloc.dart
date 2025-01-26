@@ -111,5 +111,46 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
         (_) => emit(RecipeState.deleted()),
       );
     });
+
+    on<ApplyFilterEvent>((event, emit) async {
+      emit(RecipeState.loading());
+
+      final result = await getRecipesByUserIdUseCase.call(event.userId);
+      result.fold(
+        (failure) {
+          emit(RecipeState.failure("Fallo al obtener las recetas del usuario"));
+        },
+        (recipes) {
+          var filteredRecipes = recipes;
+
+          // Filtro por título
+          if (event.title != null && event.title!.isNotEmpty) {
+            filteredRecipes = filteredRecipes
+                .where((recipe) => recipe.title!
+                    .toLowerCase()
+                    .contains(event.title!.toLowerCase()))
+                .toList();
+          }
+
+          // Filtro por pasos (solo si 'steps' no es nulo)
+          if (event.steps != null) {
+            filteredRecipes = filteredRecipes
+                .where((recipe) => recipe.steps.length <= event.steps!)
+                .toList();
+          }
+
+          // Filtro por ingredientes (solo si 'ingredients' no es nulo)
+          if (event.ingredients != null) {
+            filteredRecipes = filteredRecipes
+                .where((recipe) =>
+                    recipe.recipeIngredients.length <= event.ingredients!)
+                .toList();
+          }
+
+          // Emitir el estado de recetas filtradas
+          emit(RecipeState.loadedRecipes(filteredRecipes));
+        },
+      );
+    });
   }
 }

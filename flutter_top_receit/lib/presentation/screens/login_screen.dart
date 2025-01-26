@@ -6,9 +6,13 @@ import 'package:flutter_top_receit/config/utils/text_utils.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_state.dart';
+import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_event.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
 import 'package:flutter_top_receit/presentation/widgets/data/bg_data.dart';
+import 'package:flutter_top_receit/presentation/widgets/lenguage_buttons.dart';
 import 'package:go_router/go_router.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -177,12 +181,26 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            LanguageSelector(onLanguageChanged: (languageCode) {
+                              Locale locale = Locale(languageCode);
+                              context
+                                  .read<LanguageBloc>()
+                                  .add(ChangeLanguageEvent(locale));
+                            }),
+                          ],
+                        ),
                         const Spacer(),
                         Center(
                             child: TextUtil(
-                                text: "Login", weight: true, size: 30)),
+                                text: AppLocalizations.of(context)!.login_title,
+                                weight: true,
+                                size: 30)),
                         const Spacer(),
-                        TextUtil(text: "Email"),
+                        TextUtil(
+                            text: AppLocalizations.of(context)!.email_label),
                         Container(
                           height: 35,
                           decoration: const BoxDecoration(
@@ -200,7 +218,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           ),
                         ),
                         const Spacer(),
-                        TextUtil(text: "Password"),
+                        TextUtil(
+                            text: AppLocalizations.of(context)!.password_label),
                         Container(
                           height: 35,
                           decoration: const BoxDecoration(
@@ -248,19 +267,21 @@ class _LoginScreenState extends State<LoginScreen> {
                               borderRadius: BorderRadius.circular(30),
                             ),
                             alignment: Alignment.center,
-                            child:
-                                TextUtil(text: "Log In", color: Colors.black),
+                            child: TextUtil(
+                                text:
+                                    AppLocalizations.of(context)!.login_button,
+                                color: Colors.black),
                           ),
                         ),
                         const Spacer(),
                         Center(
                           child: GestureDetector(
                             onTap: () {
-                              print("REGISTER");
                               context.go('/login/register');
                             },
                             child: TextUtil(
-                                text: "Don't have an account? REGISTER",
+                                text: AppLocalizations.of(context)!
+                                    .register_button,
                                 size: 12,
                                 weight: true),
                           ),
