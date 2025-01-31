@@ -13,6 +13,7 @@ class RecipeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Solo obtenemos las recetas al inicio, sin recargar al cambiar favoritos
     context.read<RecipeBloc>().add(GetRecipesByUserIdEvent(userId: userId));
 
     return BlocBuilder<RecipeBloc, RecipeState>(
@@ -44,6 +45,8 @@ class RecipeList extends StatelessWidget {
               onTap: () {
                 router.go('/updateRecipe/${recipe.idRecipe}');
               },
+              recipeId: recipe.idRecipe!,
+              userId: recipe.userId!,
             );
           },
         );

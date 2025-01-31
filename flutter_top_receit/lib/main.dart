@@ -8,6 +8,7 @@ import 'package:flutter_top_receit/config/router/routes.dart';
 import 'package:flutter_top_receit/firebase_options.dart';
 import 'package:flutter_top_receit/injection.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe_ingredient/recipe_ingredient_bloc.dart';
@@ -55,6 +56,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => sl<LanguageBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => sl<FavoriteBloc>(),
         ),
       ],
       child: BlocBuilder<LanguageBloc, LanguageState>(

@@ -49,6 +49,7 @@ class UpdateRecipeIngredientEvent extends RecipeIngredientEvent {
   List<Object?> get props => [recipeIngredient, recipeId, idRecipeIngredient];
 }
 
+// ignore: must_be_immutable
 class DeleteRecipeIngredientEvent extends RecipeIngredientEvent {
   final int recipeId;
   int? idRecipeIngredient;

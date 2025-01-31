@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_event.dart';
+import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_state.dart';
 
 class RecipeCard extends StatelessWidget {
   final String title;
@@ -7,6 +11,8 @@ class RecipeCard extends StatelessWidget {
   final VoidCallback onTap;
   final int ingredientsCount;
   final int stepsCount;
+  final int recipeId;
+  final String userId;
 
   const RecipeCard({
     super.key,
@@ -16,6 +22,8 @@ class RecipeCard extends StatelessWidget {
     required this.onTap,
     required this.ingredientsCount,
     required this.stepsCount,
+    required this.recipeId,
+    required this.userId,
   });
 
   @override
@@ -95,6 +103,31 @@ class RecipeCard extends StatelessWidget {
                   ],
                 ),
               ),
+              BlocBuilder<FavoriteBloc, FavoriteState>(
+                builder: (context, state) {
+                  bool isFavorite =
+                      state.favoriteRecipeIds?.contains(recipeId) ?? false;
+                  return IconButton(
+                    icon: Icon(
+                      isFavorite ? Icons.star : Icons.star_border,
+                      color: isFavorite ? Colors.yellow : Colors.grey,
+                    ),
+                    onPressed: () {
+                      if (isFavorite) {
+                        context.read<FavoriteBloc>().add(RemoveFavoriteEvent(
+                            userId: userId, recipeId: recipeId));
+                      } else {
+                        context.read<FavoriteBloc>().add(AddFavoriteEvent(
+                            userId: userId, recipeId: recipeId));
+                      }
+
+                      context
+                          .read<FavoriteBloc>()
+                          .add(GetFavoritesEvent(userId: userId));
+                    },
+                  );
+                },
+              )
             ],
           ),
         ),

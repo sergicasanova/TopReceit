@@ -4,6 +4,8 @@ import 'package:flutter_top_receit/config/router/routes.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_state.dart';
+import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
@@ -39,6 +41,7 @@ class _MainScreenState extends State<MainScreen> {
     final userId = prefs.getString('id');
     if (userId != null) {
       context.read<AuthBloc>().add(GetUserEvent(id: userId));
+      context.read<FavoriteBloc>().add(GetFavoritesEvent(userId: userId));
     } else {
       print("No user ID found in SharedPreferences.");
     }
@@ -102,7 +105,7 @@ class _MainScreenState extends State<MainScreen> {
       key: scaffoldKey,
       appBar: AppBarDefault(
         scaffoldKey: scaffoldKey,
-        onLanguageChanged: _onLanguageChanged, // Pasamos la función aquí
+        onLanguageChanged: _onLanguageChanged,
       ),
       endDrawer: DrawerWidget(
         onBackgroundChanged: _updateBackground,
@@ -141,6 +144,7 @@ class _MainScreenState extends State<MainScreen> {
                 right: 20,
                 child: FloatingActionButton(
                   onPressed: _toggleMenu,
+                  // ignore: sort_child_properties_last
                   child: Icon(_isMenuOpen ? Icons.close : Icons.add),
                   backgroundColor: Colors.blue,
                 ),
