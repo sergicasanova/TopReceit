@@ -83,10 +83,14 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  void resetFilters() {
+  void resetFilters() async {
     setState(() {
       isFilterApplied = false;
     });
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('titleFilter');
+    await prefs.remove('filterFavorites');
+
     final userId = context.read<AuthBloc>().state.user!.id;
     context.read<RecipeBloc>().add(GetRecipesByUserIdEvent(userId: userId));
   }
@@ -179,7 +183,7 @@ class _MainScreenState extends State<MainScreen> {
                     onPressed: () {
                       router.go('/createRecipe');
                     },
-                    child: const Icon(Icons.create),
+                    child: const Icon(Icons.add),
                     backgroundColor: Colors.blueGrey,
                   ),
                 ),

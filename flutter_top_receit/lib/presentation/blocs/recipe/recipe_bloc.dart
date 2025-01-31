@@ -123,7 +123,6 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
         (recipes) {
           var filteredRecipes = recipes;
 
-          // Filtro por título
           if (event.title != null && event.title!.isNotEmpty) {
             filteredRecipes = filteredRecipes
                 .where((recipe) => recipe.title!
@@ -132,14 +131,12 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
                 .toList();
           }
 
-          // Filtro por pasos (solo si 'steps' no es nulo)
           if (event.steps != null) {
             filteredRecipes = filteredRecipes
                 .where((recipe) => recipe.steps.length <= event.steps!)
                 .toList();
           }
 
-          // Filtro por ingredientes (solo si 'ingredients' no es nulo)
           if (event.ingredients != null) {
             filteredRecipes = filteredRecipes
                 .where((recipe) =>
@@ -147,7 +144,13 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
                 .toList();
           }
 
-          // Emitir el estado de recetas filtradas
+          if (event.favoriteRecipeIds.isNotEmpty) {
+            filteredRecipes = filteredRecipes
+                .where((recipe) =>
+                    event.favoriteRecipeIds.contains(recipe.idRecipe))
+                .toList();
+          }
+
           emit(RecipeState.loadedRecipes(filteredRecipes));
         },
       );

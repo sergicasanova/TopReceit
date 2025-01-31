@@ -102,5 +102,7 @@
   "less_than_5_ingredients": "Moins de 5 ingrédients",
   "less_than_10_ingredients": "Moins de 10 ingrédients",
   "less_than_15_ingredients": "Moins de 15 ingrédients",
-  "more_than_15_ingredients": "Plus de 15 ingrédients"
+  "more_than_15_ingredients": "Plus de 15 ingrédients",
+
+  "filter_favorites_label": "Filtrer par favoris"
 }

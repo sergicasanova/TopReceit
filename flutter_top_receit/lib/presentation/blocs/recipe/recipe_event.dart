@@ -73,16 +73,19 @@ class ApplyFilterEvent extends RecipeEvent {
   final int? steps;
   final int? ingredients;
   final String userId;
+  final List<int> favoriteRecipeIds;
 
   ApplyFilterEvent({
     this.title,
     this.steps,
     this.ingredients,
     required this.userId,
+    this.favoriteRecipeIds = const [],
   });
 
   @override
-  List<Object?> get props => [title, steps, ingredients, userId];
+  List<Object?> get props =>
+      [title, steps, ingredients, userId, favoriteRecipeIds];
 }
 
 class OrderRecipesEvent extends RecipeEvent {

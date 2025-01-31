@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class FilterModal extends StatefulWidget {
   final String userId;
@@ -19,6 +21,28 @@ class _FilterModalState extends State<FilterModal> {
   final TextEditingController _titleController = TextEditingController();
   String? _selectedStepsFilter;
   String? _selectedIngredientsFilter;
+  bool _filterByFavorites = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadFilters();
+  }
+
+  void _loadFilters() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _titleController.text = prefs.getString('titleFilter') ?? '';
+      _filterByFavorites = prefs.getBool('filterFavorites') ?? false;
+    });
+  }
+
+  void _saveFilters(String title, String? stepsFilter,
+      String? ingredientsFilter, bool filterFavorites) async {
+    final prefs = await SharedPreferences.getInstance();
+    prefs.setString('titleFilter', title);
+    prefs.setBool('filterFavorites', filterFavorites);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,11 +114,29 @@ class _FilterModalState extends State<FilterModal> {
                 ),
               ),
               const SizedBox(height: 16),
+              Row(
+                children: [
+                  Text(AppLocalizations.of(context)!.filter_favorites_label),
+                  Switch(
+                    value: _filterByFavorites,
+                    onChanged: (value) {
+                      setState(() {
+                        _filterByFavorites = value;
+                      });
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
               ElevatedButton(
-                onPressed: () {
+                onPressed: () async {
                   final titleFilter = _titleController.text;
                   final stepsFilter = _selectedStepsFilter;
                   final ingredientsFilter = _selectedIngredientsFilter;
+
+                  final favoriteState = context.read<FavoriteBloc>().state;
+                  final favoriteRecipeIds =
+                      favoriteState.favoriteRecipeIds ?? [];
 
                   context.read<RecipeBloc>().add(ApplyFilterEvent(
                         title: titleFilter,
@@ -102,12 +144,17 @@ class _FilterModalState extends State<FilterModal> {
                         ingredients:
                             _mapIngredientFilterToInt(ingredientsFilter),
                         userId: widget.userId,
+                        favoriteRecipeIds:
+                            _filterByFavorites ? favoriteRecipeIds : [],
                       ));
+
+                  _saveFilters(titleFilter, stepsFilter, ingredientsFilter,
+                      _filterByFavorites);
 
                   Navigator.of(context).pop();
                 },
                 child: Text(AppLocalizations.of(context)!.filter_button),
-              )
+              ),
             ],
           ),
         );
