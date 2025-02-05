@@ -90,6 +90,7 @@ class UserModel {
     String? avatar,
     List<String>? preferences,
     int? role,
+    String? notificationToken,
   }) {
     return UserModel(
       id: id ?? this.id,

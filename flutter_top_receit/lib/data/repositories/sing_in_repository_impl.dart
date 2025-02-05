@@ -171,4 +171,21 @@ class SignInRepositoryImpl implements SignInRepository {
           ServerFailure(message: 'Error al obtener los datos del usuario.'));
     }
   }
+
+  @override
+  Future<Either<Failure, bool>> updateTokenNotification(
+      String id, String tokenNotification) async {
+    try {
+      final userId = sharedPreferences.getString('id');
+      if (userId == null) {
+        return Left(AuthFailure());
+      }
+
+      await userApiDataSource.updateTokenNotification(
+          userId, tokenNotification);
+      return Right(true);
+    } catch (e) {
+      return Left(AuthFailure());
+    }
+  }
 }

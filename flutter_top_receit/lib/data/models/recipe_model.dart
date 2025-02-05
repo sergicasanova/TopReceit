@@ -1,5 +1,6 @@
 import 'package:flutter_top_receit/data/models/recipe_ingredient_model.dart';
 import 'package:flutter_top_receit/data/models/step_model.dart';
+import 'package:flutter_top_receit/data/models/user_model.dart';
 import 'package:flutter_top_receit/domain/entities/recipe_entity.dart';
 
 class RecipeModel {
@@ -7,18 +8,20 @@ class RecipeModel {
   final String? title;
   final String? description;
   String? image;
-  String? userId;
+  UserModel? user;
   final List<RecipeIngredientModel> recipeIngredients;
   final List<StepModel> steps;
+  final List<String>? likeUserIds;
 
   RecipeModel({
     this.idRecipe,
     this.title,
     this.description,
     this.image,
-    this.userId,
+    this.user,
     required this.recipeIngredients,
     required this.steps,
+    this.likeUserIds,
   });
 
   RecipeEntity toRecipeEntity() {
@@ -31,7 +34,7 @@ class RecipeModel {
       title: json['title'],
       description: json['description'] ?? '',
       image: json['image'] ?? '',
-      userId: json['user']?['id_user'] ?? '',
+      user: json['user'] != null ? UserModel.fromJson(json['user']) : null,
       recipeIngredients: (json['recipeIngredients'] as List?)
               ?.map((e) => RecipeIngredientModel.fromJson(e))
               .toList() ??
@@ -40,6 +43,9 @@ class RecipeModel {
               ?.map((e) => StepModel.fromJson(e))
               .toList() ??
           [],
+      likeUserIds: (json['likes'] as List?)
+          ?.map((e) => e['user']['id_user'] as String)
+          .toList(),
     );
   }
   Map<String, dynamic> toJson() {
@@ -47,7 +53,7 @@ class RecipeModel {
       'title': title,
       'description': description,
       'image': image,
-      'user_id': userId,
+      'user': user?.toJson(),
       'recipeIngredients': recipeIngredients.map((e) => e.toJson()).toList(),
       'steps': steps.map((e) => e.toJson()).toList(),
     };

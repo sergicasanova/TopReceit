@@ -12,7 +12,7 @@ import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.
 import 'package:flutter_top_receit/presentation/widgets/appbar.dart';
 import 'package:flutter_top_receit/presentation/widgets/drawer.dart';
 import 'package:flutter_top_receit/presentation/widgets/filter_modal.dart';
-import 'package:flutter_top_receit/presentation/widgets/recipe_list.dart';
+import 'package:flutter_top_receit/presentation/widgets/my%20recipes/recipe_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_event.dart';
@@ -110,6 +110,7 @@ class _MainScreenState extends State<MainScreen> {
       appBar: AppBarDefault(
         scaffoldKey: scaffoldKey,
         onLanguageChanged: _onLanguageChanged,
+        isOnMainScreen: true,
       ),
       endDrawer: DrawerWidget(
         onBackgroundChanged: _updateBackground,

@@ -124,6 +124,9 @@ class DrawerWidget extends StatelessWidget {
               if (!context.mounted) return;
               if (resultado == 'Aceptar') {
                 context.read<AuthBloc>().add(LogoutEvent());
+                final sharedPreferences = await SharedPreferences.getInstance();
+                await sharedPreferences.remove('email');
+                await sharedPreferences.remove('id');
                 context.go('/login');
               }
               Navigator.pop(context);

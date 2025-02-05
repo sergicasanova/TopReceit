@@ -7,28 +7,54 @@ class RecipeState extends Equatable {
   final List<RecipeEntity>? recipes;
   final RecipeEntity? recipe;
 
+  // Agregar los parámetros adicionales para la creación de receta
+  final String? title;
+  final String? description;
+  final String? image;
+  final String? userId;
+
   const RecipeState({
     this.isLoading = false,
     this.errorMessage,
     this.recipes,
     this.recipe,
+    this.title,
+    this.description,
+    this.image,
+    this.userId,
   });
 
   @override
-  List<Object?> get props =>
-      [isLoading, errorMessage ?? '', recipes ?? [], recipe ?? ''];
+  List<Object?> get props => [
+        isLoading,
+        errorMessage ?? '',
+        recipes ?? [],
+        recipe ?? '',
+        title ?? '',
+        description ?? '',
+        image ?? '',
+        userId ?? ''
+      ];
 
   RecipeState copyWith({
     bool? isLoading,
     String? errorMessage,
     List<RecipeEntity>? recipes,
     RecipeEntity? recipe,
+    String? title,
+    String? description,
+    String? image,
+    String? userId,
   }) {
     return RecipeState(
       isLoading: isLoading ?? this.isLoading,
       errorMessage: errorMessage ?? this.errorMessage,
       recipes: recipes ?? this.recipes,
       recipe: recipe ?? this.recipe,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      image: image ?? this.image,
+      userId: userId ?? this.userId,
     );
   }
 
@@ -50,8 +76,15 @@ class RecipeState extends Equatable {
   factory RecipeState.loadedRecipes(List<RecipeEntity> recipes) =>
       RecipeState(recipes: recipes);
 
-  factory RecipeState.created(RecipeEntity recipe) =>
-      RecipeState(recipe: recipe);
+  // Modificar el factory de created para usar los nuevos parámetros
+  factory RecipeState.created(
+          String title, String description, String image, String userId) =>
+      RecipeState(
+        title: title,
+        description: description,
+        image: image,
+        userId: userId,
+      );
 
   factory RecipeState.deleted() => const RecipeState();
 

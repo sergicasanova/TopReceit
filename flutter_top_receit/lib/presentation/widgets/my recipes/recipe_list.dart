@@ -4,7 +4,7 @@ import 'package:flutter_top_receit/config/router/routes.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_state.dart';
-import 'package:flutter_top_receit/presentation/widgets/recipe_card.dart';
+import 'package:flutter_top_receit/presentation/widgets/my%20recipes/recipe_card.dart';
 
 class RecipeList extends StatelessWidget {
   final String userId;
@@ -13,7 +13,6 @@ class RecipeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Solo obtenemos las recetas al inicio, sin recargar al cambiar favoritos
     context.read<RecipeBloc>().add(GetRecipesByUserIdEvent(userId: userId));
 
     return BlocBuilder<RecipeBloc, RecipeState>(
@@ -46,7 +45,7 @@ class RecipeList extends StatelessWidget {
                 router.go('/updateRecipe/${recipe.idRecipe}');
               },
               recipeId: recipe.idRecipe!,
-              userId: recipe.userId!,
+              userId: recipe.user!.id,
             );
           },
         );

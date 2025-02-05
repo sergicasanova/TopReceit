@@ -7,7 +7,7 @@ abstract class RecipeRepository {
   Future<Either<Failure, List<RecipeEntity>>> getAllRecipes();
   Future<Either<Failure, RecipeEntity>> getRecipeById(int id);
   Future<Either<Failure, List<RecipeEntity>>> getRecipesByUserId(String userId);
-  Future<Either<Failure, RecipeEntity>> createRecipe(
+  Future<Either<Failure, void>> createRecipe(
       String title, String description, String image, String userId);
   Future<Either<Failure, bool>> updateRecipe(UpdateRecipeDto dto);
 

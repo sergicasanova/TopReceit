@@ -79,7 +79,8 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                     children: [
                       Text(
                         AppLocalizations.of(context)!.title_label,
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       TextField(
                         controller: _titleController,
@@ -90,13 +91,14 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                           hintStyle: const TextStyle(color: Colors.white),
                           filled: true,
                           fillColor: Colors.black.withOpacity(0.5),
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         AppLocalizations.of(context)!.description_label,
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       TextField(
                         controller: _descriptionController,
@@ -107,13 +109,14 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                           hintStyle: const TextStyle(color: Colors.white),
                           filled: true,
                           fillColor: Colors.black.withOpacity(0.5),
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 16),
                       Text(
                         AppLocalizations.of(context)!.image_url_label,
-                        style: TextStyle(color: Colors.white, fontSize: 18),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 18),
                       ),
                       TextField(
                         controller: _imageUrlController,
@@ -124,7 +127,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                           hintStyle: const TextStyle(color: Colors.white),
                           filled: true,
                           fillColor: Colors.black.withOpacity(0.5),
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                         ),
                       ),
                       const SizedBox(height: 32),
@@ -156,6 +159,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                                 );
                               }
                             },
+                            // ignore: sort_child_properties_last
                             child: Text(AppLocalizations.of(context)!
                                 .create_recipe_title),
                             style: ElevatedButton.styleFrom(
@@ -170,6 +174,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                             onPressed: () {
                               router.go('/home');
                             },
+                            // ignore: sort_child_properties_last
                             child: Text(
                                 AppLocalizations.of(context)!.cancel_button),
                             style: ElevatedButton.styleFrom(

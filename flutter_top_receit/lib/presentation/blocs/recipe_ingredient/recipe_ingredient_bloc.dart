@@ -52,8 +52,6 @@ class RecipeIngredientBloc
       final result =
           await createRecipeIngredientUseCase.call(event.recipeIngredient);
 
-      print("Resultado del use case: $result");
-
       result.fold(
         (failure) {
           emit(RecipeIngredientState.failure('Error al crear el ingrediente'));

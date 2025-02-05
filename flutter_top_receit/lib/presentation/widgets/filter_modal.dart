@@ -33,6 +33,8 @@ class _FilterModalState extends State<FilterModal> {
     final prefs = await SharedPreferences.getInstance();
     setState(() {
       _titleController.text = prefs.getString('titleFilter') ?? '';
+      _selectedStepsFilter = prefs.getString('stepsFilter');
+      _selectedIngredientsFilter = prefs.getString('ingredientsFilter');
       _filterByFavorites = prefs.getBool('filterFavorites') ?? false;
     });
   }
@@ -41,8 +43,11 @@ class _FilterModalState extends State<FilterModal> {
       String? ingredientsFilter, bool filterFavorites) async {
     final prefs = await SharedPreferences.getInstance();
     prefs.setString('titleFilter', title);
+    prefs.setString('stepsFilter', stepsFilter ?? '');
+    prefs.setString('ingredientsFilter', ingredientsFilter ?? '');
     prefs.setBool('filterFavorites', filterFavorites);
   }
+  // cambiarlo a guardarlo en un state y borrarlos con el otro boton.
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +68,7 @@ class _FilterModalState extends State<FilterModal> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _selectedStepsFilter,
+                value: _selectedStepsFilter != '' ? _selectedStepsFilter : null,
                 hint: Text(AppLocalizations.of(context)!.filter_steps_hint),
                 onChanged: (value) {
                   setState(() {
@@ -88,7 +93,9 @@ class _FilterModalState extends State<FilterModal> {
               ),
               const SizedBox(height: 16),
               DropdownButtonFormField<String>(
-                value: _selectedIngredientsFilter,
+                value: _selectedIngredientsFilter != ''
+                    ? _selectedIngredientsFilter
+                    : null,
                 hint:
                     Text(AppLocalizations.of(context)!.filter_ingredients_hint),
                 onChanged: (value) {

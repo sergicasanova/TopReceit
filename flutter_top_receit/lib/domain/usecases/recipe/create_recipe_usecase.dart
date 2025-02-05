@@ -1,17 +1,17 @@
 import 'package:dartz/dartz.dart';
 import 'package:flutter_top_receit/core/failure.dart';
-import 'package:flutter_top_receit/domain/entities/recipe_entity.dart';
 import 'package:flutter_top_receit/domain/repositories/recipe_repository.dart';
 import 'package:flutter_top_receit/core/use_case.dart';
 
+// Modificar el caso de uso para no depender de RecipeEntity
 class CreateRecipeUseCase
-    implements UseCase<Either<Failure, RecipeEntity>, CreateRecipeParams> {
+    implements UseCase<Either<Failure, void>, CreateRecipeParams> {
   final RecipeRepository repository;
 
   CreateRecipeUseCase(this.repository);
 
   @override
-  Future<Either<Failure, RecipeEntity>> call(CreateRecipeParams params) async {
+  Future<Either<Failure, void>> call(CreateRecipeParams params) async {
     return repository.createRecipe(
         params.title, params.description, params.image, params.userId);
   }

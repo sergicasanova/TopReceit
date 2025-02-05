@@ -10,6 +10,7 @@ import 'package:flutter_top_receit/injection.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/like/like_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe_ingredient/recipe_ingredient_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/steps/steps_bloc.dart';
@@ -17,6 +18,9 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguaje_state.dart';
+import 'package:flutter_top_receit/presentation/services/notification_service.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
@@ -28,7 +32,9 @@ void main() async {
   Future.delayed(const Duration(seconds: 1), () {
     FlutterNativeSplash.remove();
   });
+
   configureDependencies();
+  await NotificationService().initialize();
   runApp(const MyApp());
 }
 
@@ -59,6 +65,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => sl<FavoriteBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => sl<LikeBloc>(),
         ),
       ],
       child: BlocBuilder<LanguageBloc, LanguageState>(

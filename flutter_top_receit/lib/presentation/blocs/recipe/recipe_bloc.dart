@@ -82,7 +82,11 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
 
       result.fold(
         (failure) => emit(RecipeState.failure("Fallo al crear la receta")),
-        (recipe) => emit(RecipeState.created(recipe)),
+        (recipe) {
+          add(GetRecipesByUserIdEvent(userId: event.userId.toString()));
+          emit(RecipeState.created(
+              event.title, event.description, event.image, event.userId));
+        },
       );
     });
 

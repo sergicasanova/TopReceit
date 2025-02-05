@@ -16,4 +16,6 @@ abstract class SignInRepository {
   Future<Either<Failure, UserModel>> updateUser(UserModel user);
   Future<Either<Failure, bool>> updatePassword(String password);
   Future<Either<Failure, UserEntity>> getUser(String idUser);
+  Future<Either<Failure, bool>> updateTokenNotification(
+      String id, String tokenNotification);
 }

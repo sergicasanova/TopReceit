@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter_top_receit/data/models/step_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_top_receit/core/failure.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class StepsDataSource {
   Future<List<StepModel>> getStepsByRecipe(int recipeId);
@@ -12,7 +13,7 @@ abstract class StepsDataSource {
 }
 
 class StepsApiDataSource implements StepsDataSource {
-  final String baseUrl = 'http://localhost:3000';
+  final String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:3000';
   final http.Client client;
 
   StepsApiDataSource(this.client);

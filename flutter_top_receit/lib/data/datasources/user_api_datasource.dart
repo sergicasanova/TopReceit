@@ -2,16 +2,18 @@ import 'dart:convert';
 import 'package:flutter_top_receit/data/models/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_top_receit/core/failure.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class UserDataSource {
   Future<UserModel> createUser(String email, String username, String avatar,
       List<String> preferences, String id);
   Future<UserModel> getUser(String userId);
   Future<UserModel> updateUser(UserModel user);
+  Future<bool> updateTokenNotification(String id, String tokenNotification);
 }
 
 class UserApiDataSource implements UserDataSource {
-  final String baseUrl = 'http://localhost:3000';
+  final String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:3000';
   final http.Client client;
 
   UserApiDataSource(this.client);
@@ -77,6 +79,29 @@ class UserApiDataSource implements UserDataSource {
       return UserModel.fromJson(responseData);
     } else {
       throw ServerFailure(message: 'Error al actualizar el usuario en NestJS');
+    }
+  }
+
+  @override
+  Future<bool> updateTokenNotification(
+      String id, String tokenNotificacion) async {
+    final url = Uri.parse('$baseUrl/users/$id/token');
+
+    final body = json.encode({
+      'token_notificacion': tokenNotificacion,
+    });
+
+    final response = await client.put(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: body,
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      throw Exception(
+          'Error al actualizar el token de notificación: ${response.body}');
     }
   }
 }

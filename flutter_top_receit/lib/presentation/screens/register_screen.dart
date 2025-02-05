@@ -1,11 +1,14 @@
+// En tu archivo RegisterScreen.dart
+
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_top_receit/config/utils/text_utils.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_state.dart';
-import 'package:flutter_top_receit/presentation/functions/valodators_function.dart';
+import 'package:flutter_top_receit/config/utils/text_utils.dart';
+import 'package:flutter_top_receit/presentation/functions/register_validators.dart';
 import 'package:flutter_top_receit/presentation/widgets/data/bg_data.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
 import 'package:go_router/go_router.dart';
@@ -123,20 +126,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               border: InputBorder.none,
                             ),
                             validator: (String? value) {
-                              if (value == null || value.isEmpty) {
-                                return AppLocalizations.of(context)!
-                                    .register_email_required;
-                              }
-                              if (!isEmailValid(value)) {
-                                return AppLocalizations.of(context)!
-                                    .register_invalid_email;
-                              }
-                              final isEmailUsed = authBloc.state.isEmailUsed;
-                              if (isEmailUsed != null && isEmailUsed) {
-                                return AppLocalizations.of(context)!
-                                    .register_email_taken;
-                              }
-                              return null;
+                              return emailValidator(
+                                  value, authBloc.state.isEmailUsed, context);
                             },
                           ),
                         ),
@@ -160,16 +151,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               border: InputBorder.none,
                             ),
                             validator: (String? value) {
-                              if (value == null || value.isEmpty) {
-                                return AppLocalizations.of(context)!
-                                    .register_username_required;
-                              }
-                              final isNameUsed = authBloc.state.isNameUsed;
-                              if (isNameUsed != null && isNameUsed) {
-                                return AppLocalizations.of(context)!
-                                    .register_username_taken;
-                              }
-                              return null;
+                              return usernameValidator(
+                                  value, authBloc.state.isNameUsed, context);
                             },
                           ),
                         ),
@@ -201,11 +184,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             });
                           },
                           validator: (value) {
-                            if (value == null || value.isEmpty) {
-                              return AppLocalizations.of(context)!
-                                  .register_preference_required;
-                            }
-                            return null;
+                            return preferenceValidator(value, context);
                           },
                         ),
                         const Spacer(),
@@ -239,27 +218,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             obscureText: _obscureText,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return AppLocalizations.of(context)!
-                                    .register_password_required;
-                              }
-                              if (value.length < 8) {
-                                return AppLocalizations.of(context)!
-                                    .register_password_length;
-                              }
-                              if (!hasNumber(value)) {
-                                return AppLocalizations.of(context)!
-                                    .register_password_number;
-                              }
-                              if (!hasUppercaseLetter(value)) {
-                                return AppLocalizations.of(context)!
-                                    .register_password_uppercase;
-                              }
-                              if (!hasLowercaseLetter(value)) {
-                                return AppLocalizations.of(context)!
-                                    .register_password_lowercase;
-                              }
-                              return null;
+                              return passwordValidator(value, context);
                             },
                           ),
                         ),
@@ -295,15 +254,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             obscureText: _obscureConfirmText,
                             validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return AppLocalizations.of(context)!
-                                    .register_confirm_password_required;
-                              }
-                              if (value != passwordController.text) {
-                                return AppLocalizations.of(context)!
-                                    .register_passwords_do_not_match;
-                              }
-                              return null;
+                              return confirmPasswordValidator(
+                                  value, passwordController.text, context);
                             },
                           ),
                         ),

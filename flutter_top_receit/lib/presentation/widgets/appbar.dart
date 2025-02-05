@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_top_receit/config/router/routes.dart';
 import 'package:flutter_top_receit/config/utils/text_utils.dart';
-import 'package:flutter_top_receit/presentation/widgets/lenguage_buttons.dart'; // Importamos el widget LanguageSelector
+import 'package:flutter_top_receit/presentation/widgets/lenguage_buttons.dart';
 
 class AppBarDefault extends StatelessWidget implements PreferredSizeWidget {
   final GlobalKey<ScaffoldState> scaffoldKey;
-  final Function(String) onLanguageChanged; // Función para cambiar el idioma
+  final Function(String) onLanguageChanged;
+  final bool isOnMainScreen;
 
   const AppBarDefault({
     super.key,
     required this.scaffoldKey,
-    required this.onLanguageChanged, // Recibimos la función en el constructor
+    required this.onLanguageChanged,
+    required this.isOnMainScreen,
   });
 
   @override
@@ -29,7 +32,7 @@ class AppBarDefault extends StatelessWidget implements PreferredSizeWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 TextUtil(
-                  text: 'TopReceit',
+                  text: 'TopRecipe',
                   size: 20,
                   weight: true,
                   color: Colors.white,
@@ -40,6 +43,7 @@ class AppBarDefault extends StatelessWidget implements PreferredSizeWidget {
         ],
       ),
       actions: [
+        // Botón de menú (drawer)
         IconButton(
           icon: const Icon(
             Icons.menu,
@@ -47,6 +51,19 @@ class AppBarDefault extends StatelessWidget implements PreferredSizeWidget {
           ),
           onPressed: () {
             scaffoldKey.currentState?.openEndDrawer();
+          },
+        ),
+        IconButton(
+          icon: Icon(
+            isOnMainScreen ? Icons.arrow_forward : Icons.arrow_back,
+            color: Colors.white,
+          ),
+          onPressed: () {
+            if (isOnMainScreen) {
+              router.go('/allRecipes');
+            } else {
+              router.go('/home');
+            }
           },
         ),
       ],

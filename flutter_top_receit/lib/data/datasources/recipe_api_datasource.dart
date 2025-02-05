@@ -2,9 +2,11 @@ import 'dart:convert';
 import 'package:flutter_top_receit/data/models/recipe_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_top_receit/core/failure.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class RecipeDataSource {
-  Future<RecipeModel> createRecipe(RecipeModel recipe);
+  Future<void> createRecipe(
+      String title, String description, String image, String userId);
   Future<List<RecipeModel>> getAllRecipes();
   Future<RecipeModel> getRecipeById(int recipeId);
   Future<List<RecipeModel>> getRecipesByUserId(String userId);
@@ -13,13 +15,14 @@ abstract class RecipeDataSource {
 }
 
 class RecipeApiDataSource implements RecipeDataSource {
-  final String baseUrl = 'http://localhost:3000';
+  final String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:3000';
   final http.Client client;
 
   RecipeApiDataSource(this.client);
 
   @override
-  Future<RecipeModel> createRecipe(RecipeModel recipe) async {
+  Future<void> createRecipe(
+      String title, String description, String image, String userId) async {
     var request = http.Request(
       'POST',
       Uri.parse('$baseUrl/recipe'),
@@ -29,20 +32,16 @@ class RecipeApiDataSource implements RecipeDataSource {
     });
 
     final recipeData = {
-      'title': recipe.title,
-      'description': recipe.description ?? '',
-      'user_id': recipe.userId ?? '',
-      'image': recipe.image ?? '',
+      'title': title,
+      'description': description,
+      'user_id': userId,
+      'image': image,
     };
 
     request.body = json.encode(recipeData);
     var response = await request.send();
 
-    if (response.statusCode == 201) {
-      var responseData = await response.stream.bytesToString();
-      final recipeJson = json.decode(responseData);
-      return RecipeModel.fromJson(recipeJson);
-    } else {
+    if (response.statusCode != 201) {
       throw Exception('Error al crear la receta: ${response.statusCode}');
     }
   }

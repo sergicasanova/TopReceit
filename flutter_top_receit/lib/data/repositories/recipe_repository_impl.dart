@@ -48,21 +48,13 @@ class RecipeRepositoryImpl implements RecipeRepository {
   }
 
   @override
-  Future<Either<Failure, RecipeEntity>> createRecipe(
+  Future<Either<Failure, void>> createRecipe(
       String title, String description, String image, String userId) async {
     try {
-      final recipeModel = RecipeModel(
-        title: title,
-        description: description,
-        image: image,
-        userId: userId,
-        recipeIngredients: [],
-        steps: [],
-      );
-
-      final newRecipe = await recipeApiDataSource.createRecipe(recipeModel);
-
-      return Right(newRecipe.toRecipeEntity());
+      // Llamamos al API para crear la receta, pero sin necesidad de un modelo o entidad
+      await recipeApiDataSource.createRecipe(title, description, image, userId);
+      return Right(
+          null); // Retornamos un `Right` con `null`, indicando que la operación fue exitosa
     } catch (e) {
       return Left(ServerFailure(message: 'Error al crear la receta.'));
     }

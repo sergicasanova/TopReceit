@@ -3,18 +3,21 @@ import 'package:flutter_top_receit/data/datasources/favorites_api_datasource.dar
 import 'package:flutter_top_receit/data/datasources/firebase_auth_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/firestore_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/ingredient_api_datasource.dart';
+import 'package:flutter_top_receit/data/datasources/like_api_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/recipe_api_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/recipe_ingredient_api_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/steps_api_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/user_api_datasource.dart';
 import 'package:flutter_top_receit/data/repositories/favorites_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/ingredient_repository_impl.dart';
+import 'package:flutter_top_receit/data/repositories/like_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/recipe_ingredient_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/recipe_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/sing_in_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/steps_repository_impl.dart';
 import 'package:flutter_top_receit/domain/repositories/favorites_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/ingredient_repository.dart';
+import 'package:flutter_top_receit/domain/repositories/like_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/recipe_ingredient_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/recipe_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/sign_in_repository.dart';
@@ -25,6 +28,9 @@ import 'package:flutter_top_receit/domain/usecases/favorites/remove_favorite_use
 import 'package:flutter_top_receit/domain/usecases/ingredient/create_ingredient_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/ingredient/delete_ingredient_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/ingredient/get_all_ingredient_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/like/get_likes_by_recipe_id_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/like/give_like_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/like/remove_like_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/create_recipe_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/delete_recipe_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_all_recipe_usecase.dart';
@@ -56,6 +62,7 @@ import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/like/like_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe_ingredient/recipe_ingredient_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/steps/steps_bloc.dart';
@@ -79,6 +86,7 @@ void configureDependencies() async {
   sl.registerFactory<StepBloc>(() => StepBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory<LanguageBloc>(() => LanguageBloc(sl()));
   sl.registerFactory<FavoriteBloc>(() => FavoriteBloc(sl(), sl(), sl()));
+  sl.registerFactory<LikeBloc>(() => LikeBloc(sl(), sl(), sl(), sl()));
 
   // Instancia de Firebase Auth
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
@@ -107,6 +115,9 @@ void configureDependencies() async {
   sl.registerLazySingleton<FavoriteApiDataSource>(
     () => FavoriteApiDataSource(sl()),
   );
+  sl.registerLazySingleton<LikeApiDataSource>(
+    () => LikeApiDataSource(sl()),
+  );
 
   // Repositorios
   sl.registerLazySingleton<SignInRepository>(
@@ -126,6 +137,9 @@ void configureDependencies() async {
   );
   sl.registerLazySingleton<FavoriteRepository>(
     () => FavoriteRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<LikeRepository>(
+    () => LikeRepositoryImpl(sl()),
   );
 
   // Casos de uso
@@ -235,6 +249,17 @@ void configureDependencies() async {
   );
   sl.registerLazySingleton<GetFavoritesUseCase>(
     () => GetFavoritesUseCase(sl()),
+  );
+
+  //like
+  sl.registerLazySingleton<GiveLikeUseCase>(
+    () => GiveLikeUseCase(sl()),
+  );
+  sl.registerLazySingleton<RemoveLikeUseCase>(
+    () => RemoveLikeUseCase(sl()),
+  );
+  sl.registerLazySingleton<GetLikesByRecipeIdUseCase>(
+    () => GetLikesByRecipeIdUseCase(sl()),
   );
 
   sl.registerLazySingleton(() => http.Client());

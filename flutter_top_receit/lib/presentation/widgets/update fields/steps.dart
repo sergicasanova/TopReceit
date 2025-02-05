@@ -53,10 +53,10 @@ class RecipeSteps extends StatelessWidget {
                             const Icon(Icons.check_circle, size: 20),
                             const SizedBox(width: 5),
                             SizedBox(
-                                width: 300,
+                                width: 230,
                                 child: Text(
                                   '${AppLocalizations.of(context)!.steps_title_card} ${step.order}: ${step.description}',
-                                  style: const TextStyle(fontSize: 16),
+                                  style: const TextStyle(fontSize: 12),
                                   softWrap: true,
                                 )),
                           ],

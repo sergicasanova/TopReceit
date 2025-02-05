@@ -1,3 +1,5 @@
+import 'package:flutter_top_receit/data/models/user_model.dart';
+
 class UserEntity {
   final String id;
   final String email;
@@ -36,6 +38,16 @@ class UserEntity {
       username: username ?? this.username,
       avatar: avatar ?? this.avatar,
       preferences: preferences ?? this.preferences,
+    );
+  }
+
+  factory UserEntity.fromModel(UserModel model) {
+    return UserEntity(
+      id: model.id,
+      email: model.email,
+      username: model.username,
+      avatar: model.avatar,
+      preferences: model.preferences,
     );
   }
 }
