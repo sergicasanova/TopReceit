@@ -25,14 +25,14 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 void main() async {
   WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
   FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-  Future.delayed(const Duration(seconds: 1), () {
+  Future.delayed(const Duration(seconds: 2), () {
     FlutterNativeSplash.remove();
   });
 
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   configureDependencies();
   await NotificationService().initialize();
   runApp(const MyApp());

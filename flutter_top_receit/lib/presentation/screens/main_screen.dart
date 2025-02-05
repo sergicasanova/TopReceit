@@ -9,6 +9,7 @@ import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_event.
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
+import 'package:flutter_top_receit/presentation/services/notification_service.dart';
 import 'package:flutter_top_receit/presentation/widgets/appbar.dart';
 import 'package:flutter_top_receit/presentation/widgets/drawer.dart';
 import 'package:flutter_top_receit/presentation/widgets/filter_modal.dart';
@@ -33,6 +34,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _loadBackgroundImage();
+    NotificationService().getToken();
     _getUserData();
   }
 
