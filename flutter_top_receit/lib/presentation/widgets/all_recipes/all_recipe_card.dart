@@ -40,7 +40,6 @@ class AllRecipeCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<String?>(
-      // Asincrónico
       future: getUserId(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -89,7 +88,6 @@ class AllRecipeCard extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 5),
-                        // Descripción
                         Text(
                           description,
                           maxLines: 2,

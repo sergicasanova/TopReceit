@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'package:flutter_top_receit/config/router/api_config.dart';
 import 'package:flutter_top_receit/core/failure.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class LikeDataSource {
   Future<void> giveLike(String userId, int recipeId);
@@ -10,7 +10,7 @@ abstract class LikeDataSource {
 }
 
 class LikeApiDataSource implements LikeDataSource {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:3000';
+  final String baseUrl = ApiConfig.baseUrl;
   final http.Client client;
 
   LikeApiDataSource(this.client);

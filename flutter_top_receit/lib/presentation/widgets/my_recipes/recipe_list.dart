@@ -4,7 +4,7 @@ import 'package:flutter_top_receit/config/router/routes.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_state.dart';
-import 'package:flutter_top_receit/presentation/widgets/my%20recipes/recipe_card.dart';
+import 'package:flutter_top_receit/presentation/widgets/my_recipes/recipe_card.dart';
 
 class RecipeList extends StatelessWidget {
   final String userId;

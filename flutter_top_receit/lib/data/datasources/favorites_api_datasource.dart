@@ -1,7 +1,7 @@
 import 'dart:convert';
+import 'package:flutter_top_receit/config/router/api_config.dart';
 import 'package:flutter_top_receit/core/failure.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class FavoriteDataSource {
   Future<void> addFavorite(String userId, int recipeId);
@@ -10,7 +10,7 @@ abstract class FavoriteDataSource {
 }
 
 class FavoriteApiDataSource implements FavoriteDataSource {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:3000';
+  final String baseUrl = ApiConfig.baseUrl;
   final http.Client client;
 
   FavoriteApiDataSource(this.client);

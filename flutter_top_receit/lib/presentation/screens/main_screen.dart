@@ -13,7 +13,7 @@ import 'package:flutter_top_receit/presentation/services/notification_service.da
 import 'package:flutter_top_receit/presentation/widgets/appbar.dart';
 import 'package:flutter_top_receit/presentation/widgets/drawer.dart';
 import 'package:flutter_top_receit/presentation/widgets/filter_modal.dart';
-import 'package:flutter_top_receit/presentation/widgets/my%20recipes/recipe_list.dart';
+import 'package:flutter_top_receit/presentation/widgets/my_recipes/recipe_list.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_event.dart';
@@ -41,7 +41,9 @@ class _MainScreenState extends State<MainScreen> {
   Future<void> _getUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString('id');
+    print('User ID: $userId');
     if (userId != null) {
+      print('User ID: $userId');
       context.read<AuthBloc>().add(GetUserEvent(id: userId));
       context.read<FavoriteBloc>().add(GetFavoritesEvent(userId: userId));
     } else {
@@ -125,6 +127,7 @@ class _MainScreenState extends State<MainScreen> {
           }
 
           if (state.user == null) {
+            print("No user found in AuthState.");
             return const Center(child: Text("No se encontraron recetas"));
           }
           final userId = state.user!.id;

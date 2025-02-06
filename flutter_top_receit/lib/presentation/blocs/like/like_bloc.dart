@@ -20,41 +20,52 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
     this.recipeBloc,
   ) : super(LikeState.initial()) {
     on<GiveLikeEvent>((event, emit) async {
-      emit(LikeState.loading());
+      emit(LikeState.loading()); // Cambiar estado a loading
+
       final result = await giveLikeUseCase.call(event.userId, event.recipeId);
       result.fold(
         (failure) => emit(LikeState.failure("Fallo al dar like a la receta")),
         (_) {
+          // Emitir estado de éxito
           emit(LikeState.success());
-          print("Disparando GetAllRecipesEvent desde LikeBloc");
+
+          // Aquí lanzamos el evento para actualizar las recetas
           recipeBloc.add(GetAllRecipesEvent());
+
+          // Emitimos el estado de "like actualizado" para reflejar que se ha dado un like
+          emit(LikeState.likeUpdated());
         },
       );
     });
 
     on<RemoveLikeEvent>((event, emit) async {
-      emit(LikeState.loading());
+      emit(LikeState.loading()); // Cambiar estado a loading
+
       final result = await removeLikeUseCase.call(event.userId, event.recipeId);
       result.fold(
         (failure) =>
             emit(LikeState.failure("Fallo al quitar like de la receta")),
         (_) {
+          // Emitir estado de éxito
           emit(LikeState.success());
-          print("Disparando GetAllRecipesEvent desde LikeBloc");
+
+          // Aquí lanzamos el evento para actualizar las recetas
           recipeBloc.add(GetAllRecipesEvent());
+
+          // Emitimos el estado de "like actualizado" para reflejar que se ha quitado un like
+          emit(LikeState.likeUpdated());
         },
       );
     });
 
     on<GetLikesEvent>((event, emit) async {
-      emit(LikeState.loading());
+      emit(LikeState.loading()); // Cambiar estado a loading
+
       final result = await getLikesByRecipeIdUseCase.call(event.recipeId);
-      print("Getting likes by recipe id: ${event.recipeId}");
       result.fold(
         (failure) =>
             emit(LikeState.failure("Fallo al obtener los likes de la receta")),
         (likeUserIds) {
-          print(likeUserIds);
           emit(LikeState.loadedLikes(likeUserIds));
         },
       );

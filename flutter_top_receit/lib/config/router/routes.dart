@@ -7,7 +7,7 @@ import 'package:flutter_top_receit/presentation/screens/login_screen.dart';
 import 'package:flutter_top_receit/presentation/screens/main_screen.dart';
 import 'package:flutter_top_receit/presentation/screens/register_screen.dart';
 import 'package:flutter_top_receit/presentation/screens/update_recipe_screen.dart';
-import 'package:flutter_top_receit/presentation/widgets/all%20recipes/view%20recipe%20details/view_recipe_details.dart';
+import 'package:flutter_top_receit/presentation/widgets/all_recipes/view%20recipe%20details/view_recipe_details.dart';
 import 'package:go_router/go_router.dart';
 
 final GoRouter router = GoRouter(

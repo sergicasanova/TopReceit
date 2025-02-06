@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:flutter_top_receit/config/router/api_config.dart';
 import 'package:flutter_top_receit/data/models/recipe_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_top_receit/core/failure.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class RecipeDataSource {
   Future<void> createRecipe(
@@ -15,7 +15,7 @@ abstract class RecipeDataSource {
 }
 
 class RecipeApiDataSource implements RecipeDataSource {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:3000';
+  final String baseUrl = ApiConfig.baseUrl;
   final http.Client client;
 
   RecipeApiDataSource(this.client);
@@ -82,9 +82,7 @@ class RecipeApiDataSource implements RecipeDataSource {
   @override
   Future<List<RecipeModel>> getRecipesByUserId(String userId) async {
     final url = Uri.parse('$baseUrl/recipe/user/$userId');
-
     final response = await client.get(url);
-
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body) as List;
 

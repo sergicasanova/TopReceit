@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:flutter_top_receit/config/router/api_config.dart';
 import 'package:flutter_top_receit/data/models/ingredient_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_top_receit/core/failure.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class IngredientDataSource {
   Future<List<IngredientModel>> getAllIngredients({String? name});
@@ -11,7 +11,7 @@ abstract class IngredientDataSource {
 }
 
 class IngredientApiDataSource implements IngredientDataSource {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:3000';
+  final String baseUrl = ApiConfig.baseUrl;
   final http.Client client;
 
   IngredientApiDataSource(this.client);

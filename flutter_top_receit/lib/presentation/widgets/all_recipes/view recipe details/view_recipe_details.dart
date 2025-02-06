@@ -10,9 +10,9 @@ import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_state.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
-import 'package:flutter_top_receit/presentation/widgets/all%20recipes/view%20recipe%20details/recipe_details.dart';
-import 'package:flutter_top_receit/presentation/widgets/all%20recipes/view%20recipe%20details/recipe_ingredients_details.dart';
-import 'package:flutter_top_receit/presentation/widgets/all%20recipes/view%20recipe%20details/steps_details.dart';
+import 'package:flutter_top_receit/presentation/widgets/all_recipes/view%20recipe%20details/recipe_details.dart';
+import 'package:flutter_top_receit/presentation/widgets/all_recipes/view%20recipe%20details/recipe_ingredients_details.dart';
+import 'package:flutter_top_receit/presentation/widgets/all_recipes/view%20recipe%20details/steps_details.dart';
 
 class ViewRecipeDetailsScreen extends StatefulWidget {
   final int recipeId;

@@ -1,8 +1,8 @@
 import 'dart:convert';
+import 'package:flutter_top_receit/config/router/api_config.dart';
 import 'package:flutter_top_receit/data/models/user_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_top_receit/core/failure.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 abstract class UserDataSource {
   Future<UserModel> createUser(String email, String username, String avatar,
@@ -13,7 +13,7 @@ abstract class UserDataSource {
 }
 
 class UserApiDataSource implements UserDataSource {
-  final String baseUrl = dotenv.env['BASE_URL'] ?? 'http://localhost:3000';
+  final String baseUrl = ApiConfig.baseUrl;
   final http.Client client;
 
   UserApiDataSource(this.client);

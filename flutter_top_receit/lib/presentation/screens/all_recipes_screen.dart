@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_top_receit/config/router/routes.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_event.dart';
+import 'package:flutter_top_receit/presentation/blocs/like/like_state.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
-import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_state.dart';
+import 'package:flutter_top_receit/presentation/blocs/like/like_bloc.dart'; // Importamos el LikeBloc
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
-import 'package:flutter_top_receit/presentation/widgets/all%20recipes/all_recipe_card.dart';
+import 'package:flutter_top_receit/presentation/widgets/all_recipes/all_recipe_list.dart';
 import 'package:flutter_top_receit/presentation/widgets/drawer.dart';
 import 'package:flutter_top_receit/presentation/widgets/appbar.dart';
 
@@ -74,47 +74,18 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 100),
-            child: SingleChildScrollView(
-              child: BlocBuilder<RecipeBloc, RecipeState>(
-                builder: (context, state) {
-                  if (state.isLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-
-                  if (state.errorMessage != null) {
-                    return Center(child: Text(state.errorMessage!));
-                  }
-
-                  if (state.recipes == null || state.recipes!.isEmpty) {
-                    return const Center(
-                        child: Text("No hay recetas disponibles"));
-                  }
-                  final recipes = state.recipes!;
-
-                  return Column(
-                    children: recipes.map((recipe) {
-                      return AllRecipeCard(
-                        title: recipe.title ?? 'Titulo no disponible',
-                        description:
-                            recipe.description ?? 'Descripción no disponible',
-                        image: recipe.image ?? 'assets/default_image.png',
-                        userAvatar: recipe.user!.avatar,
-                        userName: recipe.user!.username,
-                        ingredientsCount: recipe.recipeIngredients.length,
-                        stepsCount: recipe.steps.length,
-                        recipeId: recipe.idRecipe!,
-                        userId: recipe.user!.id,
-                        likeUserIds: recipe.likeUserIds ?? [],
-                        onTap: () {
-                          router.go('/recipeDetails/${recipe.idRecipe}');
-                        },
-                      );
-                    }).toList(),
-                  );
-                },
-              ),
+          BlocListener<LikeBloc, LikeState>(
+            listener: (context, state) {
+              // Verificamos si el estado es LikeState y si 'isUpdated' es true
+              if (state.isUpdated) {
+                print('Like actualizado');
+                // Cuando el like cambie, actualizamos la lista de recetas
+                context.read<RecipeBloc>().add(GetAllRecipesEvent());
+              }
+            },
+            child: const Padding(
+              padding: EdgeInsets.only(top: 100),
+              child: AllRecipeList(),
             ),
           ),
         ],
