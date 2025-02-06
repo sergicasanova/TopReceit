@@ -32,20 +32,16 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
   Future<void> _getUserData() async {
     final prefs = await SharedPreferences.getInstance();
     final storedUserId = prefs.getString('id');
-    if (storedUserId != null) {
-      setState(() {
-        userId = storedUserId;
-      });
-    } else {
-      print("No user ID found in SharedPreferences.");
-    }
+    setState(() {
+      userId = storedUserId;
+    });
   }
 
   @override
   void initState() {
     super.initState();
-    _getUserData();
     _loadBackgroundImage();
+    _getUserData();
   }
 
   @override

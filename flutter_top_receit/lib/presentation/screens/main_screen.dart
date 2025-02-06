@@ -153,6 +153,7 @@ class _MainScreenState extends State<MainScreen> {
                 bottom: 20,
                 right: 20,
                 child: FloatingActionButton(
+                  heroTag: "btn1",
                   onPressed: _toggleMenu,
                   // ignore: sort_child_properties_last
                   child: Icon(_isMenuOpen ? Icons.close : Icons.add),
@@ -164,6 +165,7 @@ class _MainScreenState extends State<MainScreen> {
                   bottom: 80,
                   right: 20,
                   child: FloatingActionButton(
+                    heroTag: "btn2",
                     onPressed: () {
                       showFilterModal(context, userId);
                     },
@@ -176,6 +178,7 @@ class _MainScreenState extends State<MainScreen> {
                   bottom: 140,
                   right: 20,
                   child: FloatingActionButton(
+                    heroTag: "btn3",
                     onPressed: resetFilters,
                     child: const Icon(Icons.reset_tv_outlined),
                     backgroundColor: Colors.blueGrey,
@@ -186,6 +189,7 @@ class _MainScreenState extends State<MainScreen> {
                   bottom: 200,
                   right: 20,
                   child: FloatingActionButton(
+                    heroTag: "btn4",
                     onPressed: () {
                       router.go('/createRecipe');
                     },

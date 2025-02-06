@@ -18,14 +18,23 @@ class UserConfigurationDialog extends StatefulWidget {
 
 class _UserConfigurationDialogState extends State<UserConfigurationDialog> {
   final _usernameController = TextEditingController();
-  final _preferencesController = TextEditingController();
-  TextEditingController _avatarController = TextEditingController();
+  final _avatarController = TextEditingController();
+  List<String> _selectedPreferences = [];
+
+  final List<String> preferences = [
+    'Carne',
+    'Pescado',
+    'Verduras',
+    'Dulce',
+    'Salado',
+  ];
 
   @override
   void initState() {
     super.initState();
     _usernameController.text = widget.user.username;
-    _preferencesController.text = widget.user.preferences.join(", ");
+    _selectedPreferences = List.from(
+        widget.user.preferences); // Initialize with user's preferences
     _avatarController.text = widget.user.avatar;
   }
 
@@ -44,11 +53,29 @@ class _UserConfigurationDialogState extends State<UserConfigurationDialog> {
                       AppLocalizations.of(context)!.register_username_label),
             ),
             const SizedBox(height: 10),
-            TextField(
-              controller: _preferencesController,
+            // Dropdown for preferences
+            DropdownButtonFormField<String>(
+              value: _selectedPreferences.isNotEmpty
+                  ? _selectedPreferences[0]
+                  : null, // Default value
+              onChanged: (newValue) {
+                setState(() {
+                  if (newValue != null &&
+                      !_selectedPreferences.contains(newValue)) {
+                    _selectedPreferences.add(newValue);
+                  }
+                });
+              },
+              items: preferences.map((preference) {
+                return DropdownMenuItem<String>(
+                  value: preference,
+                  child: Text(preference),
+                );
+              }).toList(),
               decoration: InputDecoration(
-                  labelText:
-                      AppLocalizations.of(context)!.register_preferences_label),
+                labelText:
+                    AppLocalizations.of(context)!.register_preferences_label,
+              ),
             ),
             const SizedBox(height: 10),
             TextField(
@@ -75,7 +102,7 @@ class _UserConfigurationDialogState extends State<UserConfigurationDialog> {
           onPressed: () {
             final updatedUser = widget.user.copyWith(
               username: _usernameController.text,
-              preferences: _preferencesController.text.split(", ").toList(),
+              preferences: _selectedPreferences,
               avatar: _avatarController.text,
             );
 
