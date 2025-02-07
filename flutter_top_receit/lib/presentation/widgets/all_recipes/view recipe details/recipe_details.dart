@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
-class RecipeDetailsScreen extends StatelessWidget {
+class RecipeDetailsScreen extends StatefulWidget {
   final TextEditingController titleController;
   final TextEditingController descriptionController;
   final TextEditingController imageUrlController;
@@ -12,6 +12,17 @@ class RecipeDetailsScreen extends StatelessWidget {
     required this.descriptionController,
     required this.imageUrlController,
   });
+
+  @override
+  State<RecipeDetailsScreen> createState() => _RecipeDetailsScreenState();
+}
+
+class _RecipeDetailsScreenState extends State<RecipeDetailsScreen> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +36,7 @@ class RecipeDetailsScreen extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(vertical: 8.0),
           child: TextField(
-            controller: titleController,
+            controller: widget.titleController,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               hintText: AppLocalizations.of(context)!.title_hint,
@@ -34,7 +45,7 @@ class RecipeDetailsScreen extends StatelessWidget {
               fillColor: Colors.black.withOpacity(0.5),
               border: OutlineInputBorder(),
             ),
-            enabled: false, // Deshabilitar para solo mostrar el contenido
+            enabled: false,
           ),
         ),
         const SizedBox(height: 16),
@@ -45,7 +56,7 @@ class RecipeDetailsScreen extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(vertical: 8.0),
           child: TextField(
-            controller: descriptionController,
+            controller: widget.descriptionController,
             maxLines: 5,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
@@ -66,7 +77,7 @@ class RecipeDetailsScreen extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(vertical: 8.0),
           child: TextField(
-            controller: imageUrlController,
+            controller: widget.imageUrlController,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               hintText: AppLocalizations.of(context)!.image_url_hint,
@@ -79,9 +90,9 @@ class RecipeDetailsScreen extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 32),
-        if (imageUrlController.text.isNotEmpty)
+        if (widget.imageUrlController.text.isNotEmpty)
           Image.network(
-            imageUrlController.text,
+            widget.imageUrlController.text,
             height: 200,
             width: double.infinity,
             fit: BoxFit.cover,
@@ -100,6 +111,21 @@ class RecipeDetailsScreen extends StatelessWidget {
                 );
               }
             },
+            errorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                'assets/icons/recipe.png',
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              );
+            },
+          )
+        else
+          Image.asset(
+            'assets/icons/recipe.png',
+            height: 200,
+            width: double.infinity,
+            fit: BoxFit.cover,
           ),
         const SizedBox(height: 32),
       ],

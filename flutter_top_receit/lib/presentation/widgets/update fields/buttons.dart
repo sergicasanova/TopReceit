@@ -17,6 +17,7 @@ class RecipeButtons extends StatelessWidget {
       children: [
         ElevatedButton(
           onPressed: onAccept,
+          // ignore: sort_child_properties_last
           child: Text(AppLocalizations.of(context)!.accept_button),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.green,
@@ -26,6 +27,7 @@ class RecipeButtons extends StatelessWidget {
         const SizedBox(width: 10),
         ElevatedButton(
           onPressed: onCancel,
+          // ignore: sort_child_properties_last
           child: Text(AppLocalizations.of(context)!.cancel_button),
           style: ElevatedButton.styleFrom(
             backgroundColor: Colors.red,

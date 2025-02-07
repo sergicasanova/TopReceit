@@ -68,6 +68,7 @@ class RecipeSteps extends StatelessWidget {
                                   DeleteStepByIdEvent(stepId: step.idStep!),
                                 );
                             await Future.delayed(const Duration(seconds: 1));
+                            // ignore: use_build_context_synchronously
                             context.read<RecipeBloc>().add(
                                   GetRecipeByIdEvent(id: recipeId),
                                 );

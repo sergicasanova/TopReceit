@@ -43,12 +43,27 @@ class RecipeCard extends StatelessWidget {
             children: [
               ClipRRect(
                 borderRadius: BorderRadius.circular(10),
-                child: Image.network(
-                  image,
-                  width: 80,
-                  height: 80,
-                  fit: BoxFit.cover,
-                ),
+                child: image.isNotEmpty
+                    ? Image.network(
+                        image,
+                        width: 80,
+                        height: 80,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Image.asset(
+                            'assets/icons/recipe.png',
+                            width: 40,
+                            height: 40,
+                            fit: BoxFit.cover,
+                          );
+                        },
+                      )
+                    : Image.asset(
+                        'assets/icons/recipe.png', // Imagen por defecto si no hay URL
+                        width: 40,
+                        height: 40,
+                        fit: BoxFit.cover,
+                      ),
               ),
               const SizedBox(width: 10),
               Expanded(

@@ -32,7 +32,7 @@ class RecipeForm extends StatelessWidget {
               hintStyle: const TextStyle(color: Colors.white),
               filled: true,
               fillColor: Colors.black.withOpacity(0.5),
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
             ),
           ),
         ),
@@ -71,7 +71,7 @@ class RecipeForm extends StatelessWidget {
               hintStyle: const TextStyle(color: Colors.white),
               filled: true,
               fillColor: Colors.black.withOpacity(0.5),
-              border: OutlineInputBorder(),
+              border: const OutlineInputBorder(),
             ),
           ),
         ),
@@ -97,6 +97,23 @@ class RecipeForm extends StatelessWidget {
                 );
               }
             },
+            errorBuilder: (context, error, stackTrace) {
+              // Imagen de repuesto en caso de error
+              return Image.asset(
+                'assets/icons/recipe.png', // Cambia el asset a la imagen que desees mostrar
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              );
+            },
+          )
+        else
+          // Si no hay URL, muestra una imagen de repuesto
+          Image.asset(
+            'assets/icons/recipe.png', // Cambia el asset a la imagen que desees mostrar
+            height: 200,
+            width: double.infinity,
+            fit: BoxFit.cover,
           ),
         const SizedBox(height: 32),
       ],
