@@ -13,7 +13,7 @@ abstract class RecipeIngredientDataSource {
       RecipeIngredientModel recipeIngredient,
       int recipeId,
       int idRecipeIngredient);
-  Future<void> deleteRecipeIngredient(int recipeId, int idRecipeIngredient);
+  Future<void> deleteRecipeIngredient(int idRecipeIngredient);
 }
 
 class RecipeIngredientApiDataSource implements RecipeIngredientDataSource {
@@ -111,10 +111,8 @@ class RecipeIngredientApiDataSource implements RecipeIngredientDataSource {
   }
 
   @override
-  Future<void> deleteRecipeIngredient(
-      int recipeId, int idRecipeIngredient) async {
-    final url =
-        Uri.parse('$baseUrl/recipe-ingredients/$recipeId/$idRecipeIngredient');
+  Future<void> deleteRecipeIngredient(int idRecipeIngredient) async {
+    final url = Uri.parse('$baseUrl/recipe-ingredients/$idRecipeIngredient');
 
     final response = await client.delete(url);
 

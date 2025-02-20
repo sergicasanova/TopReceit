@@ -71,10 +71,10 @@ class RecipeIngredientRepositoryImpl implements RecipeIngredientRepository {
 
   @override
   Future<Either<Failure, void>> deleteRecipeIngredient(
-      int recipeId, int idRecipeIngredient) async {
+      int idRecipeIngredient) async {
     try {
-      await recipeIngredientApiDataSource.deleteRecipeIngredient(
-          recipeId, idRecipeIngredient);
+      await recipeIngredientApiDataSource
+          .deleteRecipeIngredient(idRecipeIngredient);
       return const Right(null);
     } catch (e) {
       return Left(ServerFailure(

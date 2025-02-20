@@ -14,6 +14,5 @@ abstract class RecipeIngredientRepository {
       RecipeIngredientModel recipeIngredient,
       int recipeId,
       int idRecipeIngredient);
-  Future<Either<Failure, void>> deleteRecipeIngredient(
-      int recipeId, int idRecipeIngredient);
+  Future<Either<Failure, void>> deleteRecipeIngredient(int idRecipeIngredient);
 }

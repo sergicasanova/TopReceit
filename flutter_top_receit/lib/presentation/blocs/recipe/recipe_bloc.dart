@@ -100,7 +100,8 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       ));
 
       result.fold(
-        (failure) => emit(RecipeState.failure("Fallo al actualizar la receta")),
+        (failure) => emit(RecipeState.failure(
+            "Fallo al actualizar la receta: ${failure.message}")),
         (success) => success
             ? emit(RecipeState.success())
             : emit(RecipeState.failure("Fallo al actualizar la receta")),

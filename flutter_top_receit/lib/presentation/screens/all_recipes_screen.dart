@@ -76,10 +76,7 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
           ),
           BlocListener<LikeBloc, LikeState>(
             listener: (context, state) {
-              // Verificamos si el estado es LikeState y si 'isUpdated' es true
               if (state.isUpdated) {
-                print('Like actualizado');
-                // Cuando el like cambie, actualizamos la lista de recetas
                 context.read<RecipeBloc>().add(GetAllRecipesEvent());
               }
             },

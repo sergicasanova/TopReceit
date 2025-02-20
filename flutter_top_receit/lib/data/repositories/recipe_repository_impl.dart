@@ -51,10 +51,8 @@ class RecipeRepositoryImpl implements RecipeRepository {
   Future<Either<Failure, void>> createRecipe(
       String title, String description, String image, String userId) async {
     try {
-      // Llamamos al API para crear la receta, pero sin necesidad de un modelo o entidad
       await recipeApiDataSource.createRecipe(title, description, image, userId);
-      return Right(
-          null); // Retornamos un `Right` con `null`, indicando que la operación fue exitosa
+      return const Right(null);
     } catch (e) {
       return Left(ServerFailure(message: 'Error al crear la receta.'));
     }

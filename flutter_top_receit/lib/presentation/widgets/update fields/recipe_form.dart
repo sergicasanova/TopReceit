@@ -98,9 +98,8 @@ class RecipeForm extends StatelessWidget {
               }
             },
             errorBuilder: (context, error, stackTrace) {
-              // Imagen de repuesto en caso de error
               return Image.asset(
-                'assets/icons/recipe.png', // Cambia el asset a la imagen que desees mostrar
+                'assets/icons/recipe.png',
                 height: 200,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -108,9 +107,8 @@ class RecipeForm extends StatelessWidget {
             },
           )
         else
-          // Si no hay URL, muestra una imagen de repuesto
           Image.asset(
-            'assets/icons/recipe.png', // Cambia el asset a la imagen que desees mostrar
+            'assets/icons/recipe.png',
             height: 200,
             width: double.infinity,
             fit: BoxFit.cover,

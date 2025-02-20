@@ -51,12 +51,10 @@ class UpdateRecipeIngredientEvent extends RecipeIngredientEvent {
 
 // ignore: must_be_immutable
 class DeleteRecipeIngredientEvent extends RecipeIngredientEvent {
-  final int recipeId;
   int? idRecipeIngredient;
 
-  DeleteRecipeIngredientEvent(
-      {required this.recipeId, this.idRecipeIngredient});
+  DeleteRecipeIngredientEvent({this.idRecipeIngredient});
 
   @override
-  List<Object?> get props => [recipeId, idRecipeIngredient];
+  List<Object?> get props => [idRecipeIngredient];
 }

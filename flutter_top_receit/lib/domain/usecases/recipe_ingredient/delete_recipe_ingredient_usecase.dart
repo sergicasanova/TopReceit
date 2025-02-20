@@ -7,8 +7,7 @@ class DeleteRecipeIngredientUseCase {
 
   DeleteRecipeIngredientUseCase(this.repository);
 
-  Future<Either<Failure, void>> call(
-      int recipeId, int idRecipeIngredient) async {
-    return repository.deleteRecipeIngredient(recipeId, idRecipeIngredient);
+  Future<Either<Failure, void>> call(int idRecipeIngredient) async {
+    return repository.deleteRecipeIngredient(idRecipeIngredient);
   }
 }

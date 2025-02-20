@@ -80,7 +80,6 @@ class RecipeIngredientBloc
     on<DeleteRecipeIngredientEvent>((event, emit) async {
       emit(RecipeIngredientState.loading());
       final result = await deleteRecipeIngredientUseCase.call(
-        event.recipeId,
         event.idRecipeIngredient!,
       );
       result.fold(

@@ -53,16 +53,14 @@ class _UserConfigurationDialogState extends State<UserConfigurationDialog> {
                       AppLocalizations.of(context)!.register_username_label),
             ),
             const SizedBox(height: 10),
-            // Dropdown for preferences
             DropdownButtonFormField<String>(
               value: _selectedPreferences.isNotEmpty
                   ? _selectedPreferences[0]
-                  : null, // Default value
+                  : null,
               onChanged: (newValue) {
                 setState(() {
-                  if (newValue != null &&
-                      !_selectedPreferences.contains(newValue)) {
-                    _selectedPreferences.add(newValue);
+                  if (newValue != null) {
+                    _selectedPreferences = [newValue];
                   }
                 });
               },

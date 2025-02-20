@@ -66,7 +66,6 @@ class RecipeIngredients extends StatelessWidget {
                           onPressed: () async {
                             context.read<RecipeIngredientBloc>().add(
                                   DeleteRecipeIngredientEvent(
-                                    recipeId: recipeId,
                                     idRecipeIngredient:
                                         ingredient.idRecipeIngredient,
                                   ),
