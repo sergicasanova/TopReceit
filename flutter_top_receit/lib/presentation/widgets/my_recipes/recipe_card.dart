@@ -59,7 +59,7 @@ class RecipeCard extends StatelessWidget {
                         },
                       )
                     : Image.asset(
-                        'assets/icons/recipe.png', // Imagen por defecto si no hay URL
+                        'assets/icons/recipe.png',
                         width: 40,
                         height: 40,
                         fit: BoxFit.cover,

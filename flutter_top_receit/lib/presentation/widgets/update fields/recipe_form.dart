@@ -31,6 +31,7 @@ class RecipeForm extends StatelessWidget {
               hintText: AppLocalizations.of(context)!.title_hint,
               hintStyle: const TextStyle(color: Colors.white),
               filled: true,
+              // ignore: deprecated_member_use
               fillColor: Colors.black.withOpacity(0.5),
               border: const OutlineInputBorder(),
             ),

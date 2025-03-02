@@ -6,6 +6,11 @@ import 'package:flutter_top_receit/config/router/routes.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
+import 'package:flutter/foundation.dart';
 
 class CreateRecipeScreen extends StatefulWidget {
   const CreateRecipeScreen({super.key});
@@ -17,10 +22,12 @@ class CreateRecipeScreen extends StatefulWidget {
 class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final TextEditingController _imageUrlController = TextEditingController();
   String? userId;
   String? currentBackground;
+  dynamic _imageFile;
+  final ImagePicker _picker = ImagePicker();
 
+  // Load background image
   Future<void> _loadBackgroundImage() async {
     final prefs = PreferencesService();
     final bgImage = await prefs.getBackgroundImage();
@@ -35,6 +42,49 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
     setState(() {
       userId = storedUserId;
     });
+  }
+
+  Future<void> _pickImage() async {
+    if (kIsWeb) {
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(type: FileType.image);
+      if (result != null) {
+        setState(() {
+          _imageFile = result.files.single.bytes;
+        });
+      }
+    } else {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+        });
+      }
+    }
+  }
+
+  Future<String?> _uploadImage() async {
+    if (_imageFile == null) return null;
+
+    try {
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('recipes/${DateTime.now().toString()}');
+
+      if (kIsWeb) {
+        // For web, use Uint8List
+        await storageRef.putData(_imageFile);
+      } else {
+        // For mobile, use File
+        await storageRef.putFile(_imageFile);
+      }
+
+      final downloadUrl = await storageRef.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
   }
 
   @override
@@ -114,18 +164,13 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                         style:
                             const TextStyle(color: Colors.white, fontSize: 18),
                       ),
-                      TextField(
-                        controller: _imageUrlController,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!
-                              .create_recipe_hint_image_url,
-                          hintStyle: const TextStyle(color: Colors.white),
-                          filled: true,
-                          fillColor: Colors.black.withOpacity(0.5),
-                          border: const OutlineInputBorder(),
-                        ),
+                      ElevatedButton(
+                        onPressed: _pickImage,
+                        child: Text('Seleccione una imagen'),
                       ),
+                      if (_imageFile != null) ...[
+                        Text('Image selected'),
+                      ],
                       const SizedBox(height: 32),
                       Row(
                         children: [
@@ -133,19 +178,26 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                             onPressed: () async {
                               if (_titleController.text.isNotEmpty &&
                                   _descriptionController.text.isNotEmpty &&
-                                  _imageUrlController.text.isNotEmpty &&
+                                  _imageFile != null &&
                                   userId != null) {
-                                context.read<RecipeBloc>().add(
-                                      CreateRecipeEvent(
-                                        title: _titleController.text,
-                                        description:
-                                            _descriptionController.text,
-                                        image: _imageUrlController.text,
-                                        userId: userId!,
-                                      ),
-                                    );
-
-                                router.go('/home');
+                                final imageUrl = await _uploadImage();
+                                if (imageUrl != null) {
+                                  context.read<RecipeBloc>().add(
+                                        CreateRecipeEvent(
+                                          title: _titleController.text,
+                                          description:
+                                              _descriptionController.text,
+                                          image: imageUrl,
+                                          userId: userId!,
+                                        ),
+                                      );
+                                  router.go('/home');
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text('Error uploading image')),
+                                  );
+                                }
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
@@ -155,7 +207,6 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                                 );
                               }
                             },
-                            // ignore: sort_child_properties_last
                             child: Text(AppLocalizations.of(context)!
                                 .create_recipe_title),
                             style: ElevatedButton.styleFrom(
@@ -170,7 +221,6 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                             onPressed: () {
                               router.go('/home');
                             },
-                            // ignore: sort_child_properties_last
                             child: Text(
                                 AppLocalizations.of(context)!.cancel_button),
                             style: ElevatedButton.styleFrom(

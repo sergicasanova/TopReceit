@@ -35,6 +35,7 @@ class RecipeIngredients extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             boxShadow: [
               BoxShadow(
+                // ignore: deprecated_member_use
                 color: Colors.black.withOpacity(0.3),
                 blurRadius: 5,
                 offset: const Offset(0, 3),
