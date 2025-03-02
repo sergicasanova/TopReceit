@@ -59,13 +59,23 @@ class UpdateRecipeEvent extends RecipeEvent {
   List<Object?> get props => [title, description, image, idRecipe];
 }
 
-class DeleteRecipeEvent extends RecipeEvent {
-  final int id;
+class DeleteImageEvent extends RecipeEvent {
+  final String imageUrl;
 
-  DeleteRecipeEvent({required this.id});
+  DeleteImageEvent({required this.imageUrl});
 
   @override
-  List<Object?> get props => [id];
+  List<Object> get props => [imageUrl];
+}
+
+class DeleteRecipeEvent extends RecipeEvent {
+  final int id;
+  final String userId;
+
+  DeleteRecipeEvent({required this.id, required this.userId});
+
+  @override
+  List<Object?> get props => [id, userId];
 }
 
 class ApplyFilterEvent extends RecipeEvent {

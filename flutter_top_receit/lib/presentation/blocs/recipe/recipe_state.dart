@@ -88,6 +88,8 @@ class RecipeState extends Equatable {
 
   factory RecipeState.deleted() => const RecipeState();
 
+  factory RecipeState.imageDeleted() => const RecipeState(); // Nuevo estado
+
   factory RecipeState.filtered(List<RecipeEntity> filteredRecipes) =>
       RecipeState(recipes: filteredRecipes);
 }

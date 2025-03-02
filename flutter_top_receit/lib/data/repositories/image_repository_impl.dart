@@ -33,9 +33,9 @@ class ImageRepositoryImpl implements ImageRepository {
   }
 
   @override
-  Future<Either<Exception, void>> deleteImage(String id) async {
+  Future<Either<Exception, void>> deleteImage(String imageUrl) async {
     try {
-      await dataSource.deleteImage(id);
+      await dataSource.deleteImage(imageUrl);
       return const Right(null);
     } catch (e) {
       return Left(Exception('Failed to delete image: $e'));

@@ -1,6 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_top_receit/core/use_case.dart';
 import 'package:flutter_top_receit/data/models/recipe_model.dart';
+import 'package:flutter_top_receit/domain/repositories/image_repository.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/create_recipe_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_all_recipe_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_recipe_by_id_usecase.dart';
@@ -18,6 +19,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   final GetRecipesByUserIdUseCase getRecipesByUserIdUseCase;
   final UpdateRecipeUseCase updateRecipeUseCase;
   final DeleteRecipeUseCase deleteRecipeUseCase;
+  final ImageRepository imageRepository;
 
   RecipeBloc(
     this.createRecipeUseCase,
@@ -26,6 +28,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     this.getRecipesByUserIdUseCase,
     this.updateRecipeUseCase,
     this.deleteRecipeUseCase,
+    this.imageRepository,
   ) : super(RecipeState.initial()) {
     on<GetAllRecipesEvent>((event, emit) async {
       emit(RecipeState.loading());
@@ -108,12 +111,38 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       );
     });
 
+    on<DeleteImageEvent>((event, emit) async {
+      emit(RecipeState.loading());
+      try {
+        // Eliminar la imagen en Firebase Storage
+        final deleteImageResult =
+            await imageRepository.deleteImage(event.imageUrl);
+
+        deleteImageResult.fold(
+          (error) {
+            print('Failed to delete image: $error');
+            emit(RecipeState.failure("Failed to delete image"));
+          },
+          (success) {
+            print('Image deleted successfully.');
+            emit(RecipeState.imageDeleted());
+          },
+        );
+      } catch (e) {
+        emit(RecipeState.failure('Failed to delete image'));
+      }
+    });
+
     on<DeleteRecipeEvent>((event, emit) async {
       emit(RecipeState.loading());
       final result = await deleteRecipeUseCase.call(event.id);
       result.fold(
         (failure) => emit(RecipeState.failure("Fallo al eliminar la receta")),
-        (_) => emit(RecipeState.deleted()),
+        (_) {
+          print("Receta eliminada ${event.userId}");
+          emit(RecipeState.deleted());
+          add(GetRecipesByUserIdEvent(userId: event.userId));
+        },
       );
     });
 

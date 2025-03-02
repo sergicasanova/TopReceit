@@ -87,7 +87,7 @@ void configureDependencies() async {
   );
   sl.registerFactory<IngredientBloc>(() => IngredientBloc(sl(), sl(), sl()));
   sl.registerFactory<RecipeBloc>(
-      () => RecipeBloc(sl(), sl(), sl(), sl(), sl(), sl()));
+      () => RecipeBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory<RecipeIngredientBloc>(
       () => RecipeIngredientBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory<StepBloc>(() => StepBloc(sl(), sl(), sl(), sl(), sl()));

@@ -6,7 +6,7 @@ class DeleteImageUseCase {
 
   DeleteImageUseCase(this.repository);
 
-  Future<Either<Exception, void>> call(String id) {
-    return repository.deleteImage(id);
+  Future<Either<Exception, void>> call(String imageUrl) {
+    return repository.deleteImage(imageUrl);
   }
 }

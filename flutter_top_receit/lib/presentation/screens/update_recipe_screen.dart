@@ -99,11 +99,17 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
               child: Text(AppLocalizations.of(context)!.cancel_button),
             ),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
+                final imageUrl = _imageUrlController.text;
+                print(imageUrl);
                 context
                     .read<RecipeBloc>()
-                    .add(DeleteRecipeEvent(id: widget.recipeId));
+                    .add(DeleteImageEvent(imageUrl: imageUrl));
                 Navigator.of(context).pop();
+                print(userId);
+                context.read<RecipeBloc>().add(
+                    DeleteRecipeEvent(id: widget.recipeId, userId: userId!));
+                await Future.delayed(Duration(milliseconds: 300));
                 router.go('/home');
               },
               child: Text(AppLocalizations.of(context)!.delete_button),
@@ -178,7 +184,6 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                       },
                     ),
                     const SizedBox(height: 20),
-                    // Botón para eliminar la receta
                     ElevatedButton.icon(
                       onPressed: _showDeleteConfirmationDialog,
                       icon: const Icon(Icons.delete, color: Colors.white),

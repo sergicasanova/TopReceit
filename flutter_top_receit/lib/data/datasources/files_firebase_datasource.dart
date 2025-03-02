@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 abstract class FirebaseStorageDataSource {
   Future<List<Map<String, String>>> fetchImages();
   Future<String> uploadImage(dynamic file, String fileName);
-  Future<void> deleteImage(String id);
+  Future<void> deleteImage(String imageUrl);
 }
 
 class FirebaseStorageDataSourceImpl implements FirebaseStorageDataSource {
@@ -70,12 +70,24 @@ class FirebaseStorageDataSourceImpl implements FirebaseStorageDataSource {
     }
   }
 
+  String getFilePathFromUrl(String imageUrl) {
+    final Uri uri = Uri.parse(imageUrl);
+    // Obtener la ruta relevante dentro de Firebase Storage, omitiendo los segmentos no necesarios
+    final String filePath = uri.pathSegments.skip(4).join('/').split('?')[0];
+    print('Extracted file path from URL: $filePath');
+    return Uri.decodeComponent(filePath);
+  }
+
   @override
-  Future<void> deleteImage(String id) async {
+  Future<void> deleteImage(String imageUrl) async {
     try {
-      final Reference storageRef = storage.ref().child('images/$id');
+      final String filePath = getFilePathFromUrl(imageUrl);
+      final Reference storageRef = storage.ref().child(filePath);
+      print('Attempting to delete file at path: $filePath');
       await storageRef.delete();
+      print('Image deleted successfully from Firebase Storage.');
     } catch (e) {
+      print('Failed to delete image: $e');
       throw Exception('Failed to delete image: $e');
     }
   }
