@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_top_receit/data/datasources/favorites_api_datasource.dart';
+import 'package:flutter_top_receit/data/datasources/files_firebase_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/firebase_auth_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/firestore_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/ingredient_api_datasource.dart';
@@ -9,6 +11,7 @@ import 'package:flutter_top_receit/data/datasources/recipe_ingredient_api_dataso
 import 'package:flutter_top_receit/data/datasources/steps_api_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/user_api_datasource.dart';
 import 'package:flutter_top_receit/data/repositories/favorites_repository_impl.dart';
+import 'package:flutter_top_receit/data/repositories/image_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/ingredient_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/like_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/recipe_ingredient_repository_impl.dart';
@@ -16,6 +19,7 @@ import 'package:flutter_top_receit/data/repositories/recipe_repository_impl.dart
 import 'package:flutter_top_receit/data/repositories/sing_in_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/steps_repository_impl.dart';
 import 'package:flutter_top_receit/domain/repositories/favorites_repository.dart';
+import 'package:flutter_top_receit/domain/repositories/image_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/ingredient_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/like_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/recipe_ingredient_repository.dart';
@@ -25,6 +29,9 @@ import 'package:flutter_top_receit/domain/repositories/steps_repository.dart';
 import 'package:flutter_top_receit/domain/usecases/favorites/add_favorite_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/favorites/get_favorites_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/favorites/remove_favorite_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/image/delete_image_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/image/fetch_image_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/image/upload_image_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/ingredient/create_ingredient_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/ingredient/delete_ingredient_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/ingredient/get_all_ingredient_usecase.dart';
@@ -90,6 +97,7 @@ void configureDependencies() async {
 
   // Instancia de Firebase Auth
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
+  sl.registerLazySingleton(() => FirebaseStorage.instance);
 
   // Fuentes de datos
   sl.registerLazySingleton<FirebaseAuthDataSource>(
@@ -118,6 +126,9 @@ void configureDependencies() async {
   sl.registerLazySingleton<LikeApiDataSource>(
     () => LikeApiDataSource(sl()),
   );
+  sl.registerLazySingleton<FirebaseStorageDataSource>(
+    () => FirebaseStorageDataSourceImpl(storage: sl()),
+  );
 
   // Repositorios
   sl.registerLazySingleton<SignInRepository>(
@@ -140,6 +151,9 @@ void configureDependencies() async {
   );
   sl.registerLazySingleton<LikeRepository>(
     () => LikeRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<ImageRepository>(
+    () => ImageRepositoryImpl(dataSource: sl()),
   );
 
   // Casos de uso
@@ -261,6 +275,11 @@ void configureDependencies() async {
   sl.registerLazySingleton<GetLikesByRecipeIdUseCase>(
     () => GetLikesByRecipeIdUseCase(sl()),
   );
+
+  //image
+  sl.registerLazySingleton(() => FetchImagesUseCase(sl()));
+  sl.registerLazySingleton(() => UploadImageUseCase(sl()));
+  sl.registerLazySingleton(() => DeleteImageUseCase(sl()));
 
   sl.registerLazySingleton(() => http.Client());
   final sharedPreferences = await SharedPreferences.getInstance();
