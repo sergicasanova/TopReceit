@@ -8,7 +8,6 @@ abstract class FirebaseStorageDataSource {
   Future<List<Map<String, String>>> fetchImages();
   Future<String> uploadImage(dynamic file, String fileName);
   Future<void> deleteImage(String id);
-  Future<void> saveRoutineWithImage(int routineId, String imageUrl);
 }
 
 class FirebaseStorageDataSourceImpl implements FirebaseStorageDataSource {
@@ -78,27 +77,6 @@ class FirebaseStorageDataSourceImpl implements FirebaseStorageDataSource {
       await storageRef.delete();
     } catch (e) {
       throw Exception('Failed to delete image: $e');
-    }
-  }
-
-  @override
-  Future<void> saveRoutineWithImage(int routineId, String imageUrl) async {
-    try {
-      final response = await http.put(
-        Uri.parse('http://192.168.1.141:8080/routines/$routineId'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({
-          'imageurl': imageUrl,
-        }),
-      );
-
-      if (response.statusCode == 201) {
-        print('Rutina guardada exitosamente con la imagen');
-      } else {
-        throw Exception('Error guardando la rutina: ${response.body}');
-      }
-    } catch (e) {
-      print('Error: $e');
     }
   }
 }

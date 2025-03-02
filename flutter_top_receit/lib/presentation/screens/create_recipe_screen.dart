@@ -71,15 +71,18 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
           .ref()
           .child('recipes/${DateTime.now().toString()}');
 
+      final metadata = SettableMetadata(contentType: 'image/jpeg');
+
       if (kIsWeb) {
-        // For web, use Uint8List
-        await storageRef.putData(_imageFile);
+        // For web, use Uint8List with metadata
+        await storageRef.putData(_imageFile, metadata);
       } else {
-        // For mobile, use File
-        await storageRef.putFile(_imageFile);
+        // For mobile, use File with metadata
+        await storageRef.putFile(_imageFile, metadata);
       }
 
       final downloadUrl = await storageRef.getDownloadURL();
+      print('Download URL: $downloadUrl');
       return downloadUrl;
     } catch (e) {
       print('Error uploading image: $e');
