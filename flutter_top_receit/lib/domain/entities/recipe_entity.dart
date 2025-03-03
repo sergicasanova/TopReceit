@@ -8,6 +8,7 @@ class RecipeEntity {
   final String? title;
   final String? description;
   final String? image;
+  final bool? isPublic;
   UserEntity? user;
   final List<RecipeIngredientEntity> recipeIngredients;
   final List<StepEntity> steps;
@@ -18,6 +19,7 @@ class RecipeEntity {
     this.title,
     this.description,
     this.image,
+    this.isPublic,
     this.user,
     required this.recipeIngredients,
     required this.steps,
@@ -30,6 +32,7 @@ class RecipeEntity {
       title: model.title,
       description: model.description,
       image: model.image,
+      isPublic: model.isPublic,
       user: model.user != null ? UserEntity.fromModel(model.user!) : null,
       recipeIngredients: model.recipeIngredients
           .map((ingredientModel) =>

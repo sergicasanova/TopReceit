@@ -12,4 +12,5 @@ abstract class RecipeRepository {
   Future<Either<Failure, bool>> updateRecipe(UpdateRecipeDto dto);
 
   Future<Either<Failure, void>> deleteRecipe(int id);
+  Future<Either<Failure, List<RecipeEntity>>> getPublicRecipes();
 }
