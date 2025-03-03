@@ -105,6 +105,7 @@ class UpdateRecipeDto {
       'title': title,
       'description': description,
       'image': image,
+      'isPublic': isPublic,
     };
   }
 }

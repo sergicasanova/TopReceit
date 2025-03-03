@@ -30,7 +30,7 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
           emit(LikeState.success());
 
           // Aquí lanzamos el evento para actualizar las recetas
-          recipeBloc.add(GetAllRecipesEvent());
+          recipeBloc.add(GetPublicRecipesEvent());
 
           // Emitimos el estado de "like actualizado" para reflejar que se ha dado un like
           emit(LikeState.likeUpdated());
@@ -50,7 +50,7 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
           emit(LikeState.success());
 
           // Aquí lanzamos el evento para actualizar las recetas
-          recipeBloc.add(GetAllRecipesEvent());
+          recipeBloc.add(GetPublicRecipesEvent());
 
           // Emitimos el estado de "like actualizado" para reflejar que se ha quitado un like
           emit(LikeState.likeUpdated());

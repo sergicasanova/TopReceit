@@ -103,12 +103,14 @@ class RecipeApiDataSource implements RecipeDataSource {
   Future<bool> updateRecipe(UpdateRecipeDto dto) async {
     final url = Uri.parse('$baseUrl/recipe/${dto.idRecipe}');
 
+    print('UpdateRecipeDto: ${dto.toJson()}');
+
     final response = await client.put(
       url,
       headers: {'Content-Type': 'application/json'},
       body: json.encode(dto.toJson()),
     );
-
+    print('updateRecipe' + response.body);
     if (response.statusCode == 200) {
       return true;
     } else {
@@ -132,6 +134,8 @@ class RecipeApiDataSource implements RecipeDataSource {
     final url = Uri.parse('$baseUrl/recipe/public');
 
     final response = await client.get(url);
+
+    print('getpublicrecipes: ${response.body}');
 
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body) as List;

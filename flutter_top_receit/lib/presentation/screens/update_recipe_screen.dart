@@ -30,6 +30,7 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _imageUrlController = TextEditingController();
+  bool _isPublic = false;
   String? currentBackground;
   String? userId;
 
@@ -101,15 +102,13 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
             TextButton(
               onPressed: () async {
                 final imageUrl = _imageUrlController.text;
-                print(imageUrl);
                 context
                     .read<RecipeBloc>()
                     .add(DeleteImageEvent(imageUrl: imageUrl));
                 Navigator.of(context).pop();
-                print(userId);
                 context.read<RecipeBloc>().add(
                     DeleteRecipeEvent(id: widget.recipeId, userId: userId!));
-                await Future.delayed(Duration(milliseconds: 300));
+                await Future.delayed(const Duration(milliseconds: 300));
                 router.go('/home');
               },
               child: Text(AppLocalizations.of(context)!.delete_button),
@@ -129,6 +128,8 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
           _titleController.text = state.recipe?.title ?? '';
           _descriptionController.text = state.recipe?.description ?? '';
           _imageUrlController.text = state.recipe?.image ?? '';
+          _isPublic = state.recipe?.isPublic ?? false;
+          print('recipe ${_isPublic}');
           setState(() {
             isImageLoaded = true;
           });
@@ -158,6 +159,22 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                       titleController: _titleController,
                       descriptionController: _descriptionController,
                       imageUrlController: _imageUrlController,
+                    ),
+                    const SizedBox(height: 16),
+                    SwitchListTile(
+                      title: const Text(
+                        'Publicar',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      value: _isPublic,
+                      onChanged: (bool value) {
+                        setState(() {
+                          _isPublic = value;
+                        });
+                      },
+                      activeColor: Theme.of(context).primaryColor,
+                      inactiveThumbColor: Colors.grey,
+                      inactiveTrackColor: Colors.grey[300],
                     ),
                     const SizedBox(height: 32),
                     BlocBuilder<RecipeBloc, RecipeState>(
@@ -201,6 +218,7 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                     const SizedBox(height: 32),
                     RecipeButtons(
                       onAccept: () {
+                        print('recipe ${_isPublic}');
                         if (_titleController.text.isNotEmpty &&
                             _descriptionController.text.isNotEmpty &&
                             _imageUrlController.text.isNotEmpty &&
@@ -211,6 +229,8 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                                   description: _descriptionController.text,
                                   image: _imageUrlController.text,
                                   idRecipe: widget.recipeId,
+                                  isPublic:
+                                      _isPublic, // Añadir el valor de isPublic
                                 ),
                               );
                           router.go('/home');

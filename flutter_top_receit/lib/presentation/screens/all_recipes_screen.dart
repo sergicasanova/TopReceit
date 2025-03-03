@@ -37,7 +37,7 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
   }
 
   void _getRecipes() {
-    context.read<RecipeBloc>().add(GetAllRecipesEvent());
+    context.read<RecipeBloc>().add(GetPublicRecipesEvent());
   }
 
   @override
@@ -77,7 +77,7 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
           BlocListener<LikeBloc, LikeState>(
             listener: (context, state) {
               if (state.isUpdated) {
-                context.read<RecipeBloc>().add(GetAllRecipesEvent());
+                context.read<RecipeBloc>().add(GetPublicRecipesEvent());
               }
             },
             child: const Padding(

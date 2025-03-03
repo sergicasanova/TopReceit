@@ -92,4 +92,7 @@ class RecipeState extends Equatable {
 
   factory RecipeState.filtered(List<RecipeEntity> filteredRecipes) =>
       RecipeState(recipes: filteredRecipes);
+
+  factory RecipeState.publicRecipesLoaded(List<RecipeEntity> publicRecipes) =>
+      RecipeState(recipes: publicRecipes);
 }

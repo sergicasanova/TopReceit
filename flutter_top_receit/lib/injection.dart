@@ -41,6 +41,7 @@ import 'package:flutter_top_receit/domain/usecases/like/remove_like_usecase.dart
 import 'package:flutter_top_receit/domain/usecases/recipe/create_recipe_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/delete_recipe_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_all_recipe_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/recipe/get_public_recipes_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_recipe_by_id_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_recipe_by_user_id_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/update_recipe_usecase.dart';
@@ -87,7 +88,7 @@ void configureDependencies() async {
   );
   sl.registerFactory<IngredientBloc>(() => IngredientBloc(sl(), sl(), sl()));
   sl.registerFactory<RecipeBloc>(
-      () => RecipeBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl()));
+      () => RecipeBloc(sl(), sl(), sl(), sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory<RecipeIngredientBloc>(
       () => RecipeIngredientBloc(sl(), sl(), sl(), sl(), sl()));
   sl.registerFactory<StepBloc>(() => StepBloc(sl(), sl(), sl(), sl(), sl()));
@@ -218,6 +219,9 @@ void configureDependencies() async {
   );
   sl.registerLazySingleton<DeleteRecipeUseCase>(
     () => DeleteRecipeUseCase(sl()),
+  );
+  sl.registerLazySingleton<GetPublicRecipesUseCase>(
+    () => GetPublicRecipesUseCase(sl()),
   );
 
   //recipe_ingredient

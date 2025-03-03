@@ -7,6 +7,8 @@ abstract class RecipeEvent extends Equatable {
 
 class GetAllRecipesEvent extends RecipeEvent {}
 
+class GetPublicRecipesEvent extends RecipeEvent {}
+
 class GetRecipeByIdEvent extends RecipeEvent {
   final int id;
 
@@ -47,16 +49,18 @@ class UpdateRecipeEvent extends RecipeEvent {
   final String description;
   final String image;
   final int idRecipe;
+  final bool isPublic;
 
   UpdateRecipeEvent({
     required this.title,
     required this.description,
     required this.image,
     required this.idRecipe,
+    required this.isPublic,
   });
 
   @override
-  List<Object?> get props => [title, description, image, idRecipe];
+  List<Object?> get props => [title, description, image, idRecipe, isPublic];
 }
 
 class DeleteImageEvent extends RecipeEvent {

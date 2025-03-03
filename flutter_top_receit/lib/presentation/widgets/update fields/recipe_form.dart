@@ -52,6 +52,7 @@ class RecipeForm extends StatelessWidget {
               hintText: AppLocalizations.of(context)!.description_hint,
               hintStyle: const TextStyle(color: Colors.white),
               filled: true,
+              // ignore: deprecated_member_use
               fillColor: Colors.black.withOpacity(0.5),
               border: const OutlineInputBorder(),
             ),
@@ -71,6 +72,7 @@ class RecipeForm extends StatelessWidget {
               hintText: AppLocalizations.of(context)!.image_url_hint,
               hintStyle: const TextStyle(color: Colors.white),
               filled: true,
+              // ignore: deprecated_member_use
               fillColor: Colors.black.withOpacity(0.5),
               border: const OutlineInputBorder(),
             ),

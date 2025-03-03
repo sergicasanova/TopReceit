@@ -11,7 +11,7 @@ class AllRecipeList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    context.read<RecipeBloc>().add(GetAllRecipesEvent());
+    context.read<RecipeBloc>().add(GetPublicRecipesEvent());
 
     return BlocBuilder<RecipeBloc, RecipeState>(
       builder: (context, state) {

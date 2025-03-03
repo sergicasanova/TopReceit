@@ -4,6 +4,7 @@ import 'package:flutter_top_receit/data/models/recipe_model.dart';
 import 'package:flutter_top_receit/domain/repositories/image_repository.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/create_recipe_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_all_recipe_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/recipe/get_public_recipes_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_recipe_by_id_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_recipe_by_user_id_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/update_recipe_usecase.dart';
@@ -17,6 +18,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   final GetAllRecipesUseCase getAllRecipesUseCase;
   final GetRecipeByIdUseCase getRecipeByIdUseCase;
   final GetRecipesByUserIdUseCase getRecipesByUserIdUseCase;
+  final GetPublicRecipesUseCase getPublicRecipesUseCase;
   final UpdateRecipeUseCase updateRecipeUseCase;
   final DeleteRecipeUseCase deleteRecipeUseCase;
   final ImageRepository imageRepository;
@@ -26,6 +28,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     this.getAllRecipesUseCase,
     this.getRecipeByIdUseCase,
     this.getRecipesByUserIdUseCase,
+    this.getPublicRecipesUseCase,
     this.updateRecipeUseCase,
     this.deleteRecipeUseCase,
     this.imageRepository,
@@ -36,6 +39,16 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       result.fold(
         (failure) => emit(RecipeState.failure("Fallo al obtener las recetas")),
         (recipes) => emit(RecipeState.loaded(recipes)),
+      );
+    });
+
+    on<GetPublicRecipesEvent>((event, emit) async {
+      emit(RecipeState.loading());
+      final result = await getPublicRecipesUseCase.call(NoParams());
+      result.fold(
+        (failure) =>
+            emit(RecipeState.failure("Fallo al obtener las recetas públicas")),
+        (recipes) => emit(RecipeState.publicRecipesLoaded(recipes)),
       );
     });
 
@@ -100,7 +113,9 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
         title: event.title,
         description: event.description,
         image: event.image,
+        isPublic: event.isPublic,
       ));
+      print("Update recipe result: $result");
 
       result.fold(
         (failure) => emit(RecipeState.failure(
