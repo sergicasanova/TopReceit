@@ -12,6 +12,7 @@ abstract class RecipeDataSource {
   Future<List<RecipeModel>> getRecipesByUserId(String userId);
   Future<bool> updateRecipe(UpdateRecipeDto recipe);
   Future<void> deleteRecipe(int recipeId);
+  Future<List<RecipeModel>> getPublicRecipes();
 }
 
 class RecipeApiDataSource implements RecipeDataSource {
@@ -123,6 +124,21 @@ class RecipeApiDataSource implements RecipeDataSource {
 
     if (response.statusCode != 200) {
       throw ServerFailure(message: 'Error al eliminar la receta');
+    }
+  }
+
+  @override
+  Future<List<RecipeModel>> getPublicRecipes() async {
+    final url = Uri.parse('$baseUrl/recipe/public');
+
+    final response = await client.get(url);
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body) as List;
+
+      return responseData.map((data) => RecipeModel.fromJson(data)).toList();
+    } else {
+      throw ServerFailure(message: 'Error al obtener las recetas públicas');
     }
   }
 }

@@ -8,6 +8,7 @@ class RecipeModel {
   final String? title;
   final String? description;
   String? image;
+  bool? isPublic;
   UserModel? user;
   final List<RecipeIngredientModel> recipeIngredients;
   final List<StepModel> steps;
@@ -18,6 +19,7 @@ class RecipeModel {
     this.title,
     this.description,
     this.image,
+    this.isPublic,
     this.user,
     required this.recipeIngredients,
     required this.steps,
@@ -34,6 +36,7 @@ class RecipeModel {
       title: json['title'],
       description: json['description'] ?? '',
       image: json['image'] ?? '',
+      isPublic: json['isPublic'] ?? false,
       user: json['user'] != null ? UserModel.fromJson(json['user']) : null,
       recipeIngredients: (json['recipeIngredients'] as List?)
               ?.map((e) => RecipeIngredientModel.fromJson(e))
@@ -53,6 +56,7 @@ class RecipeModel {
       'title': title,
       'description': description,
       'image': image,
+      'isPublic': isPublic,
       'user': user?.toJson(),
       'recipeIngredients': recipeIngredients.map((e) => e.toJson()).toList(),
       'steps': steps.map((e) => e.toJson()).toList(),
@@ -64,6 +68,7 @@ class RecipeModel {
     String? title,
     String? description,
     String? image,
+    bool? isPublic,
     List<RecipeIngredientModel>? recipeIngredients,
     List<StepModel>? steps,
   }) {
@@ -72,6 +77,7 @@ class RecipeModel {
       title: title ?? this.title,
       description: description ?? this.description,
       image: image ?? this.image,
+      isPublic: isPublic ?? this.isPublic,
       recipeIngredients: recipeIngredients ?? this.recipeIngredients,
       steps: steps ?? this.steps,
     );
@@ -83,12 +89,14 @@ class UpdateRecipeDto {
   final String? title;
   final String? description;
   final String? image;
+  final bool? isPublic;
 
   UpdateRecipeDto({
     this.idRecipe,
     this.title,
     this.description,
     this.image,
+    this.isPublic,
   });
 
   Map<String, dynamic> toJson() {

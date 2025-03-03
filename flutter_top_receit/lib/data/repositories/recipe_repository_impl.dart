@@ -23,6 +23,19 @@ class RecipeRepositoryImpl implements RecipeRepository {
   }
 
   @override
+  Future<Either<Failure, List<RecipeEntity>>> getPublicRecipes() async {
+    try {
+      final recipeModels = await recipeApiDataSource.getPublicRecipes();
+      final recipes =
+          recipeModels.map((model) => model.toRecipeEntity()).toList();
+      return Right(recipes);
+    } catch (e) {
+      return Left(
+          ServerFailure(message: 'Error al obtener las recetas públicas.'));
+    }
+  }
+
+  @override
   Future<Either<Failure, RecipeEntity>> getRecipeById(int id) async {
     try {
       final recipeModel = await recipeApiDataSource.getRecipeById(id);
