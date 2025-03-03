@@ -153,6 +153,14 @@ class AllRecipeCard extends StatelessWidget {
                                 width: 40,
                                 height: 40,
                                 fit: BoxFit.cover,
+                                errorBuilder: (context, error, stackTrace) {
+                                  return Image.asset(
+                                    'assets/bg9.jpeg',
+                                    width: 40,
+                                    height: 40,
+                                    fit: BoxFit.cover,
+                                  );
+                                },
                               )
                             : Image.asset(
                                 'assets/bg9.jpeg',

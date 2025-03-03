@@ -128,17 +128,6 @@ class _UserConfigurationDialogState extends State<UserConfigurationDialog> {
               ),
             ),
             const SizedBox(height: 10),
-            TextField(
-              controller: _avatarController,
-              decoration: InputDecoration(
-                  labelText: AppLocalizations.of(context)!.avatar_url_label),
-              onChanged: (url) {
-                setState(() {
-                  _avatarController.text = url;
-                });
-              },
-            ),
-            const SizedBox(height: 10),
             ElevatedButton(
               onPressed: _pickAvatar,
               child: const Text('Seleccionar nuevo avatar'),
