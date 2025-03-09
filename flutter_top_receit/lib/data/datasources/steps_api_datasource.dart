@@ -7,7 +7,7 @@ import 'package:flutter_top_receit/core/failure.dart';
 abstract class StepsDataSource {
   Future<List<StepModel>> getStepsByRecipe(int recipeId);
   Future<StepModel> createStep(int recipeId, StepModel step);
-  Future<StepModel> updateStep(int recipeId, int stepId, StepModel step);
+  Future<StepModel> updateStep(int stepId, StepModel step);
   Future<void> deleteStep(int recipeId, int stepId);
   Future<void> deleteStepById(int stepId);
 }
@@ -53,8 +53,9 @@ class StepsApiDataSource implements StepsDataSource {
   }
 
   @override
-  Future<StepModel> updateStep(int recipeId, int stepId, StepModel step) async {
-    final url = Uri.parse('$baseUrl/steps/$recipeId/$stepId');
+  Future<StepModel> updateStep(int stepId, StepModel step) async {
+    final url = Uri.parse(
+        '$baseUrl/steps/$stepId'); // Solo usamos el `stepId` en la URL
     final response = await client.put(
       url,
       headers: {'Content-Type': 'application/json'},
@@ -68,7 +69,7 @@ class StepsApiDataSource implements StepsDataSource {
       final responseData = json.decode(response.body);
       return StepModel.fromJson(responseData);
     } else {
-      throw ServerFailure(message: 'Error al actualizar el paso.');
+      throw ServerFailure(message: 'Error al actualizar el paso de la receta.');
     }
   }
 

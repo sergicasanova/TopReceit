@@ -36,10 +36,9 @@ class StepsRepositoryImpl implements StepsRepository {
 
   @override
   Future<Either<Failure, StepEntity>> updateStep(
-      int recipeId, int stepId, StepModel step) async {
+      int stepId, StepModel step) async {
     try {
-      final stepModel =
-          await stepsApiDataSource.updateStep(recipeId, stepId, step);
+      final stepModel = await stepsApiDataSource.updateStep(stepId, step);
       return Right(StepEntity.fromModel(stepModel));
     } catch (e) {
       return Left(ServerFailure(message: 'Error al actualizar el paso.'));

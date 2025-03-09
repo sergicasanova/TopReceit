@@ -13,15 +13,13 @@ class UpdateStepUseCase
 
   @override
   Future<Either<Failure, StepEntity>> call(UpdateStepParams params) async {
-    return repository.updateStep(params.recipeId, params.stepId, params.step);
+    return repository.updateStep(params.stepId, params.step);
   }
 }
 
 class UpdateStepParams {
-  final int recipeId;
   final int stepId;
   final StepModel step;
 
-  UpdateStepParams(
-      {required this.recipeId, required this.stepId, required this.step});
+  UpdateStepParams({required this.stepId, required this.step});
 }

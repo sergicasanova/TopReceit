@@ -43,7 +43,6 @@ class StepBloc extends Bloc<StepEvent, StepState> {
       emit(StepState.loading());
       final result = await updateStepUseCase.call(
         UpdateStepParams(
-          recipeId: event.recipeId,
           stepId: event.stepId,
           step: event.step,
         ),

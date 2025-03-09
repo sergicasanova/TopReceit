@@ -10,8 +10,11 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AddStepDialog extends StatefulWidget {
   final int recipeId;
+  final int? stepId;
+  final StepModel? existingStep;
 
-  const AddStepDialog({super.key, required this.recipeId});
+  const AddStepDialog(
+      {super.key, required this.recipeId, this.stepId, this.existingStep});
 
   @override
   _AddStepDialogState createState() => _AddStepDialogState();
@@ -20,6 +23,15 @@ class AddStepDialog extends StatefulWidget {
 class _AddStepDialogState extends State<AddStepDialog> {
   final TextEditingController _stepController = TextEditingController();
   final TextEditingController _orderController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.existingStep != null) {
+      _stepController.text = widget.existingStep!.description;
+      _orderController.text = widget.existingStep!.order.toString();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +43,9 @@ class _AddStepDialogState extends State<AddStepDialog> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              AppLocalizations.of(context)!.add_step_title,
+              widget.stepId == null
+                  ? AppLocalizations.of(context)!.add_step_title
+                  : ('Editar Paso ${widget.existingStep!.order}'),
               style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: 16),
@@ -74,12 +88,23 @@ class _AddStepDialogState extends State<AddStepDialog> {
                           order: order,
                           description: _stepController.text,
                         );
-                        context.read<StepBloc>().add(
-                              CreateStepEvent(
-                                step: step,
-                                recipeId: widget.recipeId,
-                              ),
-                            );
+                        if (widget.stepId == null) {
+                          // Creating a new step
+                          context.read<StepBloc>().add(
+                                CreateStepEvent(
+                                  step: step,
+                                  recipeId: widget.recipeId,
+                                ),
+                              );
+                        } else {
+                          // Updating an existing step
+                          context.read<StepBloc>().add(
+                                UpdateStepEvent(
+                                  step: step,
+                                  stepId: widget.stepId!,
+                                ),
+                              );
+                        }
                         await Future.delayed(const Duration(seconds: 1));
                         context.read<RecipeBloc>().add(
                               GetRecipeByIdEvent(id: widget.recipeId),
@@ -100,7 +125,9 @@ class _AddStepDialogState extends State<AddStepDialog> {
                       );
                     }
                   },
-                  child: Text(AppLocalizations.of(context)!.add_button),
+                  child: Text(widget.stepId == null
+                      ? AppLocalizations.of(context)!.add_button
+                      : ('Editar')), // traducir
                 ),
               ],
             ),

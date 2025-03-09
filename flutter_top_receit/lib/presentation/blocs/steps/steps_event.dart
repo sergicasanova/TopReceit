@@ -36,17 +36,15 @@ class CreateStepEvent extends StepEvent {
 
 class UpdateStepEvent extends StepEvent {
   final StepModel step;
-  final int recipeId;
   final int stepId;
 
   UpdateStepEvent({
     required this.step,
-    required this.recipeId,
     required this.stepId,
   });
 
   @override
-  List<Object?> get props => [step, recipeId, stepId];
+  List<Object?> get props => [step, stepId];
 }
 
 class DeleteStepEvent extends StepEvent {

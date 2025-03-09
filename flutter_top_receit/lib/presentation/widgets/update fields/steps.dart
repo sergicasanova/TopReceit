@@ -40,6 +40,18 @@ class RecipeSteps extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Agregar paso - botón para abrir el diálogo de agregar nuevo paso
+              ElevatedButton(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AddStepDialog(
+                      recipeId: recipeId,
+                    ),
+                  );
+                },
+                child: Text(AppLocalizations.of(context)!.add_step_button),
+              ),
               // Lista de pasos
               Column(
                 children: steps.map((step) {
@@ -53,14 +65,30 @@ class RecipeSteps extends StatelessWidget {
                             const Icon(Icons.check_circle, size: 20),
                             const SizedBox(width: 5),
                             SizedBox(
-                                width: 230,
-                                child: Text(
-                                  '${AppLocalizations.of(context)!.steps_title_card} ${step.order}: ${step.description}',
-                                  style: const TextStyle(fontSize: 12),
-                                  softWrap: true,
-                                )),
+                              width: 230,
+                              child: Text(
+                                '${AppLocalizations.of(context)!.steps_title_card} ${step.order}: ${step.description}',
+                                style: const TextStyle(fontSize: 12),
+                                softWrap: true,
+                              ),
+                            ),
                           ],
                         ),
+                        // Botón de editar
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) => AddStepDialog(
+                                recipeId: recipeId,
+                                stepId: step.idStep,
+                                existingStep: step,
+                              ),
+                            );
+                          },
+                        ),
+                        // Botón de eliminar
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () async {
@@ -78,21 +106,6 @@ class RecipeSteps extends StatelessWidget {
                     ),
                   );
                 }).toList(),
-              ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  icon: const Icon(Icons.add_circle,
-                      color: Colors.green, size: 30),
-                  onPressed: () {
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AddStepDialog(recipeId: recipeId);
-                      },
-                    );
-                  },
-                ),
               ),
             ],
           ),
