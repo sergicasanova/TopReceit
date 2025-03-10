@@ -55,13 +55,10 @@ class RecipeIngredientRepositoryImpl implements RecipeIngredientRepository {
 
   @override
   Future<Either<Failure, RecipeIngredientEntity>> updateRecipeIngredient(
-      RecipeIngredientModel recipeIngredient,
-      int recipeId,
-      int idRecipeIngredient) async {
+      RecipeIngredientModel recipeIngredient, int idRecipeIngredient) async {
     try {
-      final updatedRecipeIngredient =
-          await recipeIngredientApiDataSource.updateRecipeIngredient(
-              recipeIngredient, recipeId, idRecipeIngredient);
+      final updatedRecipeIngredient = await recipeIngredientApiDataSource
+          .updateRecipeIngredient(recipeIngredient, idRecipeIngredient);
       return Right(RecipeIngredientEntity.fromModel(updatedRecipeIngredient));
     } catch (e) {
       return Left(ServerFailure(

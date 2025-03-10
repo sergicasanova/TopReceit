@@ -36,17 +36,15 @@ class CreateRecipeIngredientEvent extends RecipeIngredientEvent {
 
 class UpdateRecipeIngredientEvent extends RecipeIngredientEvent {
   final RecipeIngredientModel recipeIngredient;
-  final int recipeId;
   final int idRecipeIngredient;
 
   UpdateRecipeIngredientEvent({
     required this.recipeIngredient,
-    required this.recipeId,
     required this.idRecipeIngredient,
   });
 
   @override
-  List<Object?> get props => [recipeIngredient, recipeId, idRecipeIngredient];
+  List<Object?> get props => [recipeIngredient, idRecipeIngredient];
 }
 
 // ignore: must_be_immutable

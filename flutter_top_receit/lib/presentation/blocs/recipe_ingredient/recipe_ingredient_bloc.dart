@@ -66,14 +66,17 @@ class RecipeIngredientBloc
       emit(RecipeIngredientState.loading());
       final result = await updateRecipeIngredientUseCase.call(
         event.recipeIngredient,
-        event.recipeId,
         event.idRecipeIngredient,
       );
+
       result.fold(
-        (failure) => emit(RecipeIngredientState.failure(
-            'Error al actualizar el ingrediente')),
-        (updatedRecipeIngredient) =>
-            emit(RecipeIngredientState.created(updatedRecipeIngredient)),
+        (failure) {
+          emit(RecipeIngredientState.failure(
+              'Error al actualizar el ingrediente'));
+        },
+        (updatedRecipeIngredient) {
+          emit(RecipeIngredientState.updated(updatedRecipeIngredient));
+        },
       );
     });
 

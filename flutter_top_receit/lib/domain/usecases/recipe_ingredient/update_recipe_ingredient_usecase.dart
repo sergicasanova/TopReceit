@@ -10,10 +10,8 @@ class UpdateRecipeIngredientUseCase {
   UpdateRecipeIngredientUseCase(this.repository);
 
   Future<Either<Failure, RecipeIngredientEntity>> call(
-      RecipeIngredientModel recipeIngredient,
-      int recipeId,
-      int idRecipeIngredient) async {
+      RecipeIngredientModel recipeIngredient, int idRecipeIngredient) async {
     return repository.updateRecipeIngredient(
-        recipeIngredient, recipeId, idRecipeIngredient);
+        recipeIngredient, idRecipeIngredient);
   }
 }

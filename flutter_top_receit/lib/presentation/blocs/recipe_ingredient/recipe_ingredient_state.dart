@@ -52,5 +52,9 @@ class RecipeIngredientState extends Equatable {
   factory RecipeIngredientState.failure(String errorMessage) =>
       RecipeIngredientState(errorMessage: errorMessage);
 
+  factory RecipeIngredientState.updated(
+          RecipeIngredientEntity recipeIngredient) =>
+      RecipeIngredientState(recipeIngredient: recipeIngredient);
+
   factory RecipeIngredientState.deleted() => const RecipeIngredientState();
 }

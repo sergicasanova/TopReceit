@@ -11,8 +11,6 @@ abstract class RecipeIngredientRepository {
   Future<Either<Failure, RecipeIngredientEntity>> createRecipeIngredient(
       RecipeIngredientModel recipeIngredient);
   Future<Either<Failure, RecipeIngredientEntity>> updateRecipeIngredient(
-      RecipeIngredientModel recipeIngredient,
-      int recipeId,
-      int idRecipeIngredient);
+      RecipeIngredientModel recipeIngredient, int idRecipeIngredient);
   Future<Either<Failure, void>> deleteRecipeIngredient(int idRecipeIngredient);
 }

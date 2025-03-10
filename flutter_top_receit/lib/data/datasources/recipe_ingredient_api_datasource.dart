@@ -10,9 +10,7 @@ abstract class RecipeIngredientDataSource {
   Future<List<RecipeIngredientModel>> getAllIngredientsForRecipe(int recipeId);
   Future<RecipeIngredientModel> getIngredientById(int idRecipeIngredient);
   Future<RecipeIngredientModel> updateRecipeIngredient(
-      RecipeIngredientModel recipeIngredient,
-      int recipeId,
-      int idRecipeIngredient);
+      RecipeIngredientModel recipeIngredient, int idRecipeIngredient);
   Future<void> deleteRecipeIngredient(int idRecipeIngredient);
 }
 
@@ -85,20 +83,19 @@ class RecipeIngredientApiDataSource implements RecipeIngredientDataSource {
 
   @override
   Future<RecipeIngredientModel> updateRecipeIngredient(
-      RecipeIngredientModel recipeIngredient,
-      int recipeId,
-      int idRecipeIngredient) async {
-    final url =
-        Uri.parse('$baseUrl/recipe-ingredients/$recipeId/$idRecipeIngredient');
+      RecipeIngredientModel recipeIngredient, int idRecipeIngredient) async {
+    final url = Uri.parse('$baseUrl/recipe-ingredients/$idRecipeIngredient');
+
+    final recipeIngredientMap = {
+      'ingredient_id': recipeIngredient.ingredient.idIngredient,
+      'quantity': recipeIngredient.quantity,
+      'unit': recipeIngredient.unit,
+    };
 
     final response = await client.put(
       url,
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        'ingredient_id': recipeIngredient.ingredient,
-        'quantity': recipeIngredient.quantity,
-        'unit': recipeIngredient.unit,
-      }),
+      body: json.encode(recipeIngredientMap),
     );
 
     if (response.statusCode == 200) {
