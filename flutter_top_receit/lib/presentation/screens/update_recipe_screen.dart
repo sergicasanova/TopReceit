@@ -36,6 +36,8 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
 
   bool isImageLoaded = false;
 
+  final GlobalKey<RecipeFormState> _recipeFormKey = GlobalKey();
+
   Future<void> _loadBackgroundImage() async {
     final prefs = PreferencesService();
     final bgImage = await prefs.getBackgroundImage();
@@ -156,6 +158,7 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     RecipeForm(
+                      key: _recipeFormKey,
                       titleController: _titleController,
                       descriptionController: _descriptionController,
                       imageUrlController: _imageUrlController,
@@ -217,24 +220,44 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                     ),
                     const SizedBox(height: 32),
                     RecipeButtons(
-                      onAccept: () {
-                        print('recipe ${_isPublic}');
+                      onAccept: () async {
+                        if (_recipeFormKey.currentState!.imageFile != null) {
+                          if (_imageUrlController.text.isNotEmpty) {
+                            await _recipeFormKey.currentState!
+                                .deleteImage(_imageUrlController.text);
+                          }
+
+                          final uploadedUrl =
+                              await _recipeFormKey.currentState!.uploadImage();
+                          if (uploadedUrl != null) {
+                            _imageUrlController.text = uploadedUrl;
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text('Error subiendo la imagen')),
+                            );
+                            return;
+                          }
+                        }
+
+                        // Validar que los campos obligatorios estén completos
                         if (_titleController.text.isNotEmpty &&
                             _descriptionController.text.isNotEmpty &&
                             _imageUrlController.text.isNotEmpty &&
                             userId != null) {
+                          // Actualizar la receta
                           context.read<RecipeBloc>().add(
                                 UpdateRecipeEvent(
                                   title: _titleController.text,
                                   description: _descriptionController.text,
                                   image: _imageUrlController.text,
                                   idRecipe: widget.recipeId,
-                                  isPublic:
-                                      _isPublic, // Añadir el valor de isPublic
+                                  isPublic: _isPublic,
                                 ),
                               );
                           router.go('/home');
                         } else {
+                          // Mostrar un mensaje de error si faltan campos obligatorios
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                                 content: Text(AppLocalizations.of(context)!

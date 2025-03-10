@@ -1,7 +1,12 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
 
-class RecipeForm extends StatelessWidget {
+class RecipeForm extends StatefulWidget {
   final TextEditingController titleController;
   final TextEditingController descriptionController;
   final TextEditingController imageUrlController;
@@ -12,6 +17,68 @@ class RecipeForm extends StatelessWidget {
     required this.descriptionController,
     required this.imageUrlController,
   });
+
+  @override
+  RecipeFormState createState() => RecipeFormState();
+}
+
+class RecipeFormState extends State<RecipeForm> {
+  dynamic imageFile;
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> pickImage() async {
+    if (kIsWeb) {
+      FilePickerResult? result =
+          await FilePicker.platform.pickFiles(type: FileType.image);
+      if (result != null) {
+        setState(() {
+          imageFile = result.files.single.bytes;
+        });
+      }
+    } else {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          imageFile = File(pickedFile.path);
+        });
+      }
+    }
+  }
+
+  Future<String?> uploadImage() async {
+    if (imageFile == null) return null;
+
+    try {
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('recipes/${DateTime.now().toString()}');
+
+      final metadata = SettableMetadata(contentType: 'image/jpeg');
+
+      if (kIsWeb) {
+        await storageRef.putData(imageFile, metadata);
+      } else {
+        await storageRef.putFile(imageFile, metadata);
+      }
+
+      final downloadUrl = await storageRef.getDownloadURL();
+      print('Download URL: $downloadUrl');
+      return downloadUrl;
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
+    }
+  }
+
+  Future<void> deleteImage(String imageUrl) async {
+    try {
+      final ref = FirebaseStorage.instance.refFromURL(imageUrl);
+      await ref.delete();
+      print('Image deleted successfully');
+    } catch (e) {
+      print('Error deleting image: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +92,7 @@ class RecipeForm extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(vertical: 8.0),
           child: TextField(
-            controller: titleController,
+            controller: widget.titleController,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               hintText: AppLocalizations.of(context)!.title_hint,
@@ -45,7 +112,7 @@ class RecipeForm extends StatelessWidget {
         Container(
           margin: const EdgeInsets.symmetric(vertical: 8.0),
           child: TextField(
-            controller: descriptionController,
+            controller: widget.descriptionController,
             maxLines: 5,
             style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
@@ -65,23 +132,35 @@ class RecipeForm extends StatelessWidget {
         ),
         Container(
           margin: const EdgeInsets.symmetric(vertical: 8.0),
-          child: TextField(
-            controller: imageUrlController,
-            style: const TextStyle(color: Colors.white),
-            decoration: InputDecoration(
-              hintText: AppLocalizations.of(context)!.image_url_hint,
-              hintStyle: const TextStyle(color: Colors.white),
-              filled: true,
-              // ignore: deprecated_member_use
-              fillColor: Colors.black.withOpacity(0.5),
-              border: const OutlineInputBorder(),
-            ),
+          child: ElevatedButton(
+            onPressed: pickImage,
+            child: const Text('Seleccionar nueva imagen'),
           ),
         ),
-        const SizedBox(height: 32),
-        if (imageUrlController.text.isNotEmpty)
+        if (imageFile != null) ...[
+          const SizedBox(height: 16),
+          const Text('Nueva imagen seleccionada:'),
+          const SizedBox(height: 8),
+          kIsWeb
+              ? Image.memory(
+                  imageFile,
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                )
+              : Image.file(
+                  imageFile,
+                  height: 200,
+                  width: double.infinity,
+                  fit: BoxFit.cover,
+                ),
+        ],
+        const SizedBox(height: 16),
+        if (widget.imageUrlController.text.isNotEmpty) ...[
+          const Text('Imagen actual:'),
+          const SizedBox(height: 8),
           Image.network(
-            imageUrlController.text,
+            widget.imageUrlController.text,
             height: 200,
             width: double.infinity,
             fit: BoxFit.cover,
@@ -108,14 +187,17 @@ class RecipeForm extends StatelessWidget {
                 fit: BoxFit.cover,
               );
             },
-          )
-        else
+          ),
+        ] else ...[
+          const Text('No hay imagen actual.'),
+          const SizedBox(height: 16),
           Image.asset(
             'assets/icons/recipe.png',
             height: 200,
             width: double.infinity,
             fit: BoxFit.cover,
           ),
+        ],
         const SizedBox(height: 32),
       ],
     );
