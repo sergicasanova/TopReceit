@@ -16,6 +16,8 @@ class RecipeSteps extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    steps.sort((a, b) => a.order.compareTo(b.order));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -40,18 +42,6 @@ class RecipeSteps extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Agregar paso - botón para abrir el diálogo de agregar nuevo paso
-              ElevatedButton(
-                onPressed: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => AddStepDialog(
-                      recipeId: recipeId,
-                    ),
-                  );
-                },
-                child: Text(AppLocalizations.of(context)!.add_step_button),
-              ),
               // Lista de pasos
               Column(
                 children: steps.map((step) {
@@ -74,7 +64,6 @@ class RecipeSteps extends StatelessWidget {
                             ),
                           ],
                         ),
-                        // Botón de editar
                         IconButton(
                           icon: const Icon(Icons.edit, color: Colors.blue),
                           onPressed: () {
@@ -88,7 +77,6 @@ class RecipeSteps extends StatelessWidget {
                             );
                           },
                         ),
-                        // Botón de eliminar
                         IconButton(
                           icon: const Icon(Icons.delete, color: Colors.red),
                           onPressed: () async {
@@ -106,6 +94,21 @@ class RecipeSteps extends StatelessWidget {
                     ),
                   );
                 }).toList(),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: IconButton(
+                  icon: const Icon(Icons.add_circle,
+                      color: Colors.green, size: 30),
+                  onPressed: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AddStepDialog(
+                        recipeId: recipeId,
+                      ),
+                    );
+                  },
+                ),
               ),
             ],
           ),
