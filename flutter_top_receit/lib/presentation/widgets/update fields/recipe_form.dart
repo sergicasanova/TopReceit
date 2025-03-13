@@ -82,6 +82,8 @@ class RecipeFormState extends State<RecipeForm> {
 
   @override
   Widget build(BuildContext context) {
+    debugPrint(widget.imageUrlController.text);
+
     return Column(
       children: [
         Text(
