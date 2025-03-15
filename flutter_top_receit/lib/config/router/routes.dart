@@ -1,6 +1,7 @@
 import 'package:flutter_top_receit/domain/repositories/sign_in_repository.dart';
 import 'package:flutter_top_receit/injection.dart';
 import 'package:flutter_top_receit/main.dart';
+import 'package:flutter_top_receit/presentation/screens/UserDetailsScreen_screen.dart';
 import 'package:flutter_top_receit/presentation/screens/all_recipes_screen.dart';
 import 'package:flutter_top_receit/presentation/screens/create_recipe_screen.dart';
 import 'package:flutter_top_receit/presentation/screens/login_screen.dart';
@@ -42,6 +43,13 @@ final GoRouter router = GoRouter(
       builder: (context, state) {
         final recipeId = int.parse(state.pathParameters['recipeId'] ?? '0');
         return UpdateRecipeScreen(recipeId: recipeId);
+      },
+    ),
+    GoRoute(
+      path: '/userDetails/:userId',
+      builder: (context, state) {
+        final userId = state.pathParameters['userId']!;
+        return UserDetailsScreen(userId: userId);
       },
     ),
     GoRoute(

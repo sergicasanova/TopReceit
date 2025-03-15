@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/like/like_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/like/like_event.dart';
+import 'package:flutter_top_receit/presentation/screens/UserDetailsScreen_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AllRecipeCard extends StatelessWidget {
@@ -145,29 +147,38 @@ class AllRecipeCard extends StatelessWidget {
                   ),
                   Column(
                     children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(50),
-                        child: userAvatar.isNotEmpty
-                            ? Image.network(
-                                userAvatar,
-                                width: 40,
-                                height: 40,
-                                fit: BoxFit.cover,
-                                errorBuilder: (context, error, stackTrace) {
-                                  return Image.asset(
-                                    'assets/bg9.jpeg',
-                                    width: 40,
-                                    height: 40,
-                                    fit: BoxFit.cover,
-                                  );
-                                },
-                              )
-                            : Image.asset(
-                                'assets/bg9.jpeg',
-                                width: 40,
-                                height: 40,
-                                fit: BoxFit.cover,
-                              ),
+                      GestureDetector(
+                        onTap: () {
+                          // Navegar hacia la nueva pantalla con el router
+                          context.go('/userDetails/$userId', extra: {
+                            'userName': userName,
+                            'userAvatar': userAvatar
+                          });
+                        },
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(50),
+                          child: userAvatar.isNotEmpty
+                              ? Image.network(
+                                  userAvatar,
+                                  width: 40,
+                                  height: 40,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    return Image.asset(
+                                      'assets/bg9.jpeg',
+                                      width: 40,
+                                      height: 40,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                )
+                              : Image.asset(
+                                  'assets/bg9.jpeg',
+                                  width: 40,
+                                  height: 40,
+                                  fit: BoxFit.cover,
+                                ),
+                        ),
                       ),
                       Text(
                         userName,

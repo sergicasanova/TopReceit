@@ -158,7 +158,10 @@ class SignInRepositoryImpl implements SignInRepository {
   @override
   Future<Either<Failure, UserEntity>> getUser(String idUser) async {
     try {
-      final userId = sharedPreferences.getString('id');
+      // Si idUser está vacío o null, utilizar el userId de las preferencias compartidas
+      final userId =
+          idUser.isNotEmpty ? idUser : sharedPreferences.getString('id');
+
       if (userId == null) {
         return Left(AuthFailure(message: 'Usuario no encontrado.'));
       }

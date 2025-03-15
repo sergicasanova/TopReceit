@@ -27,17 +27,22 @@ class AppBarDefault extends StatelessWidget implements PreferredSizeWidget {
         children: [
           LanguageSelector(onLanguageChanged: onLanguageChanged),
           Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                TextUtil(
-                  text: 'TopRecipe',
-                  size: 20,
-                  weight: true,
-                  color: Colors.white,
-                ),
-              ],
+            child: GestureDetector(
+              onTap: () {
+                router.go('/home');
+              },
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  TextUtil(
+                    text: 'TopRecipe',
+                    size: 20,
+                    weight: true,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
             ),
           ),
         ],
