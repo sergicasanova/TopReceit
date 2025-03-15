@@ -4,6 +4,7 @@ import 'package:flutter_top_receit/data/datasources/favorites_api_datasource.dar
 import 'package:flutter_top_receit/data/datasources/files_firebase_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/firebase_auth_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/firestore_datasource.dart';
+import 'package:flutter_top_receit/data/datasources/follows_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/ingredient_api_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/like_api_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/recipe_api_datasource.dart';
@@ -11,6 +12,7 @@ import 'package:flutter_top_receit/data/datasources/recipe_ingredient_api_dataso
 import 'package:flutter_top_receit/data/datasources/steps_api_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/user_api_datasource.dart';
 import 'package:flutter_top_receit/data/repositories/favorites_repository_impl.dart';
+import 'package:flutter_top_receit/data/repositories/follows_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/image_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/ingredient_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/like_repository_impl.dart';
@@ -19,6 +21,7 @@ import 'package:flutter_top_receit/data/repositories/recipe_repository_impl.dart
 import 'package:flutter_top_receit/data/repositories/sing_in_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/steps_repository_impl.dart';
 import 'package:flutter_top_receit/domain/repositories/favorites_repository.dart';
+import 'package:flutter_top_receit/domain/repositories/follows_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/image_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/ingredient_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/like_repository.dart';
@@ -29,6 +32,10 @@ import 'package:flutter_top_receit/domain/repositories/steps_repository.dart';
 import 'package:flutter_top_receit/domain/usecases/favorites/add_favorite_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/favorites/get_favorites_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/favorites/remove_favorite_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/follows/follow_user_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/follows/get_followers_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/follows/get_following_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/follows/unfollow_user_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/image/delete_image_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/image/fetch_image_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/image/upload_image_usecase.dart';
@@ -68,6 +75,7 @@ import 'package:flutter_top_receit/domain/usecases/user/update_password_usecase.
 import 'package:flutter_top_receit/domain/usecases/user/update_user_usecase.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/follows/follows_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/like/like_bloc.dart';
@@ -95,6 +103,7 @@ void configureDependencies() async {
   sl.registerFactory<LanguageBloc>(() => LanguageBloc(sl()));
   sl.registerFactory<FavoriteBloc>(() => FavoriteBloc(sl(), sl(), sl()));
   sl.registerFactory<LikeBloc>(() => LikeBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory<FollowBloc>(() => FollowBloc(sl(), sl(), sl(), sl()));
 
   // Instancia de Firebase Auth
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
@@ -130,6 +139,9 @@ void configureDependencies() async {
   sl.registerLazySingleton<FirebaseStorageDataSource>(
     () => FirebaseStorageDataSourceImpl(storage: sl()),
   );
+  sl.registerLazySingleton<FollowApiDataSource>(
+    () => FollowApiDataSource(sl()),
+  );
 
   // Repositorios
   sl.registerLazySingleton<SignInRepository>(
@@ -155,6 +167,9 @@ void configureDependencies() async {
   );
   sl.registerLazySingleton<ImageRepository>(
     () => ImageRepositoryImpl(dataSource: sl()),
+  );
+  sl.registerLazySingleton<FollowRepository>(
+    () => FollowRepositoryImpl(sl()),
   );
 
   // Casos de uso
@@ -284,6 +299,20 @@ void configureDependencies() async {
   sl.registerLazySingleton(() => FetchImagesUseCase(sl()));
   sl.registerLazySingleton(() => UploadImageUseCase(sl()));
   sl.registerLazySingleton(() => DeleteImageUseCase(sl()));
+
+  // Casos de Uso para Follow
+  sl.registerLazySingleton<GetFollowersUseCase>(
+    () => GetFollowersUseCase(sl()),
+  );
+  sl.registerLazySingleton<GetFollowingUseCase>(
+    () => GetFollowingUseCase(sl()),
+  );
+  sl.registerLazySingleton<FollowUserUseCase>(
+    () => FollowUserUseCase(sl()),
+  );
+  sl.registerLazySingleton<UnfollowUserUseCase>(
+    () => UnfollowUserUseCase(sl()),
+  );
 
   sl.registerLazySingleton(() => http.Client());
   final sharedPreferences = await SharedPreferences.getInstance();

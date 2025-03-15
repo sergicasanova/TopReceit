@@ -6,6 +6,8 @@ import 'package:flutter_top_receit/presentation/blocs/auth/auth_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_state.dart';
 import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_event.dart';
+import 'package:flutter_top_receit/presentation/blocs/follows/follows_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/follows/follows_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
@@ -34,8 +36,26 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _loadBackgroundImage();
+    _testFollowBloc();
     NotificationService().getToken();
     _getUserData();
+  }
+
+  void _testFollowBloc() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('id');
+    print('No encuentro user: $userId');
+    if (userId != null) {
+      // Solicitar los seguidores
+      print("Solicitando seguidores para userId: $userId");
+      context.read<FollowBloc>().add(GetFollowersEvent(userId: userId));
+
+      // Solicitar los usuarios seguidos
+      print("Solicitando usuarios seguidos para userId: $userId");
+      context.read<FollowBloc>().add(GetFollowingEvent(userId: userId));
+    } else {
+      print("No se encontró un userId en AuthState.");
+    }
   }
 
   Future<void> _getUserData() async {

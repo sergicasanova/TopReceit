@@ -135,8 +135,6 @@ class RecipeApiDataSource implements RecipeDataSource {
 
     final response = await client.get(url);
 
-    print('getpublicrecipes: ${response.body}');
-
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body) as List;
 

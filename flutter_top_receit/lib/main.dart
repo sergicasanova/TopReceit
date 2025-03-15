@@ -9,6 +9,7 @@ import 'package:flutter_top_receit/firebase_options.dart';
 import 'package:flutter_top_receit/injection.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/follows/follows_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/like/like_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
@@ -68,6 +69,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => sl<LikeBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => sl<FollowBloc>(),
         ),
       ],
       child: BlocBuilder<LanguageBloc, LanguageState>(

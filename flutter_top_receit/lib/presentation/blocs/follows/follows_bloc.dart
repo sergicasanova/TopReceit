@@ -13,12 +13,12 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
   final FollowUserUseCase followUserUseCase;
   final UnfollowUserUseCase unfollowUserUseCase;
 
-  FollowBloc({
-    required this.getFollowersUseCase,
-    required this.getFollowingUseCase,
-    required this.followUserUseCase,
-    required this.unfollowUserUseCase,
-  }) : super(FollowState.initial()) {
+  FollowBloc(
+    this.getFollowersUseCase,
+    this.getFollowingUseCase,
+    this.followUserUseCase,
+    this.unfollowUserUseCase,
+  ) : super(FollowState.initial()) {
     // Obtener seguidores
     on<GetFollowersEvent>((event, emit) async {
       emit(FollowState.loading());
@@ -32,6 +32,7 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
           final followersEntities = followers
               .map((userModel) => UserEntity.fromModel(userModel))
               .toList();
+          print("Seguidores obtenidos: $followersEntities");
           emit(FollowState.followersLoaded(followersEntities));
         },
       );
@@ -50,6 +51,11 @@ class FollowBloc extends Bloc<FollowEvent, FollowState> {
           final followingEntities = following
               .map((userModel) => UserEntity.fromModel(userModel))
               .toList();
+          // Iterar y mostrar detalles de cada usuario
+          for (var user in followingEntities) {
+            print(
+                "Usuario seguido -> ID: ${user.id}, Nombre: ${user.username}, Email: ${user.email}, Avatar: ${user.avatar}");
+          }
           emit(FollowState.followingLoaded(followingEntities));
         },
       );
