@@ -6,6 +6,8 @@ class UserEntity {
   final String username;
   final String avatar;
   final List<String> preferences;
+  final List<String> following;
+  final List<String> followers;
 
   UserEntity({
     required this.id,
@@ -13,6 +15,8 @@ class UserEntity {
     required this.username,
     required this.avatar,
     required this.preferences,
+    this.following = const [],
+    this.followers = const [],
   });
 
   UserEntity toUserEntity() {
@@ -22,6 +26,8 @@ class UserEntity {
       username: username,
       avatar: avatar,
       preferences: preferences,
+      following: following,
+      followers: followers,
     );
   }
 
@@ -31,6 +37,8 @@ class UserEntity {
     String? username,
     String? avatar,
     List<String>? preferences,
+    List<String>? following,
+    List<String>? followers,
   }) {
     return UserEntity(
       id: id ?? this.id,
@@ -38,6 +46,8 @@ class UserEntity {
       username: username ?? this.username,
       avatar: avatar ?? this.avatar,
       preferences: preferences ?? this.preferences,
+      following: following ?? this.following,
+      followers: followers ?? this.followers,
     );
   }
 
@@ -48,6 +58,8 @@ class UserEntity {
       username: model.username,
       avatar: model.avatar,
       preferences: model.preferences,
+      following: model.following,
+      followers: model.followers,
     );
   }
 }

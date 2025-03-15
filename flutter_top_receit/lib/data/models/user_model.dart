@@ -8,6 +8,8 @@ class UserModel {
   final String avatar;
   final List<String> preferences;
   final int role;
+  final List<String> following;
+  final List<String> followers;
 
   UserModel({
     required this.id,
@@ -16,6 +18,8 @@ class UserModel {
     required this.avatar,
     required this.preferences,
     this.role = 2,
+    this.following = const [],
+    this.followers = const [],
   });
 
   UserEntity toEntity() {
@@ -25,6 +29,8 @@ class UserModel {
       username: username,
       avatar: avatar,
       preferences: preferences,
+      following: following,
+      followers: followers,
     );
   }
 
@@ -36,6 +42,8 @@ class UserModel {
       avatar: '',
       preferences: [],
       role: 2,
+      following: [],
+      followers: [],
     );
   }
 
@@ -47,6 +55,8 @@ class UserModel {
       avatar: firestoreData['avatar'] ?? '',
       preferences: List<String>.from(firestoreData['preferences'] ?? []),
       role: firestoreData['role'] ?? 2,
+      // following: List<String>.from(firestoreData['following'] ?? []),
+      // followers: List<String>.from(firestoreData['followers'] ?? []),
     );
   }
 
@@ -58,6 +68,14 @@ class UserModel {
       avatar: json['avatar'] ?? '',
       preferences: List<String>.from(json['preferences'] ?? []),
       role: json['role'] ?? 2,
+      following: (json['following'] as List<dynamic>?)
+              ?.map((item) => item['id'] as String)
+              .toList() ??
+          [],
+      followers: (json['followers'] as List<dynamic>?)
+              ?.map((item) => item['id'] as String)
+              .toList() ??
+          [],
     );
   }
 
@@ -69,6 +87,8 @@ class UserModel {
       'avatar': avatar,
       'preferences': preferences,
       'role': role,
+      'following': following,
+      'followers': followers,
     };
   }
 
@@ -80,6 +100,8 @@ class UserModel {
       'avatar': avatar,
       'preferences': preferences,
       'role': role,
+      'following': following,
+      'followers': followers,
     };
   }
 
@@ -90,6 +112,8 @@ class UserModel {
     String? avatar,
     List<String>? preferences,
     int? role,
+    List<String>? following,
+    List<String>? followers,
   }) {
     return UserModel(
       id: id ?? this.id,
@@ -98,6 +122,8 @@ class UserModel {
       avatar: avatar ?? this.avatar,
       preferences: preferences ?? this.preferences,
       role: role ?? this.role,
+      following: following ?? this.following,
+      followers: followers ?? this.followers,
     );
   }
 }

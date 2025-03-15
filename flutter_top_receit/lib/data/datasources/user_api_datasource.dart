@@ -51,7 +51,6 @@ class UserApiDataSource implements UserDataSource {
     final url = Uri.parse('$baseUrl/users/$userId');
 
     final response = await client.get(url);
-
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
       return UserModel.fromJson(responseData);
