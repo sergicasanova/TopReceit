@@ -27,6 +27,15 @@ class GetRecipesByUserIdEvent extends RecipeEvent {
   List<Object?> get props => [userId];
 }
 
+class GetPublicRecipesByUserIdEvent extends RecipeEvent {
+  final String userId;
+
+  GetPublicRecipesByUserIdEvent({required this.userId});
+
+  @override
+  List<Object?> get props => [userId];
+}
+
 class CreateRecipeEvent extends RecipeEvent {
   final String title;
   final String description;

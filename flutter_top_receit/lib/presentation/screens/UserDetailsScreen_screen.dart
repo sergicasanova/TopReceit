@@ -9,7 +9,6 @@ import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_state.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
-import 'package:flutter_top_receit/presentation/widgets/appbar.dart';
 import 'package:flutter_top_receit/presentation/widgets/drawer.dart';
 
 class UserDetailsScreen extends StatefulWidget {
@@ -29,10 +28,8 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     super.initState();
     _loadBackgroundImage();
 
-    // Lanzar evento para obtener los datos del usuario
     context.read<AuthBloc>().add(GetUserEvent(id: widget.userId));
 
-    // Lanzar evento para obtener las recetas del usuario
     context
         .read<RecipeBloc>()
         .add(GetRecipesByUserIdEvent(userId: widget.userId));
@@ -60,12 +57,12 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     return Scaffold(
       key: scaffoldKey,
       appBar: AppBar(
-        backgroundColor: Colors.black, // Fondo negro
-        elevation: 0, // Sin sombra para mantener el diseño limpio
-        iconTheme: const IconThemeData(color: Colors.white), // Íconos blancos
+        backgroundColor: Colors.black,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.white),
         title: const Text(
           "Detalles del Usuario",
-          style: TextStyle(color: Colors.white), // Texto blanco
+          style: TextStyle(color: Colors.white),
         ),
       ),
       endDrawer: DrawerWidget(
@@ -163,11 +160,10 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             const SizedBox(height: 8),
                             ElevatedButton(
                               onPressed: () {
-                                // Aquí se implementará la lógica para seguir al usuario
                                 print('Seguir al usuario: ${user.id}');
                               },
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue, // Fondo azul
+                                backgroundColor: Colors.blue,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(
                                       10), // Bordes redondeados

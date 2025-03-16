@@ -4,6 +4,7 @@ import 'package:flutter_top_receit/data/models/recipe_model.dart';
 import 'package:flutter_top_receit/domain/repositories/image_repository.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/create_recipe_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_all_recipe_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/recipe/get_public_recipes_by_id_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_public_recipes_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_recipe_by_id_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe/get_recipe_by_user_id_usecase.dart';
@@ -19,6 +20,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
   final GetRecipeByIdUseCase getRecipeByIdUseCase;
   final GetRecipesByUserIdUseCase getRecipesByUserIdUseCase;
   final GetPublicRecipesUseCase getPublicRecipesUseCase;
+  final GetPublicRecipesByUserIdUseCase getPublicRecipesByUserIdUseCase;
   final UpdateRecipeUseCase updateRecipeUseCase;
   final DeleteRecipeUseCase deleteRecipeUseCase;
   final ImageRepository imageRepository;
@@ -28,6 +30,7 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
     this.getAllRecipesUseCase,
     this.getRecipeByIdUseCase,
     this.getRecipesByUserIdUseCase,
+    this.getPublicRecipesByUserIdUseCase,
     this.getPublicRecipesUseCase,
     this.updateRecipeUseCase,
     this.deleteRecipeUseCase,
@@ -39,6 +42,16 @@ class RecipeBloc extends Bloc<RecipeEvent, RecipeState> {
       result.fold(
         (failure) => emit(RecipeState.failure("Fallo al obtener las recetas")),
         (recipes) => emit(RecipeState.loaded(recipes)),
+      );
+    });
+
+    on<GetPublicRecipesByUserIdEvent>((event, emit) async {
+      emit(RecipeState.loading());
+      final result = await getPublicRecipesByUserIdUseCase.call(event.userId);
+      result.fold(
+        (failure) => emit(RecipeState.failure(
+            "Fallo al obtener las recetas públicas del usuario")),
+        (recipes) => emit(RecipeState.publicRecipesByUserLoaded(recipes)),
       );
     });
 

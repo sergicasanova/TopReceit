@@ -91,4 +91,20 @@ class RecipeRepositoryImpl implements RecipeRepository {
       return Left(ServerFailure(message: 'Error al eliminar la receta.'));
     }
   }
+
+  @override
+  Future<Either<Failure, List<RecipeEntity>>> getPublicRecipesByUserId(
+      String userId) async {
+    try {
+      final recipeModels =
+          await recipeApiDataSource.getPublicRecipesByUserId(userId);
+      final recipes =
+          recipeModels.map((model) => model.toRecipeEntity()).toList();
+      return Right(recipes);
+    } catch (e) {
+      return Left(ServerFailure(
+          message:
+              'Error al obtener las recetas públicas del usuario con ID $userId.'));
+    }
+  }
 }

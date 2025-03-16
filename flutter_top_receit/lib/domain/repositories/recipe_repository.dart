@@ -13,4 +13,6 @@ abstract class RecipeRepository {
 
   Future<Either<Failure, void>> deleteRecipe(int id);
   Future<Either<Failure, List<RecipeEntity>>> getPublicRecipes();
+  Future<Either<Failure, List<RecipeEntity>>> getPublicRecipesByUserId(
+      String userId);
 }
