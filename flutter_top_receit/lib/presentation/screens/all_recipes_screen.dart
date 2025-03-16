@@ -10,6 +10,7 @@ import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.
 import 'package:flutter_top_receit/presentation/widgets/all_recipes/all_recipe_list.dart';
 import 'package:flutter_top_receit/presentation/widgets/drawer.dart';
 import 'package:flutter_top_receit/presentation/widgets/appbar.dart';
+import 'package:go_router/go_router.dart';
 
 class AllRecipesScreen extends StatefulWidget {
   const AllRecipesScreen({super.key});
@@ -20,6 +21,20 @@ class AllRecipesScreen extends StatefulWidget {
 
 class _AllRecipesScreenState extends State<AllRecipesScreen> {
   String? currentBackground;
+  int _selectedIndex = 0;
+
+  final List<String> _routes = [
+    '/home',
+    '/allRecipes',
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    GoRouter.of(context).go(_routes[index]);
+  }
 
   @override
   void initState() {
@@ -84,6 +99,20 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
               padding: EdgeInsets.only(top: 100),
               child: AllRecipeList(),
             ),
+          ),
+        ],
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped, // Maneja el cambio de pestañas
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.public),
+            label: 'Recetas Públicas',
           ),
         ],
       ),

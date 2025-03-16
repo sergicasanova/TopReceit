@@ -16,6 +16,7 @@ import 'package:flutter_top_receit/presentation/widgets/appbar.dart';
 import 'package:flutter_top_receit/presentation/widgets/drawer.dart';
 import 'package:flutter_top_receit/presentation/widgets/filter_modal.dart';
 import 'package:flutter_top_receit/presentation/widgets/my_recipes/recipe_list.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_event.dart';
@@ -31,6 +32,20 @@ class _MainScreenState extends State<MainScreen> {
   String? currentBackground;
   bool isFilterApplied = false;
   bool _isMenuOpen = false;
+  int _selectedIndex = 0;
+
+  final List<String> _routes = [
+    '/home',
+    '/allRecipes',
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    GoRouter.of(context).go(_routes[index]);
+  }
 
   @override
   void initState() {
@@ -220,6 +235,20 @@ class _MainScreenState extends State<MainScreen> {
             ],
           );
         },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.public),
+            label: 'Recetas Públicas',
+          ),
+        ],
       ),
     );
   }

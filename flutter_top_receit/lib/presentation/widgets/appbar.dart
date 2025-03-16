@@ -58,19 +58,6 @@ class AppBarDefault extends StatelessWidget implements PreferredSizeWidget {
             scaffoldKey.currentState?.openEndDrawer();
           },
         ),
-        IconButton(
-          icon: Icon(
-            isOnMainScreen ? Icons.arrow_forward : Icons.arrow_back,
-            color: Colors.white,
-          ),
-          onPressed: () {
-            if (isOnMainScreen) {
-              router.go('/allRecipes');
-            } else {
-              router.go('/home');
-            }
-          },
-        ),
       ],
     );
   }

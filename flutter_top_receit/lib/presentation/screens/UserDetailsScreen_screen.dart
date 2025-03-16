@@ -3,16 +3,19 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_state.dart';
-import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
-import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_event.dart';
+import 'package:flutter_top_receit/presentation/blocs/follows/follows_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/follows/follows_event.dart';
+import 'package:flutter_top_receit/presentation/blocs/follows/follows_state.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
-import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_state.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
 import 'package:flutter_top_receit/presentation/widgets/drawer.dart';
+import 'package:flutter_top_receit/presentation/widgets/public_user_recipes/public_recipes_list.dart';
+import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDetailsScreen extends StatefulWidget {
-  final String userId;
+  final String userId; // Este es el ID del usuario que estamos visualizando
 
   const UserDetailsScreen({super.key, required this.userId});
 
@@ -22,17 +25,30 @@ class UserDetailsScreen extends StatefulWidget {
 
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
   String? currentBackground;
+  int _selectedIndex = 0;
+  String? currentUserId; // Este es el ID del usuario logueado
+
+  final List<String> _routes = [
+    '/home',
+    '/allRecipes',
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    GoRouter.of(context).go(_routes[index]);
+  }
 
   @override
   void initState() {
     super.initState();
     _loadBackgroundImage();
-
+    _loadCurrentUserId();
     context.read<AuthBloc>().add(GetUserEvent(id: widget.userId));
-
     context
         .read<RecipeBloc>()
-        .add(GetRecipesByUserIdEvent(userId: widget.userId));
+        .add(GetPublicRecipesByUserIdEvent(userId: widget.userId));
   }
 
   Future<void> _loadBackgroundImage() async {
@@ -43,9 +59,16 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
     });
   }
 
-  void _onLanguageChanged(String languageCode) {
-    Locale locale = Locale(languageCode);
-    context.read<LanguageBloc>().add(ChangeLanguageEvent(locale));
+  Future<void> _loadCurrentUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('id');
+    setState(() {
+      currentUserId = userId;
+    });
+
+    if (userId != null) {
+      context.read<FollowBloc>().add(GetFollowingEvent(userId: userId));
+    }
   }
 
   @override
@@ -90,7 +113,6 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
             child: SingleChildScrollView(
               child: Column(
                 children: [
-                  // Encabezado del usuario
                   BlocBuilder<AuthBloc, AuthState>(
                     builder: (context, state) {
                       final user = state.user;
@@ -107,9 +129,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                       return Container(
                         padding: const EdgeInsets.all(16),
                         margin: EdgeInsets.only(
-                          top: appBarHeight +
-                              statusBarHeight +
-                              16, // Dinámico debajo del AppBar
+                          top: appBarHeight + statusBarHeight + 16,
                           left: 16,
                           right: 16,
                         ),
@@ -158,105 +178,100 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 8),
-                            ElevatedButton(
-                              onPressed: () {
-                                print('Seguir al usuario: ${user.id}');
+
+                            BlocConsumer<FollowBloc, FollowState>(
+                              listener: (context, followState) {
+                                if (followState.actionSuccess == true) {
+                                  context.read<FollowBloc>().add(
+                                      GetFollowingEvent(
+                                          userId: currentUserId!));
+                                }
                               },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.blue,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(
-                                      10), // Bordes redondeados
-                                ),
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 32, vertical: 12),
-                              ),
-                              child: const Text(
-                                "Seguir",
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
+                              builder: (context, followState) {
+                                final isFollowing =
+                                    _isUserFollowed(followState);
+
+                                return ElevatedButton(
+                                  onPressed: () {
+                                    if (currentUserId == null) {
+                                      print(
+                                          "Error: No se encontró el userId logueado.");
+                                      return;
+                                    }
+
+                                    if (isFollowing) {
+                                      context
+                                          .read<FollowBloc>()
+                                          .add(UnfollowUserEvent(
+                                            followerId: currentUserId!,
+                                            followedId: widget.userId,
+                                          ));
+                                    } else {
+                                      context
+                                          .read<FollowBloc>()
+                                          .add(FollowUserEvent(
+                                            followerId: currentUserId!,
+                                            followedId: widget.userId,
+                                          ));
+                                    }
+                                    context.read<FollowBloc>().add(
+                                        GetFollowingEvent(
+                                            userId: currentUserId!));
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor:
+                                        isFollowing ? Colors.red : Colors.blue,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 32, vertical: 12),
+                                  ),
+                                  child: Text(
+                                    isFollowing ? "Dejar de seguir" : "Seguir",
+                                    style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
                       );
                     },
                   ),
-
                   const SizedBox(height: 16),
-
-                  // Lista de recetas del usuario
-                  BlocBuilder<RecipeBloc, RecipeState>(
-                    builder: (context, state) {
-                      if (state.recipes == null || state.recipes!.isEmpty) {
-                        return const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          child: Text(
-                            "Este usuario no tiene recetas públicas.",
-                            style: TextStyle(color: Colors.white, fontSize: 16),
-                          ),
-                        );
-                      }
-
-                      return ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 16),
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemCount: state.recipes!.length,
-                        itemBuilder: (context, index) {
-                          final recipe = state.recipes![index];
-
-                          return Card(
-                            margin: const EdgeInsets.symmetric(vertical: 8),
-                            color: Colors.white.withOpacity(0.9),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: ListTile(
-                              contentPadding: const EdgeInsets.all(8),
-                              leading: ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: recipe.image!.isNotEmpty
-                                    ? Image.network(
-                                        recipe.image!,
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.cover,
-                                      )
-                                    : Image.asset(
-                                        'assets/icons/recipe.png',
-                                        width: 50,
-                                        height: 50,
-                                        fit: BoxFit.cover,
-                                      ),
-                              ),
-                              title: Text(
-                                recipe.title ?? "Sin título",
-                                style: const TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              subtitle: Text(
-                                recipe.description ?? "Sin descripción",
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ),
-                          );
-                        },
-                      );
-                    },
-                  ),
+                  const RecipeListView(),
                 ],
               ),
             ),
           ),
         ],
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.public),
+            label: 'Recetas Públicas',
+          ),
+        ],
+      ),
     );
+  }
+
+  bool _isUserFollowed(FollowState state) {
+    if (state.following != null) {
+      return state.following!.any((user) => user.id == widget.userId);
+    }
+    return false;
   }
 }

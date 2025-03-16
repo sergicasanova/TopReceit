@@ -147,7 +147,7 @@ class RecipeApiDataSource implements RecipeDataSource {
 
   @override
   Future<List<RecipeModel>> getPublicRecipesByUserId(String userId) async {
-    final url = Uri.parse('$baseUrl/user/$userId/public');
+    final url = Uri.parse('$baseUrl/recipe/user/$userId/public');
     final response = await client.get(url);
 
     if (response.statusCode == 200) {
