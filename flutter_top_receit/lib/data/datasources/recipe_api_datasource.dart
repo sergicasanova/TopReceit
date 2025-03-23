@@ -14,6 +14,7 @@ abstract class RecipeDataSource {
   Future<void> deleteRecipe(int recipeId);
   Future<List<RecipeModel>> getPublicRecipes();
   Future<List<RecipeModel>> getPublicRecipesByUserId(String userId);
+  Future<List<RecipeModel>> getPublicRecipesByFollowing(String userId);
 }
 
 class RecipeApiDataSource implements RecipeDataSource {
@@ -149,7 +150,6 @@ class RecipeApiDataSource implements RecipeDataSource {
   Future<List<RecipeModel>> getPublicRecipesByUserId(String userId) async {
     final url = Uri.parse('$baseUrl/recipe/user/$userId/public');
     final response = await client.get(url);
-
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body) as List;
 
@@ -167,6 +167,27 @@ class RecipeApiDataSource implements RecipeDataSource {
     } else {
       throw ServerFailure(
           message: 'Error al obtener las recetas públicas del usuario.');
+    }
+  }
+
+  @override
+  Future<List<RecipeModel>> getPublicRecipesByFollowing(String userId) async {
+    final url = Uri.parse('$baseUrl/recipe/public/following/$userId');
+
+    final response = await client.get(url);
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body) as List;
+
+      // Convertir los datos en una lista de RecipeModel
+      return responseData.map((data) => RecipeModel.fromJson(data)).toList();
+    } else if (response.statusCode == 404) {
+      throw ServerFailure(
+          message: 'El usuario no sigue a nadie o no hay recetas públicas.');
+    } else {
+      throw ServerFailure(
+          message:
+              'Error al obtener las recetas públicas de los usuarios seguidos.');
     }
   }
 }

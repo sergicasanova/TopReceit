@@ -18,6 +18,7 @@ class AllRecipeCard extends StatelessWidget {
   final int recipeId;
   final String userId;
   final List<String> likeUserIds;
+  final String? loggedUserId;
 
   const AllRecipeCard({
     super.key,
@@ -32,6 +33,7 @@ class AllRecipeCard extends StatelessWidget {
     required this.recipeId,
     required this.userId,
     required this.likeUserIds,
+    required this.loggedUserId,
   });
 
   Future<String?> getUserId() async {
@@ -51,8 +53,6 @@ class AllRecipeCard extends StatelessWidget {
         if (!snapshot.hasData) {
           return const Text("No se ha encontrado el ID de usuario.");
         }
-
-        final loggedUserId = snapshot.data;
         bool hasLiked = likeUserIds.contains(loggedUserId);
 
         return Card(
@@ -195,10 +195,10 @@ class AllRecipeCard extends StatelessWidget {
                           if (loggedUserId != null) {
                             if (hasLiked) {
                               context.read<LikeBloc>().add(RemoveLikeEvent(
-                                  userId: loggedUserId, recipeId: recipeId));
+                                  userId: loggedUserId!, recipeId: recipeId));
                             } else {
                               context.read<LikeBloc>().add(GiveLikeEvent(
-                                  userId: loggedUserId, recipeId: recipeId));
+                                  userId: loggedUserId!, recipeId: recipeId));
                             }
                           }
                         },

@@ -10,7 +10,9 @@ import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.
 import 'package:flutter_top_receit/presentation/widgets/all_recipes/all_recipe_list.dart';
 import 'package:flutter_top_receit/presentation/widgets/drawer.dart';
 import 'package:flutter_top_receit/presentation/widgets/appbar.dart';
+import 'package:flutter_top_receit/presentation/widgets/public_user_recipes/public_filter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AllRecipesScreen extends StatefulWidget {
   const AllRecipesScreen({super.key});
@@ -22,11 +24,21 @@ class AllRecipesScreen extends StatefulWidget {
 class _AllRecipesScreenState extends State<AllRecipesScreen> {
   String? currentBackground;
   int _selectedIndex = 0;
+  bool _filterByFollowing = false;
+  String? loggedUserId;
+  bool _isLoading = false;
 
   final List<String> _routes = [
     '/home',
     '/allRecipes',
   ];
+
+  Future<void> _loadUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      loggedUserId = prefs.getString('id');
+    });
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -36,11 +48,31 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
     GoRouter.of(context).go(_routes[index]);
   }
 
+  void _applyFilter(bool filterByFollowing) {
+    setState(() {
+      _filterByFollowing = filterByFollowing;
+    });
+    _getRecipes();
+  }
+
   @override
   void initState() {
     super.initState();
-    _loadBackgroundImage();
-    _getRecipes();
+    _initializeScreen(); // Llama a un método centralizado
+  }
+
+  Future<void> _initializeScreen() async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    await _loadUserId(); // Cargar el ID del usuario
+    await _loadBackgroundImage(); // Cargar la imagen de fondo
+    await _getRecipes(); // Cargar las recetas
+
+    setState(() {
+      _isLoading = false;
+    });
   }
 
   Future<void> _loadBackgroundImage() async {
@@ -51,8 +83,27 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
     });
   }
 
-  void _getRecipes() {
-    context.read<RecipeBloc>().add(GetPublicRecipesEvent());
+  Future<void> _getRecipes() async {
+    print(
+        "Cargando recetas. Filtro por usuarios seguidos: $_filterByFollowing");
+
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('id');
+
+    if (_filterByFollowing) {
+      if (userId != null) {
+        print(
+            "Solicitando recetas públicas por usuarios seguidos para userId: $userId");
+        context
+            .read<RecipeBloc>()
+            .add(GetPublicRecipesByFollowingEvent(userId: userId));
+      } else {
+        print("Error: userId es null");
+      }
+    } else {
+      print("Solicitando todas las recetas públicas");
+      context.read<RecipeBloc>().add(GetPublicRecipesEvent());
+    }
   }
 
   @override
@@ -92,15 +143,35 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
           BlocListener<LikeBloc, LikeState>(
             listener: (context, state) {
               if (state.isUpdated) {
-                context.read<RecipeBloc>().add(GetPublicRecipesEvent());
+                _getRecipes();
               }
             },
-            child: const Padding(
-              padding: EdgeInsets.only(top: 100),
-              child: AllRecipeList(),
+            child: Padding(
+              padding: const EdgeInsets.only(top: 100),
+              child: _isLoading
+                  ? const Center(child: CircularProgressIndicator())
+                  : AllRecipeList(
+                      filterByFollowing: _filterByFollowing,
+                      loggedUserId: loggedUserId!,
+                    ),
             ),
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (context) {
+              return FilterModal(
+                onFilterApplied: (bool filterByFollowing) {
+                  _applyFilter(filterByFollowing);
+                },
+              );
+            },
+          );
+        },
+        child: const Icon(Icons.filter_list),
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,

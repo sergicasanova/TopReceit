@@ -35,10 +35,15 @@ class FollowRepositoryImpl implements FollowRepository {
   Future<Either<Failure, bool>> followUser(
       String followerId, String followedId) async {
     try {
+      print("Repositorio: Siguiendo al usuario...");
+      print("Follower ID: $followerId");
+      print("Followed ID: $followedId");
+
       final result =
           await followApiDataSource.followUser(followerId, followedId);
       return Right(result);
     } catch (e) {
+      print("Error en el repositorio: ${e.toString()}");
       return Left(ServerFailure(
           message: 'Error al seguir al usuario: ${e.toString()}'));
     }

@@ -15,4 +15,6 @@ abstract class RecipeRepository {
   Future<Either<Failure, List<RecipeEntity>>> getPublicRecipes();
   Future<Either<Failure, List<RecipeEntity>>> getPublicRecipesByUserId(
       String userId);
+  Future<Either<Failure, List<RecipeEntity>>> getPublicRecipesByFollowing(
+      String userId);
 }

@@ -48,15 +48,23 @@ class FollowApiDataSource implements FollowDataSource {
   @override
   Future<bool> followUser(String followerId, String followedId) async {
     final url = Uri.parse('$baseUrl/follows/$followerId/follow/$followedId');
+    print("DataSource: Preparando la solicitud...");
+    print("URL: $url");
 
     final response = await client.post(
       url,
       headers: {'Content-Type': 'application/json'},
     );
 
+    print("DataSource: Respuesta del servidor...");
+    print("Estado HTTP: ${response.statusCode}");
+    print("Cuerpo de la respuesta: ${response.body}");
+
     if (response.statusCode == 201) {
-      return true; // El usuario ha sido seguido con éxito
+      print("El usuario ha sido seguido con éxito.");
+      return true;
     } else {
+      print("Error en la respuesta del servidor: ${response.body}");
       throw ServerFailure(message: 'Error al seguir al usuario');
     }
   }

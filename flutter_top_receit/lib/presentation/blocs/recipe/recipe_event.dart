@@ -9,6 +9,15 @@ class GetAllRecipesEvent extends RecipeEvent {}
 
 class GetPublicRecipesEvent extends RecipeEvent {}
 
+class GetPublicRecipesByFollowingEvent extends RecipeEvent {
+  final String userId;
+
+  GetPublicRecipesByFollowingEvent({required this.userId});
+
+  @override
+  List<Object?> get props => [userId];
+}
+
 class GetRecipeByIdEvent extends RecipeEvent {
   final int id;
 
@@ -97,6 +106,7 @@ class ApplyFilterEvent extends RecipeEvent {
   final int? ingredients;
   final String userId;
   final List<int> favoriteRecipeIds;
+  final List<String>? followedUserIds; // IDs de los usuarios seguidos
 
   ApplyFilterEvent({
     this.title,
@@ -104,11 +114,29 @@ class ApplyFilterEvent extends RecipeEvent {
     this.ingredients,
     required this.userId,
     this.favoriteRecipeIds = const [],
+    this.followedUserIds,
   });
 
   @override
   List<Object?> get props =>
-      [title, steps, ingredients, userId, favoriteRecipeIds];
+      [title, steps, ingredients, userId, favoriteRecipeIds, followedUserIds];
+}
+
+class ApplyPublicFilterEvent extends RecipeEvent {
+  final String? title;
+  final int? steps;
+  final int? ingredients;
+  final List<String>? followedUserIds;
+
+  ApplyPublicFilterEvent({
+    this.title,
+    this.steps,
+    this.ingredients,
+    this.followedUserIds,
+  });
+
+  @override
+  List<Object?> get props => [title, steps, ingredients, followedUserIds];
 }
 
 class OrderRecipesEvent extends RecipeEvent {

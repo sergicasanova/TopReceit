@@ -107,4 +107,25 @@ class RecipeRepositoryImpl implements RecipeRepository {
               'Error al obtener las recetas públicas del usuario con ID $userId.'));
     }
   }
+
+  @override
+  Future<Either<Failure, List<RecipeEntity>>> getPublicRecipesByFollowing(
+      String userId) async {
+    try {
+      // Llamar al método correspondiente en el datasource
+      final recipeModels =
+          await recipeApiDataSource.getPublicRecipesByFollowing(userId);
+
+      // Convertir los modelos a entidades
+      final recipes =
+          recipeModels.map((model) => model.toRecipeEntity()).toList();
+
+      return Right(recipes);
+    } catch (e) {
+      // Manejo de errores en caso de fallo
+      return Left(ServerFailure(
+          message:
+              'Error al obtener las recetas públicas de los usuarios seguidos.'));
+    }
+  }
 }

@@ -5,6 +5,8 @@ class RecipeState extends Equatable {
   final bool isLoading;
   final String? errorMessage;
   final List<RecipeEntity>? recipes;
+  final List<RecipeEntity>? publicRecipes; // Recipes for public display
+  final List<RecipeEntity>? followingRecipes; // Recipes from followed users
   final RecipeEntity? recipe;
 
   // Agregar los parámetros adicionales para la creación de receta
@@ -17,6 +19,8 @@ class RecipeState extends Equatable {
     this.isLoading = false,
     this.errorMessage,
     this.recipes,
+    this.publicRecipes,
+    this.followingRecipes,
     this.recipe,
     this.title,
     this.description,
@@ -94,9 +98,13 @@ class RecipeState extends Equatable {
       RecipeState(recipes: filteredRecipes);
 
   factory RecipeState.publicRecipesLoaded(List<RecipeEntity> publicRecipes) =>
-      RecipeState(recipes: publicRecipes);
+      RecipeState(publicRecipes: publicRecipes);
 
   factory RecipeState.publicRecipesByUserLoaded(
           List<RecipeEntity> publicRecipesByUser) =>
       RecipeState(recipes: publicRecipesByUser);
+
+  factory RecipeState.followingRecipesLoaded(
+          List<RecipeEntity> followingRecipes) =>
+      RecipeState(followingRecipes: followingRecipes);
 }

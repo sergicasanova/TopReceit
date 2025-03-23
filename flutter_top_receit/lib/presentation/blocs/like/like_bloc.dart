@@ -26,14 +26,17 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
       result.fold(
         (failure) => emit(LikeState.failure("Fallo al dar like a la receta")),
         (_) {
-          // Emitir estado de éxito
           emit(LikeState.success());
-
-          // Aquí lanzamos el evento para actualizar las recetas
-          recipeBloc.add(GetPublicRecipesEvent());
-
-          // Emitimos el estado de "like actualizado" para reflejar que se ha dado un like
           emit(LikeState.likeUpdated());
+
+          // Verificar el filtro activo y lanzar el evento correcto
+          if (recipeBloc.state.followingRecipes != null) {
+            recipeBloc.add(GetPublicRecipesByFollowingEvent(
+              userId: event.userId,
+            ));
+          } else {
+            recipeBloc.add(GetPublicRecipesEvent());
+          }
         },
       );
     });
@@ -46,14 +49,17 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
         (failure) =>
             emit(LikeState.failure("Fallo al quitar like de la receta")),
         (_) {
-          // Emitir estado de éxito
           emit(LikeState.success());
-
-          // Aquí lanzamos el evento para actualizar las recetas
-          recipeBloc.add(GetPublicRecipesEvent());
-
-          // Emitimos el estado de "like actualizado" para reflejar que se ha quitado un like
           emit(LikeState.likeUpdated());
+
+          // Verificar el filtro activo y lanzar el evento correcto
+          if (recipeBloc.state.followingRecipes != null) {
+            recipeBloc.add(GetPublicRecipesByFollowingEvent(
+              userId: event.userId,
+            ));
+          } else {
+            recipeBloc.add(GetPublicRecipesEvent());
+          }
         },
       );
     });

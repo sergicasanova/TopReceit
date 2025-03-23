@@ -15,7 +15,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserDetailsScreen extends StatefulWidget {
-  final String userId; // Este es el ID del usuario que estamos visualizando
+  final String userId;
 
   const UserDetailsScreen({super.key, required this.userId});
 
@@ -26,7 +26,7 @@ class UserDetailsScreen extends StatefulWidget {
 class _UserDetailsScreenState extends State<UserDetailsScreen> {
   String? currentBackground;
   int _selectedIndex = 0;
-  String? currentUserId; // Este es el ID del usuario logueado
+  String? currentUserId;
 
   final List<String> _routes = [
     '/home',
@@ -120,7 +120,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                         return const Padding(
                           padding: EdgeInsets.all(16),
                           child: Text(
-                            "No se encontraron datos del usuario.",
+                            "No se encontraron datos del usuario.", // traducir
                             style: TextStyle(color: Colors.white, fontSize: 16),
                           ),
                         );

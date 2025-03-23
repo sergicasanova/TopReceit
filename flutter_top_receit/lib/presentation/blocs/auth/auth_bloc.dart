@@ -151,6 +151,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         (failure) =>
             emit(AuthState.failure("Fallo al realizar la recuperación")),
         (user) {
+          print("Datos del usuario cargados: ${user.following}");
           emit(AuthState.isLoggedIn(user));
         },
       );
