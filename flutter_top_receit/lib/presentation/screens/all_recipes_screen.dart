@@ -58,7 +58,7 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeScreen(); // Llama a un método centralizado
+    _initializeScreen();
   }
 
   Future<void> _initializeScreen() async {
@@ -66,9 +66,9 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
       _isLoading = true;
     });
 
-    await _loadUserId(); // Cargar el ID del usuario
-    await _loadBackgroundImage(); // Cargar la imagen de fondo
-    await _getRecipes(); // Cargar las recetas
+    await _loadUserId();
+    await _loadBackgroundImage();
+    await _getRecipes();
 
     setState(() {
       _isLoading = false;
