@@ -1,4 +1,5 @@
 import 'package:flutter_top_receit/data/models/shopping_list_items.dart';
+import 'package:flutter_top_receit/domain/entities/shopping_list_entity.dart';
 
 class ShoppingList {
   final String id;
@@ -18,6 +19,14 @@ class ShoppingList {
       items: (json['items'] as List<dynamic>)
           .map((item) => ShoppingListItem.fromJson(item))
           .toList(),
+    );
+  }
+
+  ShoppingListEntity toEntity() {
+    return ShoppingListEntity(
+      id: id,
+      name: name,
+      items: items.map((item) => item.toEntity()).toList(),
     );
   }
 }

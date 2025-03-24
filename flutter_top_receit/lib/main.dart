@@ -14,6 +14,7 @@ import 'package:flutter_top_receit/presentation/blocs/ingredient/ingredient_bloc
 import 'package:flutter_top_receit/presentation/blocs/like/like_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe_ingredient/recipe_ingredient_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/steps/steps_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
@@ -72,6 +73,9 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (_) => sl<FollowBloc>(),
+        ),
+        BlocProvider(
+          create: (_) => sl<ShoppingListBloc>(),
         ),
       ],
       child: BlocBuilder<LanguageBloc, LanguageState>(

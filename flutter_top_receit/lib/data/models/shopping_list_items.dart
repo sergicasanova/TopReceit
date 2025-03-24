@@ -1,3 +1,5 @@
+import 'package:flutter_top_receit/domain/entities/shopping_list_item_entity.dart';
+
 class ShoppingListItem {
   final String id;
   final String ingredientName;
@@ -46,6 +48,16 @@ class ShoppingListItem {
       quantity: quantity ?? this.quantity,
       unit: unit ?? this.unit,
       isPurchased: isPurchased ?? this.isPurchased,
+    );
+  }
+
+  ShoppingListItemEntity toEntity() {
+    return ShoppingListItemEntity(
+      id: id,
+      ingredientName: ingredientName,
+      quantity: quantity,
+      unit: unit,
+      isPurchased: isPurchased,
     );
   }
 }

@@ -9,6 +9,7 @@ import 'package:flutter_top_receit/data/datasources/ingredient_api_datasource.da
 import 'package:flutter_top_receit/data/datasources/like_api_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/recipe_api_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/recipe_ingredient_api_datasource.dart';
+import 'package:flutter_top_receit/data/datasources/shopping_list_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/steps_api_datasource.dart';
 import 'package:flutter_top_receit/data/datasources/user_api_datasource.dart';
 import 'package:flutter_top_receit/data/repositories/favorites_repository_impl.dart';
@@ -59,6 +60,11 @@ import 'package:flutter_top_receit/domain/usecases/recipe_ingredient/delete_reci
 import 'package:flutter_top_receit/domain/usecases/recipe_ingredient/get_all_ingredients_for_recipe_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe_ingredient/get_ingredient_by_id_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/recipe_ingredient/update_recipe_ingredient_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/shopping_list/add_recipe_ingredients_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/shopping_list/clear_shopping_list_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/shopping_list/get_shopping_list_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/shopping_list/remove_item_usecase.dart';
+import 'package:flutter_top_receit/domain/usecases/shopping_list/toggle_item_purchased_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/steps/create_step_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/steps/delete_step_by_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/steps/delete_step_usecase.dart';
@@ -83,6 +89,7 @@ import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dar
 import 'package:flutter_top_receit/presentation/blocs/like/like_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe_ingredient/recipe_ingredient_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/steps/steps_bloc.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -106,6 +113,8 @@ void configureDependencies() async {
   sl.registerFactory<FavoriteBloc>(() => FavoriteBloc(sl(), sl(), sl()));
   sl.registerFactory<LikeBloc>(() => LikeBloc(sl(), sl(), sl(), sl()));
   sl.registerFactory<FollowBloc>(() => FollowBloc(sl(), sl(), sl(), sl()));
+  sl.registerFactory<ShoppingListBloc>(
+      () => ShoppingListBloc(sl(), sl(), sl(), sl(), sl()));
 
   // Instancia de Firebase Auth
   sl.registerLazySingleton<FirebaseAuth>(() => FirebaseAuth.instance);
@@ -143,6 +152,9 @@ void configureDependencies() async {
   );
   sl.registerLazySingleton<FollowApiDataSource>(
     () => FollowApiDataSource(sl()),
+  );
+  sl.registerLazySingleton<ShoppingListApiDataSource>(
+    () => ShoppingListApiDataSource(sl()),
   );
 
   // Repositorios
@@ -320,6 +332,23 @@ void configureDependencies() async {
   );
   sl.registerLazySingleton<UnfollowUserUseCase>(
     () => UnfollowUserUseCase(sl()),
+  );
+
+  // Casos de Uso para ShoppingList
+  sl.registerLazySingleton<GetShoppingListUseCase>(
+    () => GetShoppingListUseCase(sl()),
+  );
+  sl.registerLazySingleton<AddRecipeIngredientsUseCase>(
+    () => AddRecipeIngredientsUseCase(sl()),
+  );
+  sl.registerLazySingleton<RemoveItemUseCase>(
+    () => RemoveItemUseCase(sl()),
+  );
+  sl.registerLazySingleton<ClearShoppingListUseCase>(
+    () => ClearShoppingListUseCase(sl()),
+  );
+  sl.registerLazySingleton<ToggleItemPurchasedUseCase>(
+    () => ToggleItemPurchasedUseCase(sl()),
   );
 
   sl.registerLazySingleton(() => http.Client());
