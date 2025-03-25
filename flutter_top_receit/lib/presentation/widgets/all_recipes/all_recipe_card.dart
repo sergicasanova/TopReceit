@@ -6,7 +6,7 @@ import 'package:flutter_top_receit/presentation/screens/UserDetailsScreen_screen
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AllRecipeCard extends StatefulWidget {
+class AllRecipeCard extends StatelessWidget {
   final String title;
   final String description;
   final String image;
@@ -36,11 +36,6 @@ class AllRecipeCard extends StatefulWidget {
     required this.loggedUserId,
   });
 
-  @override
-  State<AllRecipeCard> createState() => _AllRecipeCardState();
-}
-
-class _AllRecipeCardState extends State<AllRecipeCard> {
   Future<String?> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('id');
@@ -58,7 +53,7 @@ class _AllRecipeCardState extends State<AllRecipeCard> {
         if (!snapshot.hasData) {
           return const Text("No se ha encontrado el ID de usuario.");
         }
-        bool hasLiked = widget.likeUserIds.contains(widget.loggedUserId);
+        bool hasLiked = likeUserIds.contains(loggedUserId);
 
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -68,9 +63,11 @@ class _AllRecipeCardState extends State<AllRecipeCard> {
           elevation: 5,
           child: InkWell(
             onTap: () {
-              widget.onTap();
-              widget.likeUserIds.add(widget.loggedUserId!);
-              setState(() {});
+              // Navegación a los detalles de la receta
+              context.go('/recipeDetails/$recipeId', extra: {
+                'comesFromUserDetails': false, // Viene de AllRecipes
+                // Puedes añadir más datos si los necesitas
+              });
             },
             child: Container(
               padding: const EdgeInsets.all(10),
@@ -79,9 +76,9 @@ class _AllRecipeCardState extends State<AllRecipeCard> {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: widget.image.isNotEmpty
+                    child: image.isNotEmpty
                         ? Image.network(
-                            widget.image,
+                            image,
                             width: 80,
                             height: 80,
                             fit: BoxFit.cover,
@@ -107,7 +104,7 @@ class _AllRecipeCardState extends State<AllRecipeCard> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          widget.title,
+                          title,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -115,7 +112,7 @@ class _AllRecipeCardState extends State<AllRecipeCard> {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          widget.description,
+                          description,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -130,7 +127,7 @@ class _AllRecipeCardState extends State<AllRecipeCard> {
                                 ),
                                 const SizedBox(width: 5),
                                 Text(
-                                  '${widget.ingredientsCount}',
+                                  '$ingredientsCount',
                                   style: const TextStyle(fontSize: 14),
                                 ),
                               ],
@@ -144,7 +141,7 @@ class _AllRecipeCardState extends State<AllRecipeCard> {
                                 ),
                                 const SizedBox(width: 5),
                                 Text(
-                                  '${widget.stepsCount}',
+                                  '$stepsCount',
                                   style: const TextStyle(fontSize: 14),
                                 ),
                               ],
@@ -159,16 +156,16 @@ class _AllRecipeCardState extends State<AllRecipeCard> {
                       GestureDetector(
                         onTap: () {
                           // Navegar hacia la nueva pantalla con el router
-                          context.go('/userDetails/${widget.userId}', extra: {
-                            'userName': widget.userName,
-                            'userAvatar': widget.userAvatar
+                          context.go('/userDetails/$userId', extra: {
+                            'userName': userName,
+                            'userAvatar': userAvatar
                           });
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(50),
-                          child: widget.userAvatar.isNotEmpty
+                          child: userAvatar.isNotEmpty
                               ? Image.network(
-                                  widget.userAvatar,
+                                  userAvatar,
                                   width: 40,
                                   height: 40,
                                   fit: BoxFit.cover,
@@ -190,7 +187,7 @@ class _AllRecipeCardState extends State<AllRecipeCard> {
                         ),
                       ),
                       Text(
-                        widget.userName,
+                        userName,
                         style:
                             const TextStyle(fontSize: 12, color: Colors.grey),
                       ),
@@ -201,21 +198,19 @@ class _AllRecipeCardState extends State<AllRecipeCard> {
                           color: hasLiked ? Colors.red : Colors.grey,
                         ),
                         onPressed: () {
-                          if (widget.loggedUserId != null) {
+                          if (loggedUserId != null) {
                             if (hasLiked) {
                               context.read<LikeBloc>().add(RemoveLikeEvent(
-                                  userId: widget.loggedUserId!,
-                                  recipeId: widget.recipeId));
+                                  userId: loggedUserId!, recipeId: recipeId));
                             } else {
                               context.read<LikeBloc>().add(GiveLikeEvent(
-                                  userId: widget.loggedUserId!,
-                                  recipeId: widget.recipeId));
+                                  userId: loggedUserId!, recipeId: recipeId));
                             }
                           }
                         },
                       ),
                       Text(
-                        '${widget.likeUserIds.length} likes',
+                        '${likeUserIds.length} likes',
                         style:
                             const TextStyle(fontSize: 14, color: Colors.black),
                       ),

@@ -28,15 +28,6 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
         (_) {
           emit(LikeState.success());
           emit(LikeState.likeUpdated());
-
-          // Verificar el filtro activo y lanzar el evento correcto
-          if (recipeBloc.state.followingRecipes != null) {
-            recipeBloc.add(GetPublicRecipesByFollowingEvent(
-              userId: event.userId,
-            ));
-          } else {
-            // recipeBloc.add(GetPublicRecipesEvent());
-          }
         },
       );
     });

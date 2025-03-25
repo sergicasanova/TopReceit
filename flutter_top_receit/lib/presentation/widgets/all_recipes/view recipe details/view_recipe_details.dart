@@ -16,8 +16,15 @@ import 'package:flutter_top_receit/presentation/widgets/all_recipes/view%20recip
 
 class ViewRecipeDetailsScreen extends StatefulWidget {
   final int recipeId;
+  final String? userId;
+  final bool comesFromUserDetails;
 
-  const ViewRecipeDetailsScreen({super.key, required this.recipeId});
+  const ViewRecipeDetailsScreen({
+    super.key,
+    required this.recipeId,
+    this.comesFromUserDetails = false,
+    this.userId,
+  });
 
   @override
   State<ViewRecipeDetailsScreen> createState() =>
@@ -135,10 +142,16 @@ class _ViewRecipeDetailsScreenState extends State<ViewRecipeDetailsScreen> {
                     // Botón para volver atrás
                     ElevatedButton.icon(
                       onPressed: () {
-                        router.go('/AllRecipes');
+                        print('bool: ${widget.comesFromUserDetails}');
+                        print('user: ${widget.userId}');
+                        if (widget.comesFromUserDetails == true) {
+                          router.go('/userDetails/${widget.userId}');
+                        } else {
+                          router.go('/AllRecipes');
+                        }
                       },
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      label: Text('return'),
+                      label: const Text('volver'), // traducir
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.blue,

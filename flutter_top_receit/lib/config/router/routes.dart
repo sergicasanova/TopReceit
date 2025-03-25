@@ -56,8 +56,19 @@ final GoRouter router = GoRouter(
     GoRoute(
       path: '/recipeDetails/:recipeId',
       builder: (context, state) {
-        final recipeId = int.parse(state.pathParameters['recipeId'] ?? '0');
-        return ViewRecipeDetailsScreen(recipeId: recipeId);
+        final recipeId = int.parse(state.pathParameters['recipeId']!);
+        final extra = state.extra as Map<String, dynamic>? ?? {};
+
+        // Debug: Imprime los extras recibidos
+        print('Extras recibidos en ruta:');
+        print('comesFromUserDetails: ${extra['comesFromUserDetails']}');
+        print('userId: ${extra['userId']}');
+
+        return ViewRecipeDetailsScreen(
+          recipeId: recipeId,
+          comesFromUserDetails: extra['comesFromUserDetails'] as bool? ?? false,
+          userId: extra['userId'] as String?,
+        );
       },
     ),
     GoRoute(
