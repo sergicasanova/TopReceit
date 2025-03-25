@@ -10,6 +10,8 @@ import 'package:flutter_top_receit/presentation/blocs/follows/follows_bloc.dart'
 import 'package:flutter_top_receit/presentation/blocs/follows/follows_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
+import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_bloc.dart';
+import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_event.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
 import 'package:flutter_top_receit/presentation/services/notification_service.dart';
 import 'package:flutter_top_receit/presentation/widgets/appbar.dart';
@@ -54,6 +56,46 @@ class _MainScreenState extends State<MainScreen> {
     _testFollowBloc();
     NotificationService().getToken();
     _getUserData();
+    _testGetShoppingList();
+  }
+
+  void _testGetShoppingList() async {
+    final prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('id');
+
+    if (userId == null) {
+      print('❌ No se encontró userId en SharedPreferences');
+      return;
+    }
+
+    print('\n=== TEST: OBTENER LISTA DE COMPRA ===');
+    print('🆔 UserID: $userId');
+
+    // Obtenemos el Bloc directamente del árbol de widgets (asumiendo que está disponible)
+    final shoppingBloc = context.read<ShoppingListBloc>();
+
+    // Escuchamos los estados
+    shoppingBloc.stream.listen((state) {
+      if (state.isLoading) {
+        print('🔄 Cargando...');
+      } else if (state.errorMessage != null) {
+        print('❌ Error: ${state.errorMessage}');
+      } else if (state.shoppingList != null) {
+        final list = state.shoppingList!;
+        print('✅ Lista obtenida correctamente!');
+        print('📋 ID: ${list.id}');
+        print('🛒 Items (${list.items.length}):');
+
+        list.items.forEach((item) {
+          print('   - ${item.ingredientName}: ${item.quantity} ${item.unit} '
+              '| Comprado: ${item.isPurchased ? "✓" : "✗"}');
+        });
+      }
+    });
+
+    // Disparamos el evento
+    shoppingBloc.add(GetShoppingListEvent(userId: userId));
+    print('Evento "GetShoppingListEvent" enviado al Bloc');
   }
 
   void _testFollowBloc() async {

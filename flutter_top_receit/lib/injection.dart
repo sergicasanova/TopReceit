@@ -19,6 +19,7 @@ import 'package:flutter_top_receit/data/repositories/ingredient_repository_impl.
 import 'package:flutter_top_receit/data/repositories/like_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/recipe_ingredient_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/recipe_repository_impl.dart';
+import 'package:flutter_top_receit/data/repositories/shopping_list_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/sing_in_repository_impl.dart';
 import 'package:flutter_top_receit/data/repositories/steps_repository_impl.dart';
 import 'package:flutter_top_receit/domain/repositories/favorites_repository.dart';
@@ -28,6 +29,7 @@ import 'package:flutter_top_receit/domain/repositories/ingredient_repository.dar
 import 'package:flutter_top_receit/domain/repositories/like_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/recipe_ingredient_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/recipe_repository.dart';
+import 'package:flutter_top_receit/domain/repositories/shopping_list_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/sign_in_repository.dart';
 import 'package:flutter_top_receit/domain/repositories/steps_repository.dart';
 import 'package:flutter_top_receit/domain/usecases/favorites/add_favorite_usecase.dart';
@@ -184,6 +186,9 @@ void configureDependencies() async {
   );
   sl.registerLazySingleton<FollowRepository>(
     () => FollowRepositoryImpl(sl()),
+  );
+  sl.registerLazySingleton<ShoppingListRepository>(
+    () => ShoppingListRepositoryImpl(sl()),
   );
 
   // Casos de uso

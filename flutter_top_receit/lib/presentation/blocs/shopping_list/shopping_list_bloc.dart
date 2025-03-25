@@ -25,10 +25,20 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
     on<GetShoppingListEvent>((event, emit) async {
       emit(ShoppingListState.loading());
       final result = await getShoppingListUseCase.call(event.userId);
+
+      List<String> ingredients = [];
+
+      ingredients = result.fold(
+          (failure) => [],
+          (shoppingList) =>
+              shoppingList.items.map((item) => item.ingredientName).toList());
+      ingredients = ingredients.toSet().toList();
+
       result.fold(
         (failure) => emit(
             ShoppingListState.failure("Fallo al obtener la lista de compras")),
-        (shoppingList) => emit(ShoppingListState.loaded(shoppingList)),
+        (shoppingList) =>
+            emit(ShoppingListState.loaded(shoppingList, ingredients)),
       );
     });
 
@@ -37,11 +47,12 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
       final result = await addRecipeIngredientsUseCase.call(
         AddIngredientsParams(userId: event.userId, recipeId: event.recipeId),
       );
+
       result.fold(
         (failure) =>
             emit(ShoppingListState.failure("Fallo al añadir ingredientes")),
         (shoppingList) {
-          emit(ShoppingListState.loaded(shoppingList));
+          emit(ShoppingListState.loaded(shoppingList, state.ingredients));
           add(GetShoppingListEvent(userId: event.userId));
         },
       );
@@ -52,6 +63,7 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
       final result = await removeItemUseCase.call(
         RemoveItemParams(userId: event.userId, itemId: event.itemId),
       );
+
       result.fold(
         (failure) =>
             emit(ShoppingListState.failure("Fallo al eliminar el ítem")),

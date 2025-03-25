@@ -6,7 +6,7 @@ import 'package:flutter_top_receit/presentation/screens/UserDetailsScreen_screen
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class AllRecipeCard extends StatelessWidget {
+class AllRecipeCard extends StatefulWidget {
   final String title;
   final String description;
   final String image;
@@ -36,6 +36,11 @@ class AllRecipeCard extends StatelessWidget {
     required this.loggedUserId,
   });
 
+  @override
+  State<AllRecipeCard> createState() => _AllRecipeCardState();
+}
+
+class _AllRecipeCardState extends State<AllRecipeCard> {
   Future<String?> getUserId() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('id');
@@ -53,7 +58,7 @@ class AllRecipeCard extends StatelessWidget {
         if (!snapshot.hasData) {
           return const Text("No se ha encontrado el ID de usuario.");
         }
-        bool hasLiked = likeUserIds.contains(loggedUserId);
+        bool hasLiked = widget.likeUserIds.contains(widget.loggedUserId);
 
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
@@ -62,7 +67,11 @@ class AllRecipeCard extends StatelessWidget {
           ),
           elevation: 5,
           child: InkWell(
-            onTap: onTap,
+            onTap: () {
+              widget.onTap();
+              widget.likeUserIds.add(widget.loggedUserId!);
+              setState(() {});
+            },
             child: Container(
               padding: const EdgeInsets.all(10),
               child: Row(
@@ -70,9 +79,9 @@ class AllRecipeCard extends StatelessWidget {
                 children: [
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
-                    child: image.isNotEmpty
+                    child: widget.image.isNotEmpty
                         ? Image.network(
-                            image,
+                            widget.image,
                             width: 80,
                             height: 80,
                             fit: BoxFit.cover,
@@ -98,7 +107,7 @@ class AllRecipeCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          title,
+                          widget.title,
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
@@ -106,7 +115,7 @@ class AllRecipeCard extends StatelessWidget {
                         ),
                         const SizedBox(height: 5),
                         Text(
-                          description,
+                          widget.description,
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -121,7 +130,7 @@ class AllRecipeCard extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 5),
                                 Text(
-                                  '$ingredientsCount',
+                                  '${widget.ingredientsCount}',
                                   style: const TextStyle(fontSize: 14),
                                 ),
                               ],
@@ -135,7 +144,7 @@ class AllRecipeCard extends StatelessWidget {
                                 ),
                                 const SizedBox(width: 5),
                                 Text(
-                                  '$stepsCount',
+                                  '${widget.stepsCount}',
                                   style: const TextStyle(fontSize: 14),
                                 ),
                               ],
@@ -150,16 +159,16 @@ class AllRecipeCard extends StatelessWidget {
                       GestureDetector(
                         onTap: () {
                           // Navegar hacia la nueva pantalla con el router
-                          context.go('/userDetails/$userId', extra: {
-                            'userName': userName,
-                            'userAvatar': userAvatar
+                          context.go('/userDetails/${widget.userId}', extra: {
+                            'userName': widget.userName,
+                            'userAvatar': widget.userAvatar
                           });
                         },
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(50),
-                          child: userAvatar.isNotEmpty
+                          child: widget.userAvatar.isNotEmpty
                               ? Image.network(
-                                  userAvatar,
+                                  widget.userAvatar,
                                   width: 40,
                                   height: 40,
                                   fit: BoxFit.cover,
@@ -181,7 +190,7 @@ class AllRecipeCard extends StatelessWidget {
                         ),
                       ),
                       Text(
-                        userName,
+                        widget.userName,
                         style:
                             const TextStyle(fontSize: 12, color: Colors.grey),
                       ),
@@ -192,19 +201,21 @@ class AllRecipeCard extends StatelessWidget {
                           color: hasLiked ? Colors.red : Colors.grey,
                         ),
                         onPressed: () {
-                          if (loggedUserId != null) {
+                          if (widget.loggedUserId != null) {
                             if (hasLiked) {
                               context.read<LikeBloc>().add(RemoveLikeEvent(
-                                  userId: loggedUserId!, recipeId: recipeId));
+                                  userId: widget.loggedUserId!,
+                                  recipeId: widget.recipeId));
                             } else {
                               context.read<LikeBloc>().add(GiveLikeEvent(
-                                  userId: loggedUserId!, recipeId: recipeId));
+                                  userId: widget.loggedUserId!,
+                                  recipeId: widget.recipeId));
                             }
                           }
                         },
                       ),
                       Text(
-                        '${likeUserIds.length} likes',
+                        '${widget.likeUserIds.length} likes',
                         style:
                             const TextStyle(fontSize: 14, color: Colors.black),
                       ),

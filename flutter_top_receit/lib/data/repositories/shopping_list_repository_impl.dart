@@ -7,15 +7,15 @@ import 'package:flutter_top_receit/domain/entities/shopping_list_item_entity.dar
 import 'package:flutter_top_receit/domain/repositories/shopping_list_repository.dart';
 
 class ShoppingListRepositoryImpl implements ShoppingListRepository {
-  final ShoppingListApiDataSource shoppingDataSource;
+  final ShoppingListApiDataSource dataSource;
 
-  ShoppingListRepositoryImpl(this.shoppingDataSource);
+  ShoppingListRepositoryImpl(this.dataSource);
 
   @override
   Future<Either<Failure, ShoppingListEntity>> getShoppingList(
       String userId) async {
     try {
-      final shoppingList = await shoppingDataSource.getShoppingList(userId);
+      final shoppingList = await dataSource.getShoppingList(userId);
       return Right(shoppingList.toEntity());
     } on ServerFailure catch (e) {
       return Left(e);
@@ -30,7 +30,7 @@ class ShoppingListRepositoryImpl implements ShoppingListRepository {
       String userId, int recipeId) async {
     try {
       final shoppingList =
-          await shoppingDataSource.addRecipeIngredients(userId, recipeId);
+          await dataSource.addRecipeIngredients(userId, recipeId);
       return Right(shoppingList.toEntity());
     } on ServerFailure catch (e) {
       return Left(e);
@@ -42,7 +42,7 @@ class ShoppingListRepositoryImpl implements ShoppingListRepository {
   @override
   Future<Either<Failure, void>> removeItem(String userId, String itemId) async {
     try {
-      await shoppingDataSource.removeItem(userId, itemId);
+      await dataSource.removeItem(userId, itemId);
       return const Right(null);
     } on ServerFailure catch (e) {
       return Left(e);
@@ -54,7 +54,7 @@ class ShoppingListRepositoryImpl implements ShoppingListRepository {
   @override
   Future<Either<Failure, void>> clearShoppingList(String userId) async {
     try {
-      await shoppingDataSource.clearShoppingList(userId);
+      await dataSource.clearShoppingList(userId);
       return const Right(null);
     } on ServerFailure catch (e) {
       return Left(e);
@@ -67,8 +67,8 @@ class ShoppingListRepositoryImpl implements ShoppingListRepository {
   Future<Either<Failure, ShoppingListItemEntity>> toggleItemPurchased(
       String userId, String itemId) async {
     try {
-      final item = await shoppingDataSource.toggleItemPurchased(userId, itemId);
-      return Right(item.toEntity()); // Convertir modelo a entity aquí
+      final item = await dataSource.toggleItemPurchased(userId, itemId);
+      return Right(item.toEntity());
     } on ServerFailure catch (e) {
       return Left(e);
     } catch (e) {

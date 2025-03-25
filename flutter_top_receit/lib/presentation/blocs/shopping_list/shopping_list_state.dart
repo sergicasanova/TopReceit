@@ -6,6 +6,7 @@ class ShoppingListState extends Equatable {
   final bool isLoading;
   final String? errorMessage;
   final ShoppingListEntity? shoppingList;
+  final List<String> ingredients;
   final ShoppingListItemEntity? updatedItem;
 
   const ShoppingListState({
@@ -13,11 +14,12 @@ class ShoppingListState extends Equatable {
     this.errorMessage,
     this.shoppingList,
     this.updatedItem,
+    this.ingredients = const [],
   });
 
   @override
   List<Object?> get props =>
-      [isLoading, errorMessage, shoppingList, updatedItem];
+      [isLoading, errorMessage, shoppingList, updatedItem, ingredients];
 
   ShoppingListState copyWith({
     bool? isLoading,
@@ -43,8 +45,9 @@ class ShoppingListState extends Equatable {
   factory ShoppingListState.failure(String errorMessage) =>
       ShoppingListState(errorMessage: errorMessage);
 
-  factory ShoppingListState.loaded(ShoppingListEntity shoppingList) =>
-      ShoppingListState(shoppingList: shoppingList);
+  factory ShoppingListState.loaded(
+          ShoppingListEntity shoppingList, List<String> ingredients) =>
+      ShoppingListState(shoppingList: shoppingList, ingredients: ingredients);
 
   factory ShoppingListState.itemUpdated(ShoppingListItemEntity item) =>
       ShoppingListState(updatedItem: item);

@@ -35,7 +35,7 @@ class LikeBloc extends Bloc<LikeEvent, LikeState> {
               userId: event.userId,
             ));
           } else {
-            recipeBloc.add(GetPublicRecipesEvent());
+            // recipeBloc.add(GetPublicRecipesEvent());
           }
         },
       );
