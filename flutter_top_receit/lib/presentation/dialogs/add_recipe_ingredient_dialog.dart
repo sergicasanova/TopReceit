@@ -14,12 +14,16 @@ import 'package:flutter_top_receit/presentation/blocs/recipe_ingredient/recipe_i
 class AddIngredientDialog extends StatefulWidget {
   final List<IngredientEntity> ingredients;
   final int recipeId;
+  final RecipeIngredientModel? ingredientToEdit; // Nuevo parámetro
 
-  const AddIngredientDialog(
-      {super.key, required this.recipeId, required this.ingredients});
+  const AddIngredientDialog({
+    super.key,
+    required this.recipeId,
+    required this.ingredients,
+    this.ingredientToEdit, // Opcional para modo edición
+  });
 
   @override
-  // ignore: library_private_types_in_public_api
   _AddIngredientDialogState createState() => _AddIngredientDialogState();
 }
 
@@ -32,17 +36,26 @@ class _AddIngredientDialogState extends State<AddIngredientDialog> {
   @override
   void initState() {
     super.initState();
+    // Si estamos editando, precargamos los datos
+    if (widget.ingredientToEdit != null) {
+      selectedIngredient =
+          widget.ingredientToEdit!.ingredient.toIngredientEntity();
+      quantityController.text = widget.ingredientToEdit!.quantity.toString();
+      unitController.text = widget.ingredientToEdit!.unit;
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isEditing = widget.ingredientToEdit != null;
+
     return Scaffold(
-      backgroundColor:
-          Colors.transparent, // Transparente para mantener el fondo
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.add_ingredient_title),
-        backgroundColor:
-            Colors.transparent, // Transparent to match dialog style
+        title: Text(isEditing
+            ? 'editar ingrediente' // traducir
+            : AppLocalizations.of(context)!.add_ingredient_title),
+        backgroundColor: Colors.transparent,
         elevation: 0,
       ),
       body: Padding(
@@ -61,11 +74,9 @@ class _AddIngredientDialogState extends State<AddIngredientDialog> {
                 DropdownSearch<IngredientEntity>(
                   popupProps: PopupProps.bottomSheet(
                     showSearchBox: true,
-                    itemBuilder: (context, item, isSelected) {
-                      return ListTile(
-                        title: Text(item.name),
-                      );
-                    },
+                    itemBuilder: (context, item, isSelected) => ListTile(
+                      title: Text(item.name),
+                    ),
                     searchFieldProps: TextFieldProps(
                       decoration: InputDecoration(
                         labelText:
@@ -77,11 +88,7 @@ class _AddIngredientDialogState extends State<AddIngredientDialog> {
                       ),
                     ),
                   ),
-                  items: widget.ingredients
-                      .where((ingredient) => ingredient.name
-                          .toLowerCase()
-                          .contains(searchController.text.toLowerCase()))
-                      .toList(),
+                  items: widget.ingredients,
                   itemAsString: (IngredientEntity ingredient) =>
                       ingredient.name,
                   onChanged: (IngredientEntity? ingredient) {
@@ -118,9 +125,7 @@ class _AddIngredientDialogState extends State<AddIngredientDialog> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
+                      onPressed: () => Navigator.of(context).pop(),
                       child: Text(AppLocalizations.of(context)!.cancel_button),
                     ),
                     ElevatedButton(
@@ -128,26 +133,39 @@ class _AddIngredientDialogState extends State<AddIngredientDialog> {
                         if (selectedIngredient != null &&
                             quantityController.text.isNotEmpty &&
                             unitController.text.isNotEmpty) {
-                          IngredientModel ingredientModel =
+                          final ingredientModel =
                               IngredientModel.fromEntity(selectedIngredient!);
                           final recipeIngredient = RecipeIngredientModel(
+                            idRecipeIngredient: isEditing
+                                ? widget.ingredientToEdit!.idRecipeIngredient
+                                : null,
                             idRecipe: widget.recipeId,
                             quantity: int.parse(quantityController.text),
                             unit: unitController.text,
                             ingredient: ingredientModel,
                           );
-                          context.read<RecipeIngredientBloc>().add(
-                                CreateRecipeIngredientEvent(
-                                  recipeIngredient: recipeIngredient,
-                                ),
-                              );
+
+                          if (isEditing) {
+                            context.read<RecipeIngredientBloc>().add(
+                                  UpdateRecipeIngredientEvent(
+                                    recipeIngredient: recipeIngredient,
+                                    idRecipeIngredient: widget
+                                        .ingredientToEdit!.idRecipeIngredient!,
+                                  ),
+                                );
+                          } else {
+                            context.read<RecipeIngredientBloc>().add(
+                                  CreateRecipeIngredientEvent(
+                                    recipeIngredient: recipeIngredient,
+                                  ),
+                                );
+                          }
+
                           await Future.delayed(const Duration(seconds: 1));
-                          // ignore: use_build_context_synchronously
+                          if (!mounted) return;
                           context.read<RecipeBloc>().add(
                                 GetRecipeByIdEvent(id: widget.recipeId),
                               );
-
-                          // ignore: use_build_context_synchronously
                           Navigator.of(context).pop();
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
@@ -158,7 +176,9 @@ class _AddIngredientDialogState extends State<AddIngredientDialog> {
                           );
                         }
                       },
-                      child: Text(AppLocalizations.of(context)!.add_button),
+                      child: Text(isEditing
+                          ? 'Editar' // traducir
+                          : AppLocalizations.of(context)!.add_button),
                     ),
                   ],
                 ),

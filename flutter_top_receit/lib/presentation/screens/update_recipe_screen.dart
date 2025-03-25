@@ -13,7 +13,6 @@ import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.
 import 'package:flutter_top_receit/presentation/widgets/update%20fields/recipe_form.dart';
 import 'package:flutter_top_receit/presentation/widgets/update%20fields/recipe_ingredients.dart';
 import 'package:flutter_top_receit/presentation/widgets/update%20fields/steps.dart';
-import 'package:flutter_top_receit/presentation/widgets/update%20fields/buttons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
@@ -203,71 +202,127 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                         );
                       },
                     ),
-                    const SizedBox(height: 20),
-                    ElevatedButton.icon(
-                      onPressed: _showDeleteConfirmationDialog,
-                      icon: const Icon(Icons.delete, color: Colors.white),
-                      label: Text(AppLocalizations.of(context)!.delete_button),
-                      style: ElevatedButton.styleFrom(
-                        foregroundColor: Colors.white,
-                        backgroundColor: Colors.red,
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 20, horizontal: 30),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
+                    const SizedBox(height: 40),
+                    // Botón Aceptar (verde - posición superior)
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton(
+                        onPressed: () async {
+                          if (_recipeFormKey.currentState!.imageFile != null) {
+                            if (_imageUrlController.text.isNotEmpty) {
+                              await _recipeFormKey.currentState!
+                                  .deleteImage(_imageUrlController.text);
+                            }
+
+                            final uploadedUrl = await _recipeFormKey
+                                .currentState!
+                                .uploadImage();
+                            if (uploadedUrl != null) {
+                              _imageUrlController.text = uploadedUrl;
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Error subiendo la imagen')),
+                              );
+                              return;
+                            }
+                          }
+
+                          if (_titleController.text.isNotEmpty &&
+                              _descriptionController.text.isNotEmpty &&
+                              _imageUrlController.text.isNotEmpty &&
+                              userId != null) {
+                            context.read<RecipeBloc>().add(
+                                  UpdateRecipeEvent(
+                                    title: _titleController.text,
+                                    description: _descriptionController.text,
+                                    image: _imageUrlController.text,
+                                    idRecipe: widget.recipeId,
+                                    isPublic: _isPublic,
+                                  ),
+                                );
+                            router.go('/home');
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text(AppLocalizations.of(context)!
+                                      .recipe_fields_required)),
+                            );
+                          }
+                        },
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.green,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
+                        ),
+                        child:
+                            Text(AppLocalizations.of(context)!.accept_button),
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Botón Eliminar (rojo)
+                    SizedBox(
+                      width: double.infinity,
+                      child: ElevatedButton.icon(
+                        onPressed: _showDeleteConfirmationDialog,
+                        icon: const Icon(Icons.delete, size: 20),
+                        label:
+                            Text(AppLocalizations.of(context)!.delete_button),
+                        style: ElevatedButton.styleFrom(
+                          foregroundColor: Colors.white,
+                          backgroundColor: Colors.red,
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(30),
+                          ),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 32),
-                    RecipeButtons(
-                      onAccept: () async {
-                        if (_recipeFormKey.currentState!.imageFile != null) {
-                          if (_imageUrlController.text.isNotEmpty) {
-                            await _recipeFormKey.currentState!
-                                .deleteImage(_imageUrlController.text);
-                          }
-
-                          final uploadedUrl =
-                              await _recipeFormKey.currentState!.uploadImage();
-                          if (uploadedUrl != null) {
-                            _imageUrlController.text = uploadedUrl;
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text('Error subiendo la imagen')),
-                            );
-                            return;
-                          }
-                        }
-
-                        // Validar que los campos obligatorios estén completos
-                        if (_titleController.text.isNotEmpty &&
-                            _descriptionController.text.isNotEmpty &&
-                            _imageUrlController.text.isNotEmpty &&
-                            userId != null) {
-                          // Actualizar la receta
-                          context.read<RecipeBloc>().add(
-                                UpdateRecipeEvent(
-                                  title: _titleController.text,
-                                  description: _descriptionController.text,
-                                  image: _imageUrlController.text,
-                                  idRecipe: widget.recipeId,
-                                  isPublic: _isPublic,
-                                ),
-                              );
-                          router.go('/home');
-                        } else {
-                          // Mostrar un mensaje de error si faltan campos obligatorios
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                                content: Text(AppLocalizations.of(context)!
-                                    .recipe_fields_required)),
-                          );
-                        }
-                      },
-                      onCancel: () {
-                        router.go('/home');
-                      },
+                    const SizedBox(height: 40),
+                    // Fila de botones inferiores
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        // Botón Cancelar (izquierda - gris)
+                        Expanded(
+                          child: TextButton(
+                            onPressed: () {
+                              router.go('/home');
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.grey[700],
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: Text(
+                                AppLocalizations.of(context)!.cancel_button),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        // Botón Return (derecha - azul)
+                        Expanded(
+                          child: TextButton(
+                            onPressed: () {
+                              router.go('/home');
+                            },
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.white,
+                              backgroundColor: Colors.blueAccent,
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                            ),
+                            child: const Text('RETURN'), // traducir
+                          ),
+                        ),
+                      ],
                     ),
                   ],
                 ),
