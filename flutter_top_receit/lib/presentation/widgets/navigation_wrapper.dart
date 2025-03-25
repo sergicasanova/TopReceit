@@ -12,6 +12,7 @@ class _NavigationWrapperState extends State<NavigationWrapper> {
   final List<String> _routes = [
     '/home',
     '/allRecipes',
+    '/shopping-list', // Nueva ruta añadida
   ];
 
   void _onItemTapped(int index) {
@@ -38,7 +39,15 @@ class _NavigationWrapperState extends State<NavigationWrapper> {
             icon: Icon(Icons.public),
             label: 'Recetas Públicas',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart), // Icono de carrito
+            label: 'Lista de Compra',
+          ),
         ],
+        // Opcional: Personaliza el estilo
+        selectedItemColor: Colors.blue,
+        unselectedItemColor: Colors.grey,
+        showUnselectedLabels: true,
       ),
     );
   }

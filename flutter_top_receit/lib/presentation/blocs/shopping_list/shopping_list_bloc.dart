@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_top_receit/domain/entities/shopping_list_entity.dart';
 import 'package:flutter_top_receit/domain/usecases/shopping_list/add_recipe_ingredients_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/shopping_list/clear_shopping_list_usecase.dart';
 import 'package:flutter_top_receit/domain/usecases/shopping_list/get_shopping_list_usecase.dart';
@@ -41,6 +42,28 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
             emit(ShoppingListState.loaded(shoppingList, ingredients)),
       );
     });
+
+    // initState(){
+    //  getSopplintsEvents }
+
+// BlocBuilder(){
+// loading => Ciruclar }
+// return
+    // List Vieew
+    // items: state.ingredientes
+    // itembuilder(index, context)
+    // String ingrediente = state.ingreidintes[index]
+    // List<ShoppingListItemEntity> items = state.shoppingList.items.where((item) => item.ingredientName == ingrediente).toList();
+    // return Column(childrne[...items.map((item) => Row(children: [Text(item.ingredientName), Text(item.quantity.toString])...
+
+// PATATA
+// _______________________________
+// 1 KG
+// 3 UDS.
+
+// CEBOLLA
+// _______________________________
+// 1 KG
 
     on<AddRecipeIngredientsEvent>((event, emit) async {
       emit(ShoppingListState.loading());
@@ -86,6 +109,16 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
       final result = await toggleItemPurchasedUseCase.call(
         ToggleItemParams(userId: event.userId, itemId: event.itemId),
       );
+
+      // List<ShoppingListItemEntity> shoppingList = List.from(state.shoppingList);
+
+      // int index = shoppingList.indexWhere((item) => item.id == event.itemId);
+
+      // shoppingList[index] = result.fold(
+      //   (failure) => state.shoppingList[index],
+      //   (item) => item,
+      // );
+
       result.fold(
         (failure) =>
             emit(ShoppingListState.failure("Fallo al actualizar el ítem")),

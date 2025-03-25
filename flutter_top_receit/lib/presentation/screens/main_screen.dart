@@ -39,6 +39,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<String> _routes = [
     '/home',
     '/allRecipes',
+    '/shopping-list',
   ];
 
   void _onItemTapped(int index) {
@@ -53,66 +54,8 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     _loadBackgroundImage();
-    _testFollowBloc();
     NotificationService().getToken();
     _getUserData();
-    _testGetShoppingList();
-  }
-
-  void _testGetShoppingList() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('id');
-
-    if (userId == null) {
-      print('❌ No se encontró userId en SharedPreferences');
-      return;
-    }
-
-    print('\n=== TEST: OBTENER LISTA DE COMPRA ===');
-    print('🆔 UserID: $userId');
-
-    // Obtenemos el Bloc directamente del árbol de widgets (asumiendo que está disponible)
-    final shoppingBloc = context.read<ShoppingListBloc>();
-
-    // Escuchamos los estados
-    shoppingBloc.stream.listen((state) {
-      if (state.isLoading) {
-        print('🔄 Cargando...');
-      } else if (state.errorMessage != null) {
-        print('❌ Error: ${state.errorMessage}');
-      } else if (state.shoppingList != null) {
-        final list = state.shoppingList!;
-        print('✅ Lista obtenida correctamente!');
-        print('📋 ID: ${list.id}');
-        print('🛒 Items (${list.items.length}):');
-
-        list.items.forEach((item) {
-          print('   - ${item.ingredientName}: ${item.quantity} ${item.unit} '
-              '| Comprado: ${item.isPurchased ? "✓" : "✗"}');
-        });
-      }
-    });
-
-    // Disparamos el evento
-    shoppingBloc.add(GetShoppingListEvent(userId: userId));
-    print('Evento "GetShoppingListEvent" enviado al Bloc');
-  }
-
-  void _testFollowBloc() async {
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('id');
-    print('No encuentro user: $userId');
-    if (userId != null) {
-      // Solicitar los seguidores
-      print("Solicitando seguidores para userId: $userId");
-      context.read<FollowBloc>().add(GetFollowersEvent(userId: userId));
-
-      // Solicitar los usuarios seguidos
-      print("Solicitando usuarios seguidos para userId: $userId");
-      context.read<FollowBloc>().add(GetFollowingEvent(userId: userId));
-    } else {
-      print("No se encontró un userId en AuthState.");
-    }
   }
 
   Future<void> _getUserData() async {
@@ -289,6 +232,10 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.public),
             label: 'Recetas Públicas',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Lista de Compra',
           ),
         ],
       ),

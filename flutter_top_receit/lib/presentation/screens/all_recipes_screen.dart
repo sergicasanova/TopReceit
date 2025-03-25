@@ -31,6 +31,7 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
   final List<String> _routes = [
     '/home',
     '/allRecipes',
+    '/shopping-list',
   ];
 
   Future<void> _loadUserId() async {
@@ -184,6 +185,10 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.public),
             label: 'Recetas Públicas',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart), // Icono de carrito
+            label: 'Lista de Compra',
           ),
         ],
       ),

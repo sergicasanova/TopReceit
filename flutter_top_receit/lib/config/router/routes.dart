@@ -7,6 +7,7 @@ import 'package:flutter_top_receit/presentation/screens/create_recipe_screen.dar
 import 'package:flutter_top_receit/presentation/screens/login_screen.dart';
 import 'package:flutter_top_receit/presentation/screens/main_screen.dart';
 import 'package:flutter_top_receit/presentation/screens/register_screen.dart';
+import 'package:flutter_top_receit/presentation/screens/shopping_list_screen.dart';
 import 'package:flutter_top_receit/presentation/screens/update_recipe_screen.dart';
 import 'package:flutter_top_receit/presentation/widgets/all_recipes/view%20recipe%20details/view_recipe_details.dart';
 import 'package:go_router/go_router.dart';
@@ -58,6 +59,11 @@ final GoRouter router = GoRouter(
         final recipeId = int.parse(state.pathParameters['recipeId'] ?? '0');
         return ViewRecipeDetailsScreen(recipeId: recipeId);
       },
+    ),
+    GoRoute(
+      path: '/shopping-list',
+      name: 'shopping-list',
+      builder: (context, state) => const ShoppingListScreen(),
     ),
   ],
   redirect: (context, state) async {
