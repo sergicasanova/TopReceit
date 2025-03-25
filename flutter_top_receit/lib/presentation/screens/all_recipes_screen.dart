@@ -85,25 +85,34 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
   }
 
   Future<void> _getRecipes() async {
-    print(
-        "Cargando recetas. Filtro por usuarios seguidos: $_filterByFollowing");
+    try {
+      print("Iniciando carga de recetas...");
 
-    final prefs = await SharedPreferences.getInstance();
-    final userId = prefs.getString('id');
+      if (!mounted) return;
 
-    if (_filterByFollowing) {
-      if (userId != null) {
-        print(
-            "Solicitando recetas públicas por usuarios seguidos para userId: $userId");
-        context
-            .read<RecipeBloc>()
-            .add(GetPublicRecipesByFollowingEvent(userId: userId));
+      final userId = loggedUserId;
+      print("UserId a usar: $userId");
+
+      if (_filterByFollowing) {
+        if (userId != null) {
+          print("Enviando GetPublicRecipesByFollowingEvent");
+          context.read<RecipeBloc>().add(
+                GetPublicRecipesByFollowingEvent(userId: userId),
+              );
+        } else {
+          print("Error: userId es null con filtro activado");
+        }
       } else {
-        print("Error: userId es null");
+        print("Enviando GetPublicRecipesEvent");
+        context.read<RecipeBloc>().add(GetPublicRecipesEvent());
       }
-    } else {
-      print("Solicitando todas las recetas públicas");
-      context.read<RecipeBloc>().add(GetPublicRecipesEvent());
+    } catch (e) {
+      print("Error en _getRecipes: $e");
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("Error al cargar recetas: ${e.toString()}")),
+        );
+      }
     }
   }
 

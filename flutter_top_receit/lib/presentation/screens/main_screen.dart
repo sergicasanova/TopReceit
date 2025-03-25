@@ -6,12 +6,8 @@ import 'package:flutter_top_receit/presentation/blocs/auth/auth_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/auth/auth_state.dart';
 import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/favorites/favorites_event.dart';
-import 'package:flutter_top_receit/presentation/blocs/follows/follows_bloc.dart';
-import 'package:flutter_top_receit/presentation/blocs/follows/follows_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_event.dart';
-import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_bloc.dart';
-import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_event.dart';
 import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.dart';
 import 'package:flutter_top_receit/presentation/services/notification_service.dart';
 import 'package:flutter_top_receit/presentation/widgets/appbar.dart';
@@ -46,6 +42,12 @@ class _MainScreenState extends State<MainScreen> {
     setState(() {
       _selectedIndex = index;
     });
+
+    if (_routes[index] == '/allRecipes') {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<RecipeBloc>().add(GetPublicRecipesEvent());
+      });
+    }
 
     GoRouter.of(context).go(_routes[index]);
   }
@@ -227,15 +229,15 @@ class _MainScreenState extends State<MainScreen> {
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
-            label: 'Home',
+            label: 'Home', // traducir
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.public),
-            label: 'Recetas Públicas',
+            label: 'Recetas Públicas', // traducir
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
-            label: 'Lista de Compra',
+            label: 'Lista de Compra', // traducir
           ),
         ],
       ),

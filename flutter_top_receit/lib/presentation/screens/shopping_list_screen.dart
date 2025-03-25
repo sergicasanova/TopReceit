@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_event.dart';
 import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_state.dart';
 import 'package:flutter_top_receit/presentation/widgets/shopping_list_widgets/shopping_list_view.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_bloc.dart';
 
@@ -15,11 +16,25 @@ class ShoppingListScreen extends StatefulWidget {
 
 class _ShoppingListScreenState extends State<ShoppingListScreen> {
   String? currentUserId;
+  int _selectedIndex = 0;
+  final List<String> _routes = [
+    '/home',
+    '/allRecipes',
+    '/shopping-list',
+  ];
 
   @override
   void initState() {
     super.initState();
     _loadCurrentUserIdAndShoppingList();
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+
+    GoRouter.of(context).go(_routes[index]);
   }
 
   Future<void> _loadCurrentUserIdAndShoppingList() async {
@@ -61,6 +76,24 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
             onRefresh: () => _refreshList(currentUserId!),
           );
         },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped, // Maneja el cambio de pestañas
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.public),
+            label: 'Recetas Públicas',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart), // Icono de carrito
+            label: 'Lista de Compra',
+          ),
+        ],
       ),
     );
   }
