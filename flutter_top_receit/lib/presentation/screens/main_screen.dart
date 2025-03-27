@@ -18,6 +18,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/lenguage/lenguage_event.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -226,19 +227,16 @@ class _MainScreenState extends State<MainScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home', // traducir
-          ),
+              icon: const Icon(Icons.home),
+              label: AppLocalizations.of(context)!.home_label),
           BottomNavigationBarItem(
-            icon: Icon(Icons.public),
-            label: 'Recetas Públicas', // traducir
-          ),
+              icon: const Icon(Icons.public),
+              label: AppLocalizations.of(context)!.public_recipes_label),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart),
-            label: 'Lista de Compra', // traducir
-          ),
+              icon: const Icon(Icons.shopping_cart),
+              label: AppLocalizations.of(context)!.shopping_list_label),
         ],
       ),
     );

@@ -62,7 +62,9 @@ class RecipeFormState extends State<RecipeForm> {
       }
 
       final downloadUrl = await storageRef.getDownloadURL();
-      print('Download URL: $downloadUrl');
+      // ignore: use_build_context_synchronously
+      print(
+          '${AppLocalizations.of(context)!.recipe_fields_required} $downloadUrl');
       return downloadUrl;
     } catch (e) {
       print('Error uploading image: $e');
@@ -74,7 +76,7 @@ class RecipeFormState extends State<RecipeForm> {
     try {
       final ref = FirebaseStorage.instance.refFromURL(imageUrl);
       await ref.delete();
-      print('Image deleted successfully');
+      print(AppLocalizations.of(context)!.image_delete_success);
     } catch (e) {
       print('Error deleting image: $e');
     }
@@ -136,12 +138,12 @@ class RecipeFormState extends State<RecipeForm> {
           margin: const EdgeInsets.symmetric(vertical: 8.0),
           child: ElevatedButton(
             onPressed: pickImage,
-            child: const Text('Seleccionar nueva imagen'),
+            child: Text(AppLocalizations.of(context)!.select_new_image),
           ),
         ),
         if (imageFile != null) ...[
           const SizedBox(height: 16),
-          const Text('Nueva imagen seleccionada:'),
+          Text(AppLocalizations.of(context)!.new_image_selected),
           const SizedBox(height: 8),
           kIsWeb
               ? Image.memory(
@@ -159,7 +161,7 @@ class RecipeFormState extends State<RecipeForm> {
         ],
         const SizedBox(height: 16),
         if (widget.imageUrlController.text.isNotEmpty) ...[
-          const Text('Imagen actual:'),
+          Text(AppLocalizations.of(context)!.current_image_label),
           const SizedBox(height: 8),
           Image.network(
             widget.imageUrlController.text,
@@ -191,7 +193,7 @@ class RecipeFormState extends State<RecipeForm> {
             },
           ),
         ] else ...[
-          const Text('No hay imagen actual.'),
+          Text(AppLocalizations.of(context)!.no_current_image),
           const SizedBox(height: 16),
           Image.asset(
             'assets/icons/recipe.png',

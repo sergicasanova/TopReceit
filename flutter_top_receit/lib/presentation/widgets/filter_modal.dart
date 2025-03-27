@@ -47,7 +47,6 @@ class _FilterModalState extends State<FilterModal> {
     prefs.setString('ingredientsFilter', ingredientsFilter ?? '');
     prefs.setBool('filterFavorites', filterFavorites);
   }
-  // cambiarlo a guardarlo en un state y borrarlos con el otro boton.
 
   @override
   Widget build(BuildContext context) {

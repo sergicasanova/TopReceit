@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/recipe/recipe_bloc.dart';
@@ -74,10 +76,8 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
       final metadata = SettableMetadata(contentType: 'image/jpeg');
 
       if (kIsWeb) {
-        // For web, use Uint8List with metadata
         await storageRef.putData(_imageFile, metadata);
       } else {
-        // For mobile, use File with metadata
         await storageRef.putFile(_imageFile, metadata);
       }
 
@@ -90,6 +90,29 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
     }
   }
 
+  Widget _buildCardContainer({required Widget child, EdgeInsets? padding}) {
+    return Container(
+      width: double.infinity,
+      padding: padding ?? const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.7),
+        borderRadius: BorderRadius.circular(15),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.5),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+
   @override
   void initState() {
     super.initState();
@@ -100,14 +123,10 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(AppLocalizations.of(context)!.create_recipe_title),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-      ),
       extendBodyBehindAppBar: true,
       body: Stack(
         children: [
+          // Fondo de pantalla
           Positioned.fill(
             child: Container(
               decoration: BoxDecoration(
@@ -118,66 +137,182 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
               ),
             ),
           ),
-          Positioned.fill(
-            child: Center(
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppLocalizations.of(context)!.title_label,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                      TextField(
-                        controller: _titleController,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!
-                              .create_recipe_hint_title,
-                          hintStyle: const TextStyle(color: Colors.white),
-                          filled: true,
-                          fillColor: Colors.black.withOpacity(0.5),
-                          border: const OutlineInputBorder(),
+
+          // Contenido principal
+          Center(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  // Tarjeta del formulario
+                  _buildCardContainer(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Título
+                        Center(
+                          child: Text(
+                            AppLocalizations.of(context)!.create_recipe_title,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 4,
+                                  color: Colors.black,
+                                  offset: Offset(2, 2),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        AppLocalizations.of(context)!.description_label,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                      TextField(
-                        controller: _descriptionController,
-                        style: const TextStyle(color: Colors.white),
-                        decoration: InputDecoration(
-                          hintText: AppLocalizations.of(context)!
-                              .create_recipe_hint_description,
-                          hintStyle: const TextStyle(color: Colors.white),
-                          filled: true,
-                          fillColor: Colors.black.withOpacity(0.5),
-                          border: const OutlineInputBorder(),
+                        const SizedBox(height: 30),
+
+                        // Campo de título
+                        Text(
+                          AppLocalizations.of(context)!.title_label,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        AppLocalizations.of(context)!.image_url_label,
-                        style:
-                            const TextStyle(color: Colors.white, fontSize: 18),
-                      ),
-                      ElevatedButton(
-                        onPressed: _pickImage,
-                        child: Text('Seleccione una imagen'),
-                      ),
-                      if (_imageFile != null) ...[
-                        Text('Image selected'),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: _titleController,
+                          style: const TextStyle(color: Colors.white),
+                          decoration: InputDecoration(
+                            hintText: AppLocalizations.of(context)!
+                                .create_recipe_hint_title,
+                            hintStyle:
+                                TextStyle(color: Colors.white.withOpacity(0.7)),
+                            filled: true,
+                            fillColor: Colors.black.withOpacity(0.5),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 14),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Campo de descripción
+                        Text(
+                          AppLocalizations.of(context)!.description_label,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        TextField(
+                          controller: _descriptionController,
+                          style: const TextStyle(color: Colors.white),
+                          maxLines: 3,
+                          decoration: InputDecoration(
+                            hintText: AppLocalizations.of(context)!
+                                .create_recipe_hint_description,
+                            hintStyle:
+                                TextStyle(color: Colors.white.withOpacity(0.7)),
+                            filled: true,
+                            fillColor: Colors.black.withOpacity(0.5),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(10),
+                              borderSide: BorderSide.none,
+                            ),
+                            contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16, vertical: 14),
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+
+                        // Selector de imagen
+                        Text(
+                          AppLocalizations.of(context)!.image_url_label,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        ElevatedButton(
+                          onPressed: _pickImage,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.blue[700],
+                            foregroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 20, vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            elevation: 4,
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(Icons.image, size: 20),
+                              const SizedBox(width: 8),
+                              Text(
+                                AppLocalizations.of(context)!.select_image,
+                                style: const TextStyle(fontSize: 16),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (_imageFile != null) ...[
+                          const SizedBox(height: 12),
+                          Text(
+                            AppLocalizations.of(context)!.image_selected,
+                            style: TextStyle(
+                              color: Colors.green[300],
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ],
                       ],
-                      const SizedBox(height: 32),
-                      Row(
-                        children: [
-                          ElevatedButton(
+                    ),
+                  ),
+                  const SizedBox(height: 20),
+
+                  // Botones de acción
+                  _buildCardContainer(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        // Botón Cancelar
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: () => router.go('/home'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.red[700],
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              elevation: 4,
+                            ),
+                            child: Text(
+                              AppLocalizations.of(context)!.cancel_button,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+
+                        // Botón Crear
+                        Expanded(
+                          child: ElevatedButton(
                             onPressed: () async {
                               if (_titleController.text.isNotEmpty &&
                                   _descriptionController.text.isNotEmpty &&
@@ -185,6 +320,7 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                                   userId != null) {
                                 final imageUrl = await _uploadImage();
                                 if (imageUrl != null) {
+                                  if (!mounted) return;
                                   context.read<RecipeBloc>().add(
                                         CreateRecipeEvent(
                                           title: _titleController.text,
@@ -196,48 +332,48 @@ class _CreateRecipeScreenState extends State<CreateRecipeScreen> {
                                       );
                                   router.go('/home');
                                 } else {
+                                  if (!mounted) return;
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(
-                                        content: Text('Error uploading image')),
+                                      content: Text(
+                                          AppLocalizations.of(context)!
+                                              .image_upload_error),
+                                      backgroundColor: Colors.red,
+                                    ),
                                   );
                                 }
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   SnackBar(
-                                      content: Text(
-                                          AppLocalizations.of(context)!
-                                              .recipe_fields_required)),
+                                    content: Text(AppLocalizations.of(context)!
+                                        .recipe_fields_required),
+                                    backgroundColor: Colors.orange,
+                                  ),
                                 );
                               }
                             },
-                            child: Text(AppLocalizations.of(context)!
-                                .create_recipe_title),
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              foregroundColor: Colors.green,
-                              side: BorderSide.none,
-                              elevation: 0,
+                              backgroundColor: Colors.green[700],
+                              foregroundColor: Colors.white,
+                              padding: const EdgeInsets.symmetric(vertical: 14),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              elevation: 4,
                             ),
-                          ),
-                          const SizedBox(width: 10),
-                          ElevatedButton(
-                            onPressed: () {
-                              router.go('/home');
-                            },
                             child: Text(
-                                AppLocalizations.of(context)!.cancel_button),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.transparent,
-                              foregroundColor: Colors.red,
-                              side: BorderSide.none,
-                              elevation: 0,
+                              AppLocalizations.of(context)!.create_recipe_title,
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
                             ),
                           ),
-                        ],
-                      ),
-                    ],
+                        ),
+                      ],
+                    ),
                   ),
-                ),
+                ],
               ),
             ),
           ),

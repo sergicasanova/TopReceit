@@ -104,5 +104,40 @@
   "less_than_15_ingredients": "Moins de 15 ingrédients",
   "more_than_15_ingredients": "Plus de 15 ingrédients",
 
-  "filter_favorites_label": "Filtrer par favoris"
+  "filter_favorites_label": "Filtrer par favoris",
+
+  "edit_ingredient_title": "Modifier l'ingrédient",
+  "edit_button": "Modifier",
+  "home_label": "Accueil",
+  "public_recipes_label": "Recettes Publiques",
+  "shopping_list_label": "Liste de Courses",
+  "user_data_not_found": "Aucune donnée utilisateur trouvée.",
+  "back_button": "Retour",
+  "filter_followed_users": "Filtrer par utilisateurs suivis",
+  "apply_filters_button": "Appliquer les Filtres",
+
+  "publish_label": "Publier",
+  "image_upload_error": "Erreur lors du téléchargement de l'image",
+  "image_delete_success": "Image supprimée avec succès",
+  "download_url_label": "URL de téléchargement :",
+  "select_new_image": "Sélectionner une nouvelle image",
+  "new_image_selected": "Nouvelle image sélectionnée :",
+  "current_image_label": "Image actuelle :",
+  "no_current_image": "Aucune image actuelle",
+
+  "user_details_title": "Détails de l'Utilisateur",
+  "preferences_label": "Préférences :",
+  "user_id_error": "Erreur : Aucun userId connecté trouvé.",
+  "follow_button": "Suivre",
+  "unfollow_button": "Ne plus suivre",
+
+  "unidentified_user": "Utilisateur non identifié",
+  "empty_list": "Vider la liste",
+  "delete_all_ingredients_confirmation": "Supprimer tous les ingrédients?",
+  "delete_ingredient": "Supprimer l'ingrédient",
+
+  "empty_list_message": "La liste est vide",
+
+  "select_image": "Sélectionner une image",
+  "image_selected": "Image sélectionnée"
 }

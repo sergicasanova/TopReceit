@@ -13,6 +13,7 @@ import 'package:flutter_top_receit/presentation/widgets/drawer.dart';
 import 'package:flutter_top_receit/presentation/widgets/public_user_recipes/public_recipes_list.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class UserDetailsScreen extends StatefulWidget {
   final String userId;
@@ -31,6 +32,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
   final List<String> _routes = [
     '/home',
     '/allRecipes',
+    '/shopping-list',
   ];
 
   void _onItemTapped(int index) {
@@ -83,8 +85,8 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
         backgroundColor: Colors.black,
         elevation: 0,
         iconTheme: const IconThemeData(color: Colors.white),
-        title: const Text(
-          "Detalles del Usuario",
+        title: Text(
+          AppLocalizations.of(context)!.user_details_title,
           style: TextStyle(color: Colors.white),
         ),
       ),
@@ -117,11 +119,12 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                     builder: (context, state) {
                       final user = state.user;
                       if (user == null) {
-                        return const Padding(
-                          padding: EdgeInsets.all(16),
+                        return Padding(
+                          padding: const EdgeInsets.all(16),
                           child: Text(
-                            "No se encontraron datos del usuario.", // traducir
-                            style: TextStyle(color: Colors.white, fontSize: 16),
+                            AppLocalizations.of(context)!.user_data_not_found,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 16),
                           ),
                         );
                       }
@@ -170,7 +173,7 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                             const SizedBox(height: 8),
                             // Preferencias del usuario
                             Text(
-                              'Preferencias: ${user.preferences.join(", ")}',
+                              '${AppLocalizations.of(context)!.preferences_label} ${user.preferences.join(", ")}',
                               style: const TextStyle(
                                 fontSize: 16,
                                 color: Colors.grey,
@@ -194,8 +197,8 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                 return ElevatedButton(
                                   onPressed: () {
                                     if (currentUserId == null) {
-                                      print(
-                                          "Error: No se encontró el userId logueado.");
+                                      print(AppLocalizations.of(context)!
+                                          .user_id_error);
                                       return;
                                     }
 
@@ -228,7 +231,11 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
                                         horizontal: 32, vertical: 12),
                                   ),
                                   child: Text(
-                                    isFollowing ? "Dejar de seguir" : "Seguir",
+                                    isFollowing
+                                        ? AppLocalizations.of(context)!
+                                            .unfollow_button
+                                        : AppLocalizations.of(context)!
+                                            .follow_button,
                                     style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold,
@@ -254,15 +261,16 @@ class _UserDetailsScreenState extends State<UserDetailsScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
+              icon: const Icon(Icons.home),
+              label: AppLocalizations.of(context)!.home_label),
           BottomNavigationBarItem(
-            icon: Icon(Icons.public),
-            label: 'Recetas Públicas',
-          ),
+              icon: const Icon(Icons.public),
+              label: AppLocalizations.of(context)!.public_recipes_label),
+          BottomNavigationBarItem(
+              icon: const Icon(Icons.shopping_cart),
+              label: AppLocalizations.of(context)!.shopping_list_label),
         ],
       ),
     );

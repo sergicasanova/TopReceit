@@ -127,7 +127,7 @@ class _AddStepDialogState extends State<AddStepDialog> {
                   },
                   child: Text(widget.stepId == null
                       ? AppLocalizations.of(context)!.add_button
-                      : ('Editar')), // traducir
+                      : AppLocalizations.of(context)!.edit_button),
                 ),
               ],
             ),

@@ -53,7 +53,7 @@ class _AddIngredientDialogState extends State<AddIngredientDialog> {
       backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text(isEditing
-            ? 'editar ingrediente' // traducir
+            ? AppLocalizations.of(context)!.edit_ingredient_title
             : AppLocalizations.of(context)!.add_ingredient_title),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -177,7 +177,7 @@ class _AddIngredientDialogState extends State<AddIngredientDialog> {
                         }
                       },
                       child: Text(isEditing
-                          ? 'Editar' // traducir
+                          ? AppLocalizations.of(context)!.edit_button
                           : AppLocalizations.of(context)!.add_button),
                     ),
                   ],

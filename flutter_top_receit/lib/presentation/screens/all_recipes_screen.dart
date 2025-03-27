@@ -13,6 +13,7 @@ import 'package:flutter_top_receit/presentation/widgets/appbar.dart';
 import 'package:flutter_top_receit/presentation/widgets/public_user_recipes/public_filter.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AllRecipesScreen extends StatefulWidget {
   const AllRecipesScreen({super.key});
@@ -86,16 +87,12 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
 
   Future<void> _getRecipes() async {
     try {
-      print("Iniciando carga de recetas...");
-
       if (!mounted) return;
 
       final userId = loggedUserId;
-      print("UserId a usar: $userId");
 
       if (_filterByFollowing) {
         if (userId != null) {
-          print("Enviando GetPublicRecipesByFollowingEvent");
           context.read<RecipeBloc>().add(
                 GetPublicRecipesByFollowingEvent(userId: userId),
               );
@@ -103,11 +100,9 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
           print("Error: userId es null con filtro activado");
         }
       } else {
-        print("Enviando GetPublicRecipesEvent");
         context.read<RecipeBloc>().add(GetPublicRecipesEvent());
       }
     } catch (e) {
-      print("Error en _getRecipes: $e");
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text("Error al cargar recetas: ${e.toString()}")),
@@ -186,19 +181,16 @@ class _AllRecipesScreenState extends State<AllRecipesScreen> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped, // Maneja el cambio de pestañas
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
+              icon: const Icon(Icons.home),
+              label: AppLocalizations.of(context)!.home_label),
           BottomNavigationBarItem(
-            icon: Icon(Icons.public),
-            label: 'Recetas Públicas',
-          ),
+              icon: const Icon(Icons.public),
+              label: AppLocalizations.of(context)!.public_recipes_label),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart), // Icono de carrito
-            label: 'Lista de Compra',
-          ),
+              icon: const Icon(Icons.shopping_cart),
+              label: AppLocalizations.of(context)!.shopping_list_label),
         ],
       ),
     );

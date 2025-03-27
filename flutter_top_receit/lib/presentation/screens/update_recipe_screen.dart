@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, deprecated_member_use
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_top_receit/config/router/routes.dart';
@@ -120,6 +122,29 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
     );
   }
 
+  Widget _buildCardContainer({required Widget child}) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        color: Colors.black.withOpacity(0.7),
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: Colors.white.withOpacity(0.2),
+          width: 1,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.5),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<RecipeBloc, RecipeState>(
@@ -130,7 +155,6 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
           _descriptionController.text = state.recipe?.description ?? '';
           _imageUrlController.text = state.recipe?.image ?? '';
           _isPublic = state.recipe?.isPublic ?? false;
-          print('recipe ${_isPublic}');
           setState(() {
             isImageLoaded = true;
           });
@@ -156,137 +180,177 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    RecipeForm(
-                      key: _recipeFormKey,
-                      titleController: _titleController,
-                      descriptionController: _descriptionController,
-                      imageUrlController: _imageUrlController,
+                    _buildCardContainer(
+                      child: RecipeForm(
+                        key: _recipeFormKey,
+                        titleController: _titleController,
+                        descriptionController: _descriptionController,
+                        imageUrlController: _imageUrlController,
+                      ),
                     ),
                     const SizedBox(height: 16),
-                    SwitchListTile(
-                      title: const Text(
-                        'Publicar',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      value: _isPublic,
-                      onChanged: (bool value) {
-                        setState(() {
-                          _isPublic = value;
-                        });
-                      },
-                      activeColor: Theme.of(context).primaryColor,
-                      inactiveThumbColor: Colors.grey,
-                      inactiveTrackColor: Colors.grey[300],
-                    ),
-                    const SizedBox(height: 32),
-                    BlocBuilder<RecipeBloc, RecipeState>(
-                      builder: (context, state) {
-                        // Ingredientes
-                        final ingredients = _convertIngredients(
-                            state.recipe?.recipeIngredients ?? []);
-                        return RecipeIngredients(
-                          ingredients: ingredients,
-                          recipeId: widget.recipeId,
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 32),
-                    BlocBuilder<RecipeBloc, RecipeState>(
-                      builder: (context, state) {
-                        // Pasos
-                        List<StepModel> steps =
-                            _convertSteps(state.recipe?.steps ?? []);
-                        return RecipeSteps(
-                          steps: steps,
-                          recipeId: widget.recipeId,
-                        );
-                      },
-                    ),
-                    const SizedBox(height: 40),
-                    // Botón Aceptar (verde - posición superior)
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          if (_recipeFormKey.currentState!.imageFile != null) {
-                            if (_imageUrlController.text.isNotEmpty) {
-                              await _recipeFormKey.currentState!
-                                  .deleteImage(_imageUrlController.text);
-                            }
-
-                            final uploadedUrl = await _recipeFormKey
-                                .currentState!
-                                .uploadImage();
-                            if (uploadedUrl != null) {
-                              _imageUrlController.text = uploadedUrl;
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text('Error subiendo la imagen')),
-                              );
-                              return;
-                            }
-                          }
-
-                          if (_titleController.text.isNotEmpty &&
-                              _descriptionController.text.isNotEmpty &&
-                              _imageUrlController.text.isNotEmpty &&
-                              userId != null) {
-                            context.read<RecipeBloc>().add(
-                                  UpdateRecipeEvent(
-                                    title: _titleController.text,
-                                    description: _descriptionController.text,
-                                    image: _imageUrlController.text,
-                                    idRecipe: widget.recipeId,
-                                    isPublic: _isPublic,
-                                  ),
-                                );
-                            router.go('/home');
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text(AppLocalizations.of(context)!
-                                      .recipe_fields_required)),
-                            );
-                          }
+                    _buildCardContainer(
+                      child: SwitchListTile(
+                        title: Text(
+                          AppLocalizations.of(context)!.publish_label,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                            shadows: [
+                              Shadow(
+                                blurRadius: 2,
+                                color: Colors.black,
+                                offset: Offset(1, 1),
+                              ),
+                            ],
+                          ),
+                        ),
+                        value: _isPublic,
+                        onChanged: (bool value) {
+                          setState(() {
+                            _isPublic = value;
+                          });
                         },
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.green,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
-                        child:
-                            Text(AppLocalizations.of(context)!.accept_button),
+                        activeColor: Theme.of(context).primaryColor,
+                        inactiveThumbColor: Colors.grey[400],
+                        inactiveTrackColor: Colors.grey[600],
                       ),
                     ),
                     const SizedBox(height: 16),
-                    // Botón Eliminar (rojo)
-                    SizedBox(
-                      width: double.infinity,
-                      child: ElevatedButton.icon(
-                        onPressed: _showDeleteConfirmationDialog,
-                        icon: const Icon(Icons.delete, size: 20),
-                        label:
-                            Text(AppLocalizations.of(context)!.delete_button),
-                        style: ElevatedButton.styleFrom(
-                          foregroundColor: Colors.white,
-                          backgroundColor: Colors.red,
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                        ),
+                    _buildCardContainer(
+                      child: BlocBuilder<RecipeBloc, RecipeState>(
+                        builder: (context, state) {
+                          final ingredients = _convertIngredients(
+                              state.recipe?.recipeIngredients ?? []);
+                          return RecipeIngredients(
+                            ingredients: ingredients,
+                            recipeId: widget.recipeId,
+                          );
+                        },
                       ),
                     ),
-                    const SizedBox(height: 40),
-                    // Fila de botones inferiores
+                    const SizedBox(height: 16),
+                    _buildCardContainer(
+                      child: BlocBuilder<RecipeBloc, RecipeState>(
+                        builder: (context, state) {
+                          List<StepModel> steps =
+                              _convertSteps(state.recipe?.steps ?? []);
+                          return RecipeSteps(
+                            steps: steps,
+                            recipeId: widget.recipeId,
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    // Botones principales
+                    _buildCardContainer(
+                      child: Column(
+                        children: [
+                          // Botón Aceptar
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () async {
+                                if (_recipeFormKey.currentState!.imageFile !=
+                                    null) {
+                                  if (_imageUrlController.text.isNotEmpty) {
+                                    await _recipeFormKey.currentState!
+                                        .deleteImage(_imageUrlController.text);
+                                  }
+
+                                  final uploadedUrl = await _recipeFormKey
+                                      .currentState!
+                                      .uploadImage();
+                                  if (uploadedUrl != null) {
+                                    _imageUrlController.text = uploadedUrl;
+                                  } else {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              AppLocalizations.of(context)!
+                                                  .image_upload_error)),
+                                    );
+                                    return;
+                                  }
+                                }
+
+                                if (_titleController.text.isNotEmpty &&
+                                    _descriptionController.text.isNotEmpty &&
+                                    _imageUrlController.text.isNotEmpty &&
+                                    userId != null) {
+                                  context.read<RecipeBloc>().add(
+                                        UpdateRecipeEvent(
+                                          title: _titleController.text,
+                                          description:
+                                              _descriptionController.text,
+                                          image: _imageUrlController.text,
+                                          idRecipe: widget.recipeId,
+                                          isPublic: _isPublic,
+                                        ),
+                                      );
+                                  router.go('/home');
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                        content: Text(
+                                            AppLocalizations.of(context)!
+                                                .recipe_fields_required)),
+                                  );
+                                }
+                              },
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.green[700],
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 4,
+                              ),
+                              child: Text(
+                                  AppLocalizations.of(context)!.accept_button,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  )),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // Botón Eliminar
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: _showDeleteConfirmationDialog,
+                              icon: const Icon(Icons.delete, size: 20),
+                              label: Text(
+                                  AppLocalizations.of(context)!.delete_button,
+                                  style: const TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                  )),
+                              style: ElevatedButton.styleFrom(
+                                foregroundColor: Colors.white,
+                                backgroundColor: Colors.red[700],
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 16),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                                elevation: 4,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Botones inferiores
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        // Botón Cancelar (izquierda - gris)
+                        // Botón Cancelar
                         Expanded(
                           child: TextButton(
                             onPressed: () {
@@ -294,18 +358,22 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                             },
                             style: TextButton.styleFrom(
                               foregroundColor: Colors.white,
-                              backgroundColor: Colors.grey[700],
-                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              backgroundColor: Colors.grey[800],
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: BorderRadius.circular(8),
                               ),
+                              elevation: 4,
                             ),
                             child: Text(
-                                AppLocalizations.of(context)!.cancel_button),
+                                AppLocalizations.of(context)!.cancel_button,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                )),
                           ),
                         ),
                         const SizedBox(width: 16),
-                        // Botón Return (derecha - azul)
+                        // Botón Volver
                         Expanded(
                           child: TextButton(
                             onPressed: () {
@@ -313,13 +381,18 @@ class _UpdateRecipeScreenState extends State<UpdateRecipeScreen> {
                             },
                             style: TextButton.styleFrom(
                               foregroundColor: Colors.white,
-                              backgroundColor: Colors.blueAccent,
-                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              backgroundColor: Colors.blue[700],
+                              padding: const EdgeInsets.symmetric(vertical: 14),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(30),
+                                borderRadius: BorderRadius.circular(8),
                               ),
+                              elevation: 4,
                             ),
-                            child: const Text('RETURN'), // traducir
+                            child:
+                                Text(AppLocalizations.of(context)!.back_button,
+                                    style: const TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                    )),
                           ),
                         ),
                       ],

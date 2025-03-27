@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_top_receit/domain/entities/shopping_list_item_entity.dart';
 import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_bloc.dart';
 import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_event.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ShoppingListActions extends StatelessWidget {
   final ShoppingListItemEntity item;
@@ -47,16 +48,18 @@ class ShoppingListActions extends StatelessWidget {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Eliminar ingrediente'),
-        content: Text('¿Eliminar ${item.ingredientName}?'),
+        title: Text(AppLocalizations.of(context)!.delete_ingredient),
+        content: Text(
+            '¿${AppLocalizations.of(context)!.delete_button} ${item.ingredientName}?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(AppLocalizations.of(context)!.cancel_button),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Eliminar', style: TextStyle(color: Colors.red)),
+            child: Text(AppLocalizations.of(context)!.delete_button,
+                style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),

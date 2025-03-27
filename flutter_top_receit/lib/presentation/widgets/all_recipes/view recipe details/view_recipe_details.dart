@@ -13,6 +13,7 @@ import 'package:flutter_top_receit/presentation/functions/backgraund_sharedPref.
 import 'package:flutter_top_receit/presentation/widgets/all_recipes/view%20recipe%20details/recipe_details.dart';
 import 'package:flutter_top_receit/presentation/widgets/all_recipes/view%20recipe%20details/recipe_ingredients_details.dart';
 import 'package:flutter_top_receit/presentation/widgets/all_recipes/view%20recipe%20details/steps_details.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ViewRecipeDetailsScreen extends StatefulWidget {
   final int recipeId;
@@ -142,8 +143,6 @@ class _ViewRecipeDetailsScreenState extends State<ViewRecipeDetailsScreen> {
                     // Botón para volver atrás
                     ElevatedButton.icon(
                       onPressed: () {
-                        print('bool: ${widget.comesFromUserDetails}');
-                        print('user: ${widget.userId}');
                         if (widget.comesFromUserDetails == true) {
                           router.go('/userDetails/${widget.userId}');
                         } else {
@@ -151,7 +150,7 @@ class _ViewRecipeDetailsScreenState extends State<ViewRecipeDetailsScreen> {
                         }
                       },
                       icon: const Icon(Icons.arrow_back, color: Colors.white),
-                      label: const Text('volver'), // traducir
+                      label: Text(AppLocalizations.of(context)!.back_button),
                       style: ElevatedButton.styleFrom(
                         foregroundColor: Colors.white,
                         backgroundColor: Colors.blue,

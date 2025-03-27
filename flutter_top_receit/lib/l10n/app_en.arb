@@ -104,5 +104,40 @@
   "less_than_15_ingredients": "Less than 15 ingredients",
   "more_than_15_ingredients": "More than 15 ingredients",
 
-  "filter_favorites_label": "Filter by favorites"
+  "filter_favorites_label": "Filter by favorites",
+
+  "edit_ingredient_title": "Edit ingredient",
+  "edit_button": "Edit",
+  "home_label": "Home",
+  "public_recipes_label": "Public Recipes",
+  "shopping_list_label": "Shopping List",
+  "user_data_not_found": "No user data found.",
+  "back_button": "Back",
+  "filter_followed_users": "Filter by followed users",
+  "apply_filters_button": "Apply Filters",
+
+  "publish_label": "Publish",
+  "image_upload_error": "Error uploading image",
+  "image_delete_success": "Image deleted successfully",
+  "download_url_label": "Download URL:",
+  "select_new_image": "Select new image",
+  "new_image_selected": "New image selected:",
+  "current_image_label": "Current image:",
+  "no_current_image": "No current image",
+
+  "user_details_title": "User Details",
+  "preferences_label": "Preferences:",
+  "user_id_error": "Error: No logged-in userId found.",
+  "follow_button": "Follow",
+  "unfollow_button": "Unfollow",
+
+  "unidentified_user": "Unidentified user",
+  "empty_list": "Empty list",
+  "delete_all_ingredients_confirmation": "Delete all ingredients?",
+  "delete_ingredient": "Delete ingredient",
+
+  "empty_list_message": "The list is empty",
+
+  "select_image": "Select an image",
+  "image_selected": "Image selected"
 }

@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class FilterModal extends StatefulWidget {
   final Function(bool filterByFollowing) onFilterApplied;
 
+  // ignore: use_super_parameters
   const FilterModal({
     Key? key,
     required this.onFilterApplied,
   }) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _FilterModalState createState() => _FilterModalState();
 }
 
@@ -30,7 +33,7 @@ class _FilterModalState extends State<FilterModal> {
             children: [
               Row(
                 children: [
-                  const Text('Filtrar por usuarios seguidos'), // traducir
+                  Text(AppLocalizations.of(context)!.filter_followed_users),
                   Switch(
                     value: _filterByFollows,
                     onChanged: (value) {
@@ -46,7 +49,7 @@ class _FilterModalState extends State<FilterModal> {
                   widget.onFilterApplied(_filterByFollows);
                   Navigator.of(context).pop();
                 },
-                child: const Text("Aplicar Filtros"), // traducir
+                child: Text(AppLocalizations.of(context)!.apply_filters_button),
               ),
             ],
           ),

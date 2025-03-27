@@ -6,6 +6,7 @@ import 'package:flutter_top_receit/presentation/widgets/shopping_list_widgets/sh
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_bloc.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ShoppingListScreen extends StatefulWidget {
   const ShoppingListScreen({super.key});
@@ -44,6 +45,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     });
 
     if (currentUserId != null) {
+      // ignore: use_build_context_synchronously
       context
           .read<ShoppingListBloc>()
           .add(GetShoppingListEvent(userId: currentUserId!));
@@ -54,7 +56,7 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Lista de Compra'),
+        title: Text(AppLocalizations.of(context)!.shopping_list_label),
         actions: [
           IconButton(
             icon: const Icon(Icons.delete_sweep),
@@ -67,7 +69,8 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       body: BlocBuilder<ShoppingListBloc, ShoppingListState>(
         builder: (context, state) {
           if (currentUserId == null) {
-            return const Center(child: Text('Usuario no identificado'));
+            return Center(
+                child: Text(AppLocalizations.of(context)!.unidentified_user));
           }
 
           return ShoppingListView(
@@ -79,20 +82,17 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
-        onTap: _onItemTapped, // Maneja el cambio de pestañas
-        items: const [
+        onTap: _onItemTapped,
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
+              icon: const Icon(Icons.home),
+              label: AppLocalizations.of(context)!.home_label),
           BottomNavigationBarItem(
-            icon: Icon(Icons.public),
-            label: 'Recetas Públicas',
-          ),
+              icon: const Icon(Icons.public),
+              label: AppLocalizations.of(context)!.public_recipes_label),
           BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_cart), // Icono de carrito
-            label: 'Lista de Compra',
-          ),
+              icon: const Icon(Icons.shopping_cart),
+              label: AppLocalizations.of(context)!.shopping_list_label),
         ],
       ),
     );
@@ -106,22 +106,25 @@ class _ShoppingListScreenState extends State<ShoppingListScreen> {
     final confirmed = await showDialog<bool>(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Vaciar lista'),
-        content: const Text('¿Eliminar todos los ingredientes?'),
+        title: Text(AppLocalizations.of(context)!.empty_list),
+        content: Text(
+            AppLocalizations.of(context)!.delete_all_ingredients_confirmation),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context, false),
-            child: const Text('Cancelar'),
+            child: Text(AppLocalizations.of(context)!.cancel_button),
           ),
           TextButton(
             onPressed: () => Navigator.pop(context, true),
-            child: const Text('Vaciar', style: TextStyle(color: Colors.red)),
+            child: Text(AppLocalizations.of(context)!.empty_list,
+                style: const TextStyle(color: Colors.red)),
           ),
         ],
       ),
     );
 
     if (confirmed == true) {
+      // ignore: use_build_context_synchronously
       context
           .read<ShoppingListBloc>()
           .add(ClearShoppingListEvent(userId: userId));

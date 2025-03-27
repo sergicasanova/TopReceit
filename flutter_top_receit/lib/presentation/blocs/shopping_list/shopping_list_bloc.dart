@@ -43,28 +43,6 @@ class ShoppingListBloc extends Bloc<ShoppingListEvent, ShoppingListState> {
       );
     });
 
-    // initState(){
-    //  getSopplintsEvents }
-
-// BlocBuilder(){
-// loading => Ciruclar }
-// return
-    // List Vieew
-    // items: state.ingredientes
-    // itembuilder(index, context)
-    // String ingrediente = state.ingreidintes[index]
-    // List<ShoppingListItemEntity> items = state.shoppingList.items.where((item) => item.ingredientName == ingrediente).toList();
-    // return Column(childrne[...items.map((item) => Row(children: [Text(item.ingredientName), Text(item.quantity.toString])...
-
-// PATATA
-// _______________________________
-// 1 KG
-// 3 UDS.
-
-// CEBOLLA
-// _______________________________
-// 1 KG
-
     on<AddRecipeIngredientsEvent>((event, emit) async {
       emit(ShoppingListState.loading());
       final result = await addRecipeIngredientsUseCase.call(

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_top_receit/domain/entities/shopping_list_item_entity.dart';
 import 'package:flutter_top_receit/presentation/blocs/shopping_list/shopping_list_state.dart';
 import 'shopping_list_item.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ShoppingListView extends StatelessWidget {
   final ShoppingListState state;
@@ -26,7 +26,8 @@ class ShoppingListView extends StatelessWidget {
     }
 
     if (state.shoppingList == null || state.shoppingList!.items.isEmpty) {
-      return const Center(child: Text('La lista está vacía'));
+      return Center(
+          child: Text(AppLocalizations.of(context)!.empty_list_message));
     }
 
     return RefreshIndicator(
@@ -58,6 +59,7 @@ class ShoppingListView extends StatelessWidget {
                         item: item,
                         userId: userId,
                       ))
+                  // ignore: unnecessary_to_list_in_spreads
                   .toList(),
             ],
           );
